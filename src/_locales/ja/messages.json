@@ -1,0 +1,14 @@
+{
+  "extensionDescription": {
+    "message": "ページをソーシャルネットワークで共有する。"
+  },
+  "extensionName": {
+    "message": "ページを共有"
+  },
+  "extensionShortName": {
+    "message": "共有"
+  },
+  "twitter": {
+    "message": "Twitter で共有"
+  }
+}

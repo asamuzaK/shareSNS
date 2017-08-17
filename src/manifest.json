@@ -1,0 +1,29 @@
+{
+  "applications": {
+    "gecko": {
+      "id": "sharePage@asamuzak.jp",
+      "strict_min_version": "55.0a1"
+    }
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "default_locale": "en",
+  "description": "__MSG_extensionDescription__",
+  "homepage_url": "https://github.com/asamuzaK/sharePage",
+  "icons": {
+    "32": "icon.svg#context",
+    "48": "icon.svg"
+  },
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "tabs"
+  ],
+  "short_name": "__MSG_extensionShortName__",
+  "version": "0.0.1"
+}

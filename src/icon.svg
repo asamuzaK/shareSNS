@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:dcterms="http://purl.org/dc/terms/"
+     xmlns:cc="http://creativecommons.org/ns#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     width="48" height="48" viewBox="0 0 48 48">
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dcterms:format>image/svg+xml</dcterms:format>
+        <dcterms:source rdf:resource="https://github.com/google/material-design-icons"/>
+        <dcterms:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dcterms:license rdf:resource="http://www.apache.org/licenses/LICENSE-2.0"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <style>
+    g:not(#color):not(:target),
+    g:target ~ #color {
+      display: none;
+    }
+  </style>
+  <symbol id="share">
+    <path d="M36 32.17c-1.52 0-2.89.59-3.93 1.54L17.82
+             25.4c.11-.45.18-.92.18-1.4s-.07-.95-.18-1.4l14.1-8.23c1.07
+             1 2.5 1.62 4.08 1.62 3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6
+             6c0 .48.07.95.18 1.4l-14.1 8.23c-1.07-1-2.5-1.62-4.08-1.62-3.31
+             0-6 2.69-6 6s2.69 6 6 6c1.58 0 3.01-.62 4.08-1.62l14.25
+             8.31c-.1.42-.16.86-.16 1.31 0 3.22 2.61 5.83 5.83
+             5.83s5.83-2.61 5.83-5.83-2.61-5.83-5.83-5.83z"/>
+  </symbol>
+  <g id="context">
+    <use href="#share" fill="context-fill"/>
+  </g>
+  <g id="black">
+    <use href="#share" fill="#000"/>
+  </g>
+  <g id="neutral">
+    <use href="#share" fill="#808080"/>
+  </g>
+  <g id="gray">
+    <use href="#share" fill="#4C4C4C"/>
+  </g>
+  <g id="white">
+    <use href="#share" fill="#FFF"/>
+  </g>
+  <g id="off">
+    <use href="#share" fill="ButtonShadow"/>
+  </g>
+  <g id="color">
+    <use href="#share" fill="#002147"/>
+  </g>
+</svg>
