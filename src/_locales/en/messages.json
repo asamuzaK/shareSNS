@@ -1,14 +1,14 @@
 {
   "extensionDescription": {
-    "message": "Share page with social network."
+    "message": "Share page with social network services."
   },
   "extensionName": {
-    "message": "Share Page"
+    "message": "Share page with SNS"
   },
   "extensionShortName": {
     "message": "Share"
   },
   "twitter": {
-    "message": "Share with Twitter"
+    "message": "Share page with Twitter"
   }
 }
