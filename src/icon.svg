@@ -28,6 +28,9 @@
              8.31c-.1.42-.16.86-.16 1.31 0 3.22 2.61 5.83 5.83
              5.83s5.83-2.61 5.83-5.83-2.61-5.83-5.83-5.83z"/>
   </symbol>
+  <symbol id="dot">
+    <circle cx="12" cy="24" r="6"/>
+  </symbol>
   <g id="context">
     <use href="#share" fill="context-fill"/>
   </g>
@@ -48,5 +51,8 @@
   </g>
   <g id="color">
     <use href="#share" fill="#002147"/>
+    <use href="#dot" fill="#E66000"/>
+    <use href="#dot" fill="#E66000" transform="translate(24,14)"/>
+    <use href="#dot" fill="#E66000" transform="translate(24,-14)"/>
   </g>
 </svg>
