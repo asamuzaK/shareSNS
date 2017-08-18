@@ -3,6 +3,8 @@
 Web extension for Firefox.
 Share page with social networking services.
 
+[Download](https://github.com/asamuzaK/sharePage/tree/master/dest "sharePage/dest at master · asamuzaK/sharePage")
+
 ## Usage
 
 * From the context menu (right-click), you can share page with SNS (currently, only Twitter).
