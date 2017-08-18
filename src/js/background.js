@@ -4,9 +4,10 @@
 "use strict";
 {
   /* api */
-  const {contextMenus, i18n, tabs} = browser;
+  const {contextMenus, i18n, runtime, tabs} = browser;
 
   /* contants */
+  const PAGE_SHARE = "sharePage";
   const TWITTER = "twitter";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -131,8 +132,32 @@
     return Promise.all(func);
   };
 
+  /* runtime */
+  /**
+   * handle runtime message
+   * @param {Object} msg - message
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleMsg = async msg => {
+    const items = Object.keys(msg);
+    const func = [];
+    for (const item of items) {
+      const obj = msg[item];
+      switch (item) {
+        case PAGE_SHARE:
+          func.push(extractClickedData(obj));
+          break;
+        default:
+      }
+    }
+    return Promise.all(func);
+  };
+
   contextMenus.onClicked.addListener((info, tab) =>
     extractClickedData({info, tab}).catch(logError)
+  );
+  runtime.onMessage.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(logError)
   );
 
   /* startup */

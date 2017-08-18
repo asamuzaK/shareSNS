@@ -10,6 +10,12 @@
       "js/background.js"
     ]
   },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "icon.svg#context",
+    "default_popup": "html/popup.html",
+    "default_title": "__MSG_extensionName__"
+  },
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/sharePage",

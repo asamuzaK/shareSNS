@@ -5,6 +5,9 @@
   "extensionName": {
     "message": "Share page with SNS"
   },
+  "extensionLocale": {
+    "message": "en"
+  },
   "extensionShortName": {
     "message": "Share"
   },

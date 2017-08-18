@@ -1,0 +1,56 @@
+@charset "UTF-8";
+/**
+ * popup.css
+ */
+body {
+  margin: 0;
+  border: none;
+  padding: 0.5rem;
+  min-width: 6.5rem;
+  background-color: #FFF;
+  color: #000;
+}
+main {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+ul {
+  display: block;
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.25rem 0;
+  list-style: none;
+}
+li {
+  display: block;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+button {
+  all: unset;
+  appearance: none;
+  display: block;
+  margin: 0;
+  border: 1px solid transparent;
+  padding: 0;
+  line-height: 1.5;
+  text-indent: 1rem;
+  width: 100%;
+}
+button[disabled] {
+  background-color: transparent;
+  color: #808080;
+}
+button:not([disabled]):hover,
+button:not([disabled]):focus {
+  border: 1px solid #CCC;
+  background-color: #EAEAEA;
+  color: #000;
+}
+button:not([disabled]):active,
+button:not([disabled]):focus:active {
+  border: 1px solid #CCC;
+  background-color: #D7D7D8;
+  color: #000;
+}
