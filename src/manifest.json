@@ -20,8 +20,8 @@
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/sharePage",
   "icons": {
-    "24": "icon.svg#context",
-    "48": "icon.svg"
+    "32": "icon.svg#context",
+    "64": "icon.svg"
   },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
