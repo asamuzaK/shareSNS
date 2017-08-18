@@ -32,7 +32,7 @@
     <circle cx="12" cy="24" r="6"/>
   </symbol>
   <g id="context">
-    <use href="#share" fill="context-fill"/>
+    <use href="#share" fill="context-fill #4C4C4C"/>
   </g>
   <g id="black">
     <use href="#share" fill="#000"/>
