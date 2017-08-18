@@ -5,6 +5,9 @@
   "extensionName": {
     "message": "ページをSNSで共有"
   },
+  "extensionLocale": {
+    "message": "ja"
+  },
   "extensionShortName": {
     "message": "共有"
   },
