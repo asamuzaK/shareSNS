@@ -52,10 +52,8 @@
    * @param {Object} opt - options
    * @returns {AsyncFunction} - tabs.create()
    */
-  const createTab = async (opt = {}) => {
-    opt = isObjectNotEmpty(opt) && opt || null;
-    return tabs.create(opt);
-  };
+  const createTab = async (opt = {}) =>
+    tabs.create(isObjectNotEmpty(opt) && opt || null);
 
   /**
    * extract clicked data
@@ -103,17 +101,19 @@
    * @param {string} id - menu item ID
    * @param {string} title - menu item title
    * @param {Object} data - context data
-   * @returns {void}
+   * @returns {?AsyncFunction} - contextMenus.create()
    */
   const createMenuItem = async (id, title, data = {}) => {
     const {contexts, enabled} = data;
+    let func;
     if (isString(id) && isString(title) && Array.isArray(contexts)) {
       const opt = {
         id, contexts, title,
         enabled: !!enabled,
       };
-      contextMenus.create(opt);
+      func = contextMenus.create(opt);
     }
+    return func || null;
   };
 
   /**
