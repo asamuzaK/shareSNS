@@ -51,7 +51,7 @@
   /**
    * create copy data
    * @param {!Object} evt - Event
-   * @returns {void}
+   * @returns {Promise.<Array>} - results of each handler
    */
   const createShareData = async evt => {
     const {target} = evt;
@@ -99,7 +99,7 @@
   /**
    * localize node
    * @param {Object} node - Element
-   * @returns {void}
+   * @returns {Object} - node
    */
   const localizeNode = async node => {
     const data = await i18n.getMessage(node.getAttribute(DATA_I18N));
@@ -129,5 +129,5 @@
   document.addEventListener("DOMContentLoaded", () => Promise.all([
     localizeHtml(),
     addListenerToMenu(),
-  ]).catch(logError), false);
+  ]).catch(logError));
 }
