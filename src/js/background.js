@@ -4,7 +4,7 @@
 "use strict";
 {
   /* api */
-  const {contextMenus, i18n, runtime, tabs} = browser;
+  const {i18n, menus, runtime, tabs} = browser;
 
   /* contants */
   const PAGE_SHARE = "sharePage";
@@ -101,7 +101,7 @@
    * @param {string} id - menu item ID
    * @param {string} title - menu item title
    * @param {Object} data - context data
-   * @returns {?AsyncFunction} - contextMenus.create()
+   * @returns {?AsyncFunction} - menus.create()
    */
   const createMenuItem = async (id, title, data = {}) => {
     const {contexts, enabled} = data;
@@ -111,7 +111,7 @@
         id, contexts, title,
         enabled: !!enabled,
       };
-      func = contextMenus.create(opt);
+      func = menus.create(opt);
     }
     return func || null;
   };
@@ -153,7 +153,7 @@
     return Promise.all(func);
   };
 
-  contextMenus.onClicked.addListener((info, tab) =>
+  menus.onClicked.addListener((info, tab) =>
     extractClickedData({info, tab}).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
