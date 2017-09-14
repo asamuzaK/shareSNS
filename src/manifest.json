@@ -27,7 +27,7 @@
   "name": "__MSG_extensionName__",
   "permissions": [
     "activeTab",
-    "contextMenus",
+    "menus",
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
