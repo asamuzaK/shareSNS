@@ -33,8 +33,16 @@
              M 94 82 A 20 20 0 0 0 74 102 A 20 20 0 0 0 94 122
              A 20 20 0 0 0 114 102 A 20 20 0 0 0 94 82 z"/>
   </symbol>
-  <g id="context" fill="context-fill #4C4C4C"
-     fill-opacity="context-fill-opacity 1">
+  <g id="context" fill="context-fill #0C0C0D"
+     fill-opacity="context-fill-opacity 0.8">
+    <use href="#line"/>
+    <use href="#dot"/>
+  </g>
+  <g id="photon_gray_90" fill="#0C0C0D">
+    <use href="#line"/>
+    <use href="#dot"/>
+  </g>
+  <g id="photon_gray_10" fill="#F9F9FA">
     <use href="#line"/>
     <use href="#dot"/>
   </g>
