@@ -33,7 +33,8 @@
              M 94 82 A 20 20 0 0 0 74 102 A 20 20 0 0 0 94 122
              A 20 20 0 0 0 114 102 A 20 20 0 0 0 94 82 z"/>
   </symbol>
-  <g id="context" fill="context-fill #4C4C4C">
+  <g id="context" fill="context-fill #4C4C4C"
+     fill-opacity="context-fill-opacity 1">
     <use href="#line"/>
     <use href="#dot"/>
   </g>
