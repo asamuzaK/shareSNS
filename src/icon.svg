@@ -37,11 +37,11 @@
     <use href="#line"/>
     <use href="#dot"/>
   </g>
-  <g id="photon_gray_90" fill="#0C0C0D">
+  <g id="photon_gray_90" fill="#0C0C0D" fill-opacity="0.8">
     <use href="#line"/>
     <use href="#dot"/>
   </g>
-  <g id="photon_gray_10" fill="#F9F9FA">
+  <g id="photon_gray_10" fill="#F9F9FA" fill-opacity="0.8">
     <use href="#line"/>
     <use href="#dot"/>
   </g>
