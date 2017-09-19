@@ -7,10 +7,14 @@
   const {i18n, runtime, tabs} = browser;
 
   /* constants */
+  const CONTEXT_INFO = "contextInfo";
+  const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
+  const LINK_TWITTER = "linkTwitter";
   const PAGE_SHARE = "sharePage";
-  const TWITTER = "twitter";
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
 
   /**
    * log error
@@ -20,6 +24,24 @@
   const logError = e => {
     console.error(e);
     return false;
+  };
+
+  /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
+   * is object, and not an empty object
+   * @param {*} o - object to check;
+   * @returns {boolean} - result
+   */
+  const isObjectNotEmpty = o => {
+    const items = /Object/i.test(getType(o)) && Object.keys(o);
+    return !!(items && items.length);
   };
 
   /**
@@ -48,35 +70,68 @@
     return tab || null;
   };
 
+  /* tab info */
+  const tabInfo = {
+    tab: null,
+  };
+
+  /**
+   * set tab info
+   * @param {Object} tab - tabs.Tab
+   * @returns {void}
+   */
+  const setTabInfo = async tab => {
+    tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
+  };
+
+  /* context info */
+  const contextInfo = {
+    isLink: false,
+    content: null,
+    title: null,
+    url: null,
+  };
+
+  /**
+   * init context info
+   * @returns {Object} - context info
+   */
+  const initContextInfo = async () => {
+    contextInfo.isLink = false;
+    contextInfo.content = null;
+    contextInfo.title = null;
+    contextInfo.url = null;
+    return contextInfo;
+  };
+
   /**
    * create copy data
    * @param {!Object} evt - Event
-   * @returns {Promise.<Array>} - results of each handler
+   * @returns {?AsyncFunction} - sendmsg()
    */
   const createShareData = async evt => {
     const {target} = evt;
-    const func = [];
+    let func;
     if (target) {
       const {id: menuItemId} = target;
-      const tab = await getActiveTab();
+      const {tab} = tabInfo;
       if (tab) {
         const info = {
           menuItemId,
         };
-        const data = {
-          info, tab,
-        };
-        switch (menuItemId) {
-          case TWITTER:
-            func.push(sendMsg({
-              [PAGE_SHARE]: data,
-            }));
-            break;
-          default:
+        const {content, isLink, title, url} = contextInfo;
+        if (isLink) {
+          info.linkText = content || title;
+          info.linkUrl = url;
         }
+        func = sendMsg({
+          [PAGE_SHARE]: {
+            info, tab,
+          },
+        });
       }
     }
-    return Promise.all(func);
+    return func || null;
   };
 
   /**
@@ -126,8 +181,93 @@
     return Promise.all(func);
   };
 
+  /**
+   * update menu
+   * @param {Object} data - context data;
+   * @returns {void}
+   */
+  const updateMenu = async (data = {}) => {
+    const {contextInfo: info} = data;
+    await initContextInfo();
+    if (info) {
+      const {content, isLink, title, url} = info;
+      const node = document.getElementById(LINK_TWITTER);
+      contextInfo.isLink = isLink;
+      contextInfo.content = content;
+      contextInfo.title = title;
+      contextInfo.url = url;
+      if (node) {
+        const attr = "disabled";
+        if (isLink) {
+          node.removeAttribute(attr);
+        } else {
+          node.setAttribute(attr, attr);
+        }
+      }
+    }
+  };
+
+  /**
+   * request context info
+   * @param {Object} tab - tabs.Tab
+   * @returns {void}
+   */
+  const requestContextInfo = async (tab = {}) => {
+    const {id} = tab;
+    await initContextInfo();
+    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+      try {
+        await tabs.sendMessage(id, {
+          [CONTEXT_INFO_GET]: true,
+        });
+      } catch (e) {
+        await updateMenu({
+          contextInfo: {
+            isLink: false,
+            content: null,
+            title: null,
+            url: null,
+          },
+        });
+      }
+    }
+  };
+
+  /**
+   * handle message
+   * @param {*} msg - message
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleMsg = async msg => {
+    const func = [];
+    const items = msg && Object.keys(msg);
+    if (items && items.length) {
+      for (const item of items) {
+        const obj = msg[item];
+        switch (item) {
+          case CONTEXT_INFO:
+          case "keydown":
+          case "mousedown":
+            func.push(updateMenu(obj));
+            break;
+          default:
+        }
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /* listeners */
+  runtime.onMessage.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(logError)
+  );
+
   document.addEventListener("DOMContentLoaded", () => Promise.all([
     localizeHtml(),
     addListenerToMenu(),
+    getActiveTab().then(tab => Promise.all([
+      requestContextInfo(tab),
+      setTabInfo(tab),
+    ])),
   ]).catch(logError));
 }

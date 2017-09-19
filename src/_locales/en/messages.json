@@ -11,7 +11,10 @@
   "extensionShortName": {
     "message": "Share"
   },
-  "twitter": {
+  "linkTwitter": {
+    "message": "Share link with Twitter"
+  },
+  "pageTwitter": {
     "message": "Share page with Twitter"
   }
 }

@@ -7,8 +7,9 @@
   const {i18n, menus, runtime, tabs} = browser;
 
   /* contants */
+  const LINK_TWITTER = "linkTwitter";
   const PAGE_SHARE = "sharePage";
-  const TWITTER = "twitter";
+  const PAGE_TWITTER = "pageTwitter";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
@@ -67,14 +68,21 @@
     } = tab;
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-      const {menuItemId, selectionText} = info;
+      const {linkText, linkUrl, menuItemId, selectionText} = info;
       const opt = {
         windowId,
         active: true,
         index: tabIndex + 1,
       };
       switch (menuItemId) {
-        case TWITTER: {
+        case LINK_TWITTER: {
+          const text = selectionText || linkText;
+          const url = `https://twitter.com/share?text=${encodeURIComponent(text)}&amp;url=${encodeURIComponent(linkUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case PAGE_TWITTER: {
           const text = selectionText || tabTitle;
           const url = `https://twitter.com/share?text=${encodeURIComponent(text)}&amp;url=${encodeURIComponent(tabUrl)}`;
           opt.url = url;
@@ -89,10 +97,15 @@
 
   /* menu items */
   const menuItems = {
-    [TWITTER]: {
-      id: TWITTER,
-      contexts: ["all"],
-      title: i18n.getMessage(TWITTER),
+    [LINK_TWITTER]: {
+      id: LINK_TWITTER,
+      contexts: ["link"],
+      title: i18n.getMessage(LINK_TWITTER),
+    },
+    [PAGE_TWITTER]: {
+      id: PAGE_TWITTER,
+      contexts: ["page"],
+      title: i18n.getMessage(PAGE_TWITTER),
     },
   };
 

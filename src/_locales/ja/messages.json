@@ -11,7 +11,10 @@
   "extensionShortName": {
     "message": "共有"
   },
-  "twitter": {
+  "linkTwitter": {
+    "message": "リンクを Twitter で共有"
+  },
+  "pageTwitter": {
     "message": "ページを Twitter で共有"
   }
 }
