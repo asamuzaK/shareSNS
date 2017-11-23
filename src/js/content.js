@@ -87,6 +87,7 @@
   const contextInfo = {
     isLink: false,
     content: null,
+    selectionText: null,
     title: null,
     url: null,
   };
@@ -98,6 +99,7 @@
   const initContextInfo = async () => {
     contextInfo.isLink = false;
     contextInfo.content = null;
+    contextInfo.selectionText = null;
     contextInfo.title = null;
     contextInfo.url = null;
     return contextInfo;
@@ -112,6 +114,9 @@
     await initContextInfo();
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
+      const selectionText =
+        window.getSelection().toString().replace(/\s+/g, " ");
+      contextInfo.selectionText = selectionText || "";
       if (anchor) {
         const {textContent, href, title} = anchor;
         if (href) {

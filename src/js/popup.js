@@ -7,12 +7,12 @@
   const {i18n, runtime, tabs} = browser;
 
   /* constants */
+  const CLASS_LINK = "link";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
-  const LINK_TWITTER = "linkTwitter";
-  const PAGE_SHARE = "sharePage";
+  const SHARE_SNS = "shareSNS";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
@@ -88,6 +88,7 @@
   const contextInfo = {
     isLink: false,
     content: null,
+    selectionText: null,
     title: null,
     url: null,
   };
@@ -99,13 +100,14 @@
   const initContextInfo = async () => {
     contextInfo.isLink = false;
     contextInfo.content = null;
+    contextInfo.selectionText = null;
     contextInfo.title = null;
     contextInfo.url = null;
     return contextInfo;
   };
 
   /**
-   * create copy data
+   * create share data
    * @param {!Object} evt - Event
    * @returns {?AsyncFunction} - sendmsg()
    */
@@ -119,13 +121,14 @@
         const info = {
           menuItemId,
         };
-        const {content, isLink, title, url} = contextInfo;
+        const {content, isLink, selectionText, title, url} = contextInfo;
+        info.selectionText = selectionText || "";
         if (isLink) {
           info.linkText = content || title;
           info.linkUrl = url;
         }
         func = sendMsg({
-          [PAGE_SHARE]: {
+          [SHARE_SNS]: {
             info, tab,
           },
         });
@@ -157,7 +160,8 @@
    * @returns {Object} - node
    */
   const localizeNode = async node => {
-    const data = await i18n.getMessage(node.getAttribute(DATA_I18N));
+    const [id, sns] = node.getAttribute(DATA_I18N).split(",");
+    const data = await i18n.getMessage(id, sns);
     data && node.nodeType === Node.ELEMENT_NODE && (node.textContent = data);
     return node;
   };
@@ -190,18 +194,21 @@
     const {contextInfo: info} = data;
     await initContextInfo();
     if (info) {
-      const {content, isLink, title, url} = info;
-      const node = document.getElementById(LINK_TWITTER);
+      const {content, isLink, selectionText, title, url} = info;
+      const nodes = document.getElementsByClassName(CLASS_LINK);
       contextInfo.isLink = isLink;
       contextInfo.content = content;
+      contextInfo.selectionText = selectionText;
       contextInfo.title = title;
       contextInfo.url = url;
-      if (node) {
-        const attr = "disabled";
-        if (isLink) {
-          node.removeAttribute(attr);
-        } else {
-          node.setAttribute(attr, attr);
+      if (nodes && nodes.length) {
+        for (const node of nodes) {
+          const attr = "disabled";
+          if (isLink) {
+            node.removeAttribute(attr);
+          } else {
+            node.setAttribute(attr, attr);
+          }
         }
       }
     }
@@ -225,6 +232,7 @@
           contextInfo: {
             isLink: false,
             content: null,
+            selectionText: null,
             title: null,
             url: null,
           },

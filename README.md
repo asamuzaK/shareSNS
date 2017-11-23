@@ -1,7 +1,7 @@
-# Share Page with SNS
+# Share with SNS
 
 Web extension for Firefox.
-Share page with social networking services.
+Share page or link with social networking services.
 
 [Download](https://github.com/asamuzaK/sharePage/tree/master/dest "sharePage/dest at master · asamuzaK/sharePage")
 
@@ -13,6 +13,6 @@ Experimental features are used, so you need to activate the following settings.
 
 ## Usage
 
-* From the toolbar button or the context menu (right-click), you can share page with SNS (currently, only Twitter).
-* If you select some text before right-click, that selected text will be used for the content, if not, the title of the page will be used.
-  Note that when sharing from the toolbar button, the title of the page is always used.
+* From the toolbar button or from the context menu (right-click), you can share page or link with SNS.
+* If you select some text, that selected text will be used for the content to share.
+  Otherwise, the title of the page will be used for the page share, content of the link will be used for the link share.

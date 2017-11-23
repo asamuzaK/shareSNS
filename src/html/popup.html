@@ -2,24 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Share page with SNS - popup menu</title>
+    <title>Share with SNS - popup menu</title>
     <link rel="stylesheet" href="../css/popup.css" />
     <script src="../js/popup.js"></script>
   </head>
   <body>
     <main>
-      <ul>
-        <li>
-          <button id="pageTwitter" data-i18n="pageTwitter">
-            Share page with Twitter
-          </button>
-        </li>
-        <li>
-          <button id="linkTwitter" data-i18n="linkTwitter">
-            Share link with Twitter
-          </button>
-        </li>
-      </ul>
+      <section id="Twitter">
+        <h1>Twitter</h1>
+        <ul>
+          <li>
+            <button id="sharePageTwitter" data-i18n="sharePage,Twitter">
+              Share page with Twitter
+            </button>
+          </li>
+          <li>
+            <button id="shareLinkTwitter" class="link"
+                    data-i18n="shareLink,Twitter">
+              Share link with Twitter
+            </button>
+          </li>
+        </ul>
+      </section>
     </main>
   </body>
 </html>

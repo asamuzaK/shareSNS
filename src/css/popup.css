@@ -15,10 +15,14 @@ main {
   border: none;
   padding: 0;
 }
+h1 {
+  margin: 0.25rem 0.25rem 0;
+  font-size: 1rem;
+}
 ul {
   display: block;
-  margin: 0.25rem 0;
-  padding: 0.25rem 0.25rem 0;
+  margin: 0;
+  padding: 0.25rem 0;
   list-style: none;
 }
 li {
@@ -35,7 +39,7 @@ button {
   border: 1px solid transparent;
   padding: 0;
   line-height: 1.5;
-  text-indent: 1rem;
+  text-indent: 0.25rem;
   width: 100%;
 }
 button[disabled] {

@@ -7,11 +7,13 @@
   const {i18n, menus, runtime, tabs} = browser;
 
   /* contants */
-  const LINK_TWITTER = "linkTwitter";
-  const PAGE_SHARE = "sharePage";
-  const PAGE_TWITTER = "pageTwitter";
+  const SHARE_LINK = "shareLink";
+  const SHARE_PAGE = "sharePage";
+  const SHARE_SNS = "shareSNS";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
+
+  const TWITTER = "Twitter";
 
   /**
    * log error
@@ -56,6 +58,11 @@
   const createTab = async (opt = {}) =>
     tabs.create(isObjectNotEmpty(opt) && opt || null);
 
+  /* sns */
+  const sns = {
+    [TWITTER]: true,
+  };
+
   /**
    * extract clicked data
    * @param {Object} data - clicked data
@@ -75,16 +82,16 @@
         index: tabIndex + 1,
       };
       switch (menuItemId) {
-        case LINK_TWITTER: {
-          const text = selectionText || linkText;
-          const url = `https://twitter.com/share?text=${encodeURIComponent(text)}&amp;url=${encodeURIComponent(linkUrl)}`;
+        case `${SHARE_LINK}${TWITTER}`: {
+          const text = encodeURIComponent(selectionText || linkText);
+          const url = `https://twitter.com/share?text=${text}&amp;url=${encodeURIComponent(linkUrl)}`;
           opt.url = url;
           func.push(createTab(opt));
           break;
         }
-        case PAGE_TWITTER: {
-          const text = selectionText || tabTitle;
-          const url = `https://twitter.com/share?text=${encodeURIComponent(text)}&amp;url=${encodeURIComponent(tabUrl)}`;
+        case `${SHARE_PAGE}${TWITTER}`: {
+          const text = encodeURIComponent(selectionText || tabTitle);
+          const url = `https://twitter.com/share?text=${text}&amp;url=${encodeURIComponent(tabUrl)}`;
           opt.url = url;
           func.push(createTab(opt));
           break;
@@ -93,20 +100,6 @@
       }
     }
     return Promise.all(func);
-  };
-
-  /* menu items */
-  const menuItems = {
-    [LINK_TWITTER]: {
-      id: LINK_TWITTER,
-      contexts: ["link"],
-      title: i18n.getMessage(LINK_TWITTER),
-    },
-    [PAGE_TWITTER]: {
-      id: PAGE_TWITTER,
-      contexts: ["page"],
-      title: i18n.getMessage(PAGE_TWITTER),
-    },
   };
 
   /**
@@ -135,12 +128,27 @@
    */
   const createContextMenu = async () => {
     const func = [];
-    const items = Object.keys(menuItems);
+    const items = Object.keys(sns);
     for (const item of items) {
-      const {contexts, id, title} = menuItems[item];
-      const enabled = true;
-      const itemData = {contexts, enabled};
-      func.push(createMenuItem(id, title, itemData));
+      if (sns[item]) {
+        const enabled = true;
+        func.push(
+          createMenuItem(
+            `${SHARE_PAGE}${item}`,
+            i18n.getMessage(SHARE_PAGE, item), {
+              enabled,
+              contexts: ["page", "selection"],
+            }
+          ),
+          createMenuItem(
+            `${SHARE_LINK}${item}`,
+            i18n.getMessage(SHARE_LINK, item), {
+              enabled,
+              contexts: ["link"],
+            }
+          ),
+        );
+      }
     }
     return Promise.all(func);
   };
@@ -157,7 +165,7 @@
     for (const item of items) {
       const obj = msg[item];
       switch (item) {
-        case PAGE_SHARE:
+        case SHARE_SNS:
           func.push(extractClickedData(obj));
           break;
         default:

@@ -1,9 +1,9 @@
 {
   "extensionDescription": {
-    "message": "ページをソーシャルネットワーキングサービスで共有します。"
+    "message": "ページやリンクをソーシャルネットワーキングサービスで共有します。"
   },
   "extensionName": {
-    "message": "ページをSNSで共有"
+    "message": "SNSで共有"
   },
   "extensionLocale": {
     "message": "ja"
@@ -11,10 +11,10 @@
   "extensionShortName": {
     "message": "共有"
   },
-  "linkTwitter": {
-    "message": "リンクを Twitter で共有"
+  "shareLink": {
+    "message": "リンクを $1 で共有"
   },
-  "pageTwitter": {
-    "message": "ページを Twitter で共有"
+  "sharePage": {
+    "message": "ページを $1 で共有"
   }
 }
