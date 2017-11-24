@@ -292,29 +292,17 @@
 
   /**
    * toggle SNS item
-   * @param {string} item - item
+   * @param {string} id - item ID
    * @param {Object} obj - value object
    * @param {boolean} changed - changed
-   * @returns {Promise.<Array>} - results of each handler
+   * @returns {void}
    */
-  const toggleSnsItem = async (item, obj) => {
-    const func = [];
-    if (item && obj) {
-      const {checked} = obj;
-      switch (item) {
-        case FACEBOOK:
-        case LINE:
-        case TWITTER: {
-          const elm = document.getElementById(item);
-          if (elm) {
-            elm.style.display = checked && "block" || "none";
-          }
-          break;
-        }
-        default:
-      }
+  const toggleSnsItem = async (id, obj = {}) => {
+    const {checked} = obj;
+    const elm = document.getElementById(id);
+    if (elm) {
+      elm.style.display = checked && "block" || "none";
     }
-    return Promise.all(func);
   };
 
   /**
@@ -329,7 +317,14 @@
       for (const item of items) {
         const obj = data[item];
         const {newValue} = obj;
-        func.push(toggleSnsItem(item, newValue || obj));
+        switch (item) {
+          case FACEBOOK:
+          case LINE:
+          case TWITTER:
+            func.push(toggleSnsItem(item, newValue || obj));
+            break;
+          default:
+        }
       }
     }
     return Promise.all(func);
