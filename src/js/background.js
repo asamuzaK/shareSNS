@@ -17,13 +17,6 @@
   const LINE = "LINE";
   const TWITTER = "Twitter";
 
-  /* sns */
-  const sns = {
-    [TWITTER]: false,
-    [FACEBOOK]: false,
-    [LINE]: false,
-  };
-
   /**
    * log error
    * @param {!Object} e - Error
@@ -66,6 +59,29 @@
    */
   const createTab = async (opt = {}) =>
     tabs.create(isObjectNotEmpty(opt) && opt || null);
+
+  /* SNS */
+  const sns = {
+    [TWITTER]: false,
+    [FACEBOOK]: false,
+    [LINE]: false,
+  };
+
+  /**
+   * toggle SNS item
+   * @param {string} id - item ID
+   * @param {Object} obj - value object
+   * @param {boolean} changed - changed
+   * @returns {void}
+   */
+  const toggleSnsItem = async (id, obj = {}) => {
+    if (isString(id)) {
+      const {checked} = obj;
+      if (sns.hasOwnProperty(id)) {
+        sns[id] = !!checked;
+      }
+    }
+  };
 
   /**
    * extract clicked data
@@ -134,6 +150,7 @@
     return Promise.all(func);
   };
 
+  /* context menu */
   /**
    * create context menu item
    * @param {string} id - menu item ID
@@ -206,22 +223,7 @@
     return Promise.all(func);
   };
 
-  /**
-   * toggle SNS item
-   * @param {string} id - item ID
-   * @param {Object} obj - value object
-   * @param {boolean} changed - changed
-   * @returns {void}
-   */
-  const toggleSnsItem = async (id, obj = {}) => {
-    if (isString(id)) {
-      const {checked} = obj;
-      if (sns.hasOwnProperty(id)) {
-        sns[id] = !!checked;
-      }
-    }
-  };
-
+  /* storage */
   /**
    * handle stored data
    * @param {Object} data - stored data
