@@ -41,6 +41,13 @@
     Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
 
   /**
+   * is string
+   * @param {*} o - object to check
+   * @returns {boolean} - result
+   */
+  const isString = o => typeof o === "string" || o instanceof String;
+
+  /**
    * is object, and not an empty object
    * @param {*} o - object to check;
    * @returns {boolean} - result
