@@ -30,7 +30,7 @@
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/shareSNS",
   "icons": {
-    "32": "icon.svg#context",
+    "32": "icon.svg#gray",
     "64": "icon.svg"
   },
   "manifest_version": 2,
@@ -47,5 +47,5 @@
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "0.4.0"
+  "version": "0.5.1"
 }
