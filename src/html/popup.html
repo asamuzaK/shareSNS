@@ -8,7 +8,7 @@
   </head>
   <body>
     <main>
-      <section id="Twitter">
+      <section id="Twitter" class="snsItem">
         <h1>Twitter</h1>
         <ul>
           <li>
@@ -24,6 +24,43 @@
           </li>
         </ul>
       </section>
+      <section id="Facebook" class="snsItem">
+        <h1>Facebook</h1>
+        <ul>
+          <li>
+            <button id="sharePageFacebook" data-i18n="sharePage,Facebook">
+              Share page with Facebook
+            </button>
+          </li>
+          <li>
+            <button id="shareLinkFacebook" class="link"
+                    data-i18n="shareLink,Facebook">
+              Share link with Facebook
+            </button>
+          </li>
+        </ul>
+      </section>
+      <section id="LINE" class="snsItem">
+        <h1>LINE</h1>
+        <ul>
+          <li>
+            <button id="sharePageLINE" data-i18n="sharePage,LINE">
+              Share page with LINE
+            </button>
+          </li>
+          <li>
+            <button id="shareLinkLINE" class="link"
+                    data-i18n="shareLink,LINE">
+              Share link with LINE
+            </button>
+          </li>
+        </ul>
+      </section>
+      <div id="warnSnsNotSelected">
+        <p data-i18n="snsNotSelected">
+          SNS is not selected.
+        </p>
+      </div>
     </main>
   </body>
 </html>

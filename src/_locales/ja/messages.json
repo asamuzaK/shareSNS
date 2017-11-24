@@ -40,5 +40,8 @@
         "example" : "Twitter"
       }
     }
+  },
+  "snsNotSelected": {
+    "message": "SNS が選択されていません。"
   }
 }

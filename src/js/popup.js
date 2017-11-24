@@ -4,17 +4,23 @@
 "use strict";
 {
   /* api */
-  const {i18n, runtime, tabs} = browser;
+  const {i18n, runtime, storage, tabs} = browser;
 
   /* constants */
   const CLASS_LINK = "link";
+  const CLASS_SNS_ITEM = "snsItem";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
   const SHARE_SNS = "shareSNS";
+  const SNS_NOT_SELECTED = "warnSnsNotSelected";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
+
+  const FACEBOOK = "Facebook";
+  const LINE = "LINE";
+  const TWITTER = "Twitter";
 
   /**
    * log error
@@ -265,7 +271,74 @@
     return Promise.all(func);
   };
 
+  /**
+   * toggle warning message
+   * @returns {void}
+   */
+  const toggleWarning = async () => {
+    const elm = document.getElementById(SNS_NOT_SELECTED);
+    const items = document.getElementsByClassName(CLASS_SNS_ITEM);
+    if (elm && items && items.length) {
+      let bool = false;
+      for (const item of items) {
+        bool = window.getComputedStyle(item).display !== "none";
+        if (bool) {
+          break;
+        }
+      }
+      elm.style.display = bool && "none" || "block";
+    }
+  };
+
+  /**
+   * toggle SNS item
+   * @param {string} item - item
+   * @param {Object} obj - value object
+   * @param {boolean} changed - changed
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const toggleSnsItem = async (item, obj) => {
+    const func = [];
+    if (item && obj) {
+      const {checked} = obj;
+      switch (item) {
+        case FACEBOOK:
+        case LINE:
+        case TWITTER: {
+          const elm = document.getElementById(item);
+          if (elm) {
+            elm.style.display = checked && "block" || "none";
+          }
+          break;
+        }
+        default:
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * handle stored data
+   * @param {Object} data - stored data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleStoredData = async (data = {}) => {
+    const func = [];
+    const items = Object.keys(data);
+    if (items.length) {
+      for (const item of items) {
+        const obj = data[item];
+        const {newValue} = obj;
+        func.push(toggleSnsItem(item, newValue || obj));
+      }
+    }
+    return Promise.all(func);
+  };
+
   /* listeners */
+  storage.onChanged.addListener(data =>
+    handleStoredData(data).then(toggleWarning).catch(logError)
+  );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
   );
@@ -273,6 +346,7 @@
   document.addEventListener("DOMContentLoaded", () => Promise.all([
     localizeHtml(),
     addListenerToMenu(),
+    storage.local.get().then(handleStoredData).then(toggleWarning),
     getActiveTab().then(tab => Promise.all([
       requestContextInfo(tab),
       setTabInfo(tab),
