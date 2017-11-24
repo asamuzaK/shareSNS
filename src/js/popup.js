@@ -298,10 +298,12 @@
    * @returns {void}
    */
   const toggleSnsItem = async (id, obj = {}) => {
-    const {checked} = obj;
-    const elm = document.getElementById(id);
-    if (elm) {
-      elm.style.display = checked && "block" || "none";
+    if (isString(id)) {
+      const {checked} = obj;
+      const elm = document.getElementById(id);
+      if (elm) {
+        elm.style.display = checked && "block" || "none";
+      }
     }
   };
 
