@@ -37,6 +37,10 @@
     <use href="#line"/>
     <use href="#dot"/>
   </g>
+  <g id="gray" fill="#4C4C4C">
+    <use href="#line"/>
+    <use href="#dot"/>
+  </g>
   <g id="color">
     <use href="#line" fill="#002147"/>
     <use href="#dot" fill="#E66000"/>
