@@ -3,7 +3,7 @@
 Web extension for Firefox.
 Share page or link with social networking services.
 
-[Download](https://github.com/asamuzaK/sharePage/tree/master/dest "sharePage/dest at master · asamuzaK/sharePage")
+[Download](https://github.com/asamuzaK/shareSNS/tree/master/dest "shareSNS/dest at master · asamuzaK/shareSNS")
 
 ## about:config
 
