@@ -4,7 +4,7 @@
 "use strict";
 {
   /* api */
-  const {i18n, menus, runtime, tabs} = browser;
+  const {i18n, menus, runtime, storage, tabs} = browser;
 
   /* contants */
   const SHARE_LINK = "shareLink";
@@ -13,7 +13,16 @@
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
+  const FACEBOOK = "Facebook";
+  const LINE = "LINE";
   const TWITTER = "Twitter";
+
+  /* sns */
+  const sns = {
+    [TWITTER]: false,
+    [FACEBOOK]: false,
+    [LINE]: false,
+  };
 
   /**
    * log error
@@ -58,11 +67,6 @@
   const createTab = async (opt = {}) =>
     tabs.create(isObjectNotEmpty(opt) && opt || null);
 
-  /* sns */
-  const sns = {
-    [TWITTER]: true,
-  };
-
   /**
    * extract clicked data
    * @param {Object} data - clicked data
@@ -81,17 +85,45 @@
         active: true,
         index: tabIndex + 1,
       };
+      const selText =
+        isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`: {
-          const text = encodeURIComponent(selectionText || linkText);
+          const text = encodeURIComponent(selText || linkText);
           const url = `https://twitter.com/share?text=${text}&amp;url=${encodeURIComponent(linkUrl)}`;
           opt.url = url;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_PAGE}${TWITTER}`: {
-          const text = encodeURIComponent(selectionText || tabTitle);
+          const text = encodeURIComponent(selText || tabTitle);
           const url = `https://twitter.com/share?text=${text}&amp;url=${encodeURIComponent(tabUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_LINK}${FACEBOOK}`: {
+          const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(linkUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_PAGE}${FACEBOOK}`: {
+          const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(tabUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_LINK}${LINE}`: {
+          const text = encodeURIComponent(selText || linkText);
+          const url = `http://line.me/R/msg/text/?${text}%20${encodeURIComponent(linkUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_PAGE}${LINE}`: {
+          const text = encodeURIComponent(selText || tabTitle);
+          const url = `http://line.me/R/msg/text/?${text}%20${encodeURIComponent(tabUrl)}`;
           opt.url = url;
           func.push(createTab(opt));
           break;
@@ -174,13 +206,64 @@
     return Promise.all(func);
   };
 
+  /**
+   * toggle SNS item
+   * @param {string} id - item ID
+   * @param {Object} obj - value object
+   * @param {boolean} changed - changed
+   * @returns {void}
+   */
+  const toggleSnsItem = async (id, obj = {}) => {
+    if (isString(id)) {
+      const {checked} = obj;
+      if (sns.hasOwnProperty(id)) {
+        sns[id] = !!checked;
+      }
+    }
+  };
+
+  /**
+   * handle stored data
+   * @param {Object} data - stored data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleStoredData = async (data = {}) => {
+    const func = [];
+    const items = Object.keys(data);
+    if (items.length) {
+      for (const item of items) {
+        const obj = data[item];
+        const {newValue} = obj;
+        switch (item) {
+          case FACEBOOK:
+          case LINE:
+          case TWITTER:
+            func.push(toggleSnsItem(item, newValue || obj));
+            break;
+          default:
+        }
+      }
+    }
+    return Promise.all(func);
+  };
+
   menus.onClicked.addListener((info, tab) =>
     extractClickedData({info, tab}).catch(logError)
+  );
+  storage.onChanged.addListener(data =>
+    handleStoredData(data).then(
+      () => menus.removeAll()
+    ).then(createContextMenu).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
   );
 
   /* startup */
-  createContextMenu().catch(logError);
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => storage.local.get().then(handleStoredData).then(createContextMenu)
+      .catch(logError),
+    false
+  );
 }
