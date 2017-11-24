@@ -1,9 +1,9 @@
 {
   "extensionDescription": {
-    "message": "Share page with social networking services."
+    "message": "Share page and link with social networking services."
   },
   "extensionName": {
-    "message": "Share page with SNS"
+    "message": "Share with SNS"
   },
   "extensionLocale": {
     "message": "en"
