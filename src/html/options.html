@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title data-i18n="optionsTitle">Share with SNS - Options</title>
+    <link rel="stylesheet" href="../css/options.css" />
+    <script src="../js/options.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1 data-i18n="optionsTitle">Share with SNS - Options</h1>
+    </header>
+    <main>
+      <form id="optionsForm">
+        <fieldset>
+          <legend>
+            SNS
+          </legend>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Twitter" checked="checked" />
+                <label for="Twitter" class="checkboxLabel"
+                       aria-details="enableTwitterDetail">
+                  Twitter
+                </label>
+              </span>
+            </p>
+            <details id="enableTwitterDetail">
+              <div>
+                <p data-i18n="optionsEnableSnsDetail,Twitter">
+                  Enable sharing with Twitter.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Facebook" checked="checked" />
+                <label for="Facebook" class="checkboxLabel"
+                       aria-details="enableFacebookDetail">
+                  Facebook
+                </label>
+              </span>
+            </p>
+            <details id="enableFacebookDetail">
+              <div>
+                <p data-i18n="optionsEnableSnsDetail,Facebook">
+                  Enable sharing with Facebook.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="LINE" checked="checked" />
+                <label for="LINE" class="checkboxLabel"
+                       aria-details="enableLineDetail">
+                  LINE
+                </label>
+              </span>
+            </p>
+            <details id="enableLineDetail">
+              <div>
+                <p data-i18n="optionsEnableSnsDetail,LINE">
+                  Enable sharing with LINE.
+                </p>
+              </div>
+            </details>
+          </div>
+        </fieldset>
+      </form>
+    </main>
+  </body>
+</html>

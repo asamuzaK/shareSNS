@@ -11,10 +11,34 @@
   "extensionShortName": {
     "message": "Share"
   },
+  "optionsEnableSnsDetail": {
+    "message": "Enable sharing with $SNS$.",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "Share with SNS - Options"
+  },
   "shareLink": {
-    "message": "Share link with $1"
+    "message": "Share link with $SNS",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
   },
   "sharePage": {
-    "message": "Share page with $1"
+    "message": "Share page with $SNS$",
+        "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
   }
 }

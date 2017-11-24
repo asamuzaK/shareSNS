@@ -11,10 +11,34 @@
   "extensionShortName": {
     "message": "共有"
   },
+  "optionsEnableSnsDetail": {
+    "message": "$SNS$ との共有を有効化します。",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "optionsTitle": {
+    "message": "SNSで共有 - 設定"
+  },
   "shareLink": {
-    "message": "リンクを $1 で共有"
+    "message": "リンクを $SNS$ で共有",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
   },
   "sharePage": {
-    "message": "ページを $1 で共有"
+    "message": "ページを $SNS$ で共有",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
   }
 }

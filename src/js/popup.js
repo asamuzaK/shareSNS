@@ -160,8 +160,8 @@
    * @returns {Object} - node
    */
   const localizeNode = async node => {
-    const [id, sns] = node.getAttribute(DATA_I18N).split(",");
-    const data = await i18n.getMessage(id, sns);
+    const [id, ph] = node.getAttribute(DATA_I18N).split(/\s*,\s*/);
+    const data = await i18n.getMessage(id, ph);
     data && node.nodeType === Node.ELEMENT_NODE && (node.textContent = data);
     return node;
   };
