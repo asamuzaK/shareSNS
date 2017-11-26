@@ -19,6 +19,7 @@
   const TYPE_TO = -1;
 
   const FACEBOOK = "Facebook";
+  const HATENA = "Hatena";
   const LINE = "LINE";
   const TWITTER = "Twitter";
 
@@ -328,6 +329,7 @@
         const {newValue} = obj;
         switch (item) {
           case FACEBOOK:
+          case HATENA:
           case LINE:
           case TWITTER:
             func.push(toggleSnsItem(item, newValue || obj));

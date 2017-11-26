@@ -14,6 +14,7 @@
   const TYPE_TO = -1;
 
   const FACEBOOK = "Facebook";
+  const HATENA = "Hatena";
   const LINE = "LINE";
   const TWITTER = "Twitter";
 
@@ -65,6 +66,7 @@
     [TWITTER]: false,
     [FACEBOOK]: false,
     [LINE]: false,
+    [HATENA]: false,
   };
 
   /**
@@ -140,6 +142,18 @@
         case `${SHARE_PAGE}${LINE}`: {
           const text = encodeURIComponent(selText || tabTitle);
           const url = `http://line.me/R/msg/text/?${text}%20${encodeURIComponent(tabUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_LINK}${HATENA}`: {
+          const url = `http://b.hatena.ne.jp/add?url=${encodeURIComponent(linkUrl)}`;
+          opt.url = url;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_PAGE}${HATENA}`: {
+          const url = `http://b.hatena.ne.jp/add?url=${encodeURIComponent(tabUrl)}`;
           opt.url = url;
           func.push(createTab(opt));
           break;
@@ -238,6 +252,7 @@
         const {newValue} = obj;
         switch (item) {
           case FACEBOOK:
+          case HATENA:
           case LINE:
           case TWITTER:
             func.push(toggleSnsItem(item, newValue || obj));
