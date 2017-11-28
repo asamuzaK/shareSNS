@@ -112,55 +112,57 @@
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`: {
           const text = encodeURIComponent(selText || linkText);
-          const url = `${TWITTER_URL}?text=${text}&amp;url=${encodeURIComponent(linkUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(linkUrl);
+          opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_PAGE}${TWITTER}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = `${TWITTER_URL}?text=${text}&amp;url=${encodeURIComponent(tabUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(tabUrl);
+          opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_LINK}${FACEBOOK}`: {
-          const url = `${FACEBOOK_URL}?u=${encodeURIComponent(linkUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(linkUrl);
+          opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_PAGE}${FACEBOOK}`: {
-          const url = `${FACEBOOK_URL}?u=${encodeURIComponent(tabUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(tabUrl);
+          opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_LINK}${LINE}`: {
           const text = encodeURIComponent(selText || linkText);
-          const url = `${LINE_URL}?${text}%20${encodeURIComponent(linkUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(linkUrl);
+          opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_PAGE}${LINE}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = `${LINE_URL}?${text}%20${encodeURIComponent(tabUrl)}`;
-          opt.url = url;
+          const url = encodeURIComponent(tabUrl);
+          opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_LINK}${HATENA}`: {
           const text = encodeURIComponent(selText || linkText);
-          const url = `${HATENA_URL}?mode=confirm&amp;url=${encodeURIComponent(linkUrl)}&amp;title=${text}`;
-          opt.url = url;
+          const url = encodeURIComponent(linkUrl);
+          opt.url =
+            `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
           break;
         }
         case `${SHARE_PAGE}${HATENA}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = `${HATENA_URL}?mode=confirm&amp;url=${encodeURIComponent(tabUrl)}&amp;title=${text}`;
-          opt.url = url;
+          const url = encodeURIComponent(tabUrl);
+          opt.url =
+            `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
           break;
         }
