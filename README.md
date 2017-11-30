@@ -3,7 +3,7 @@
 Web extension for Firefox.
 Share page or link with social networking services.
 
-[Download](https://github.com/asamuzaK/shareSNS/tree/master/dest "shareSNS/dest at master · asamuzaK/shareSNS")
+[Share with SNS – Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/share-with-sns/ "Share with SNS – Add-ons for Firefox")
 
 ## about:config
 
