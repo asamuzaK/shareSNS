@@ -15,6 +15,8 @@
 
   const FACEBOOK = "Facebook";
   const FACEBOOK_URL = "https://www.facebook.com/sharer/sharer.php";
+  const GOOGLE = "Google+";
+  const GOOGLE_URL = "https://plus.google.com/share";
   const HATENA = "Hatena";
   const HATENA_URL = "http://b.hatena.ne.jp/add";
   const LINE = "LINE";
@@ -71,6 +73,7 @@
     [FACEBOOK]: false,
     [LINE]: false,
     [HATENA]: false,
+    [GOOGLE]: false,
   };
 
   /**
@@ -163,6 +166,18 @@
           const url = encodeURIComponent(tabUrl);
           opt.url =
             `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_LINK}${GOOGLE}`: {
+          const url = encodeURIComponent(linkUrl);
+          opt.url = `${GOOGLE_URL}?url=${url}`;
+          func.push(createTab(opt));
+          break;
+        }
+        case `${SHARE_PAGE}${GOOGLE}`: {
+          const url = encodeURIComponent(tabUrl);
+          opt.url = `${GOOGLE_URL}?url=${url}`;
           func.push(createTab(opt));
           break;
         }
@@ -260,6 +275,7 @@
         const {newValue} = obj;
         switch (item) {
           case FACEBOOK:
+          case GOOGLE:
           case HATENA:
           case LINE:
           case TWITTER:

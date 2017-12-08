@@ -19,6 +19,7 @@
   const TYPE_TO = -1;
 
   const FACEBOOK = "Facebook";
+  const GOOGLE = "Google+";
   const HATENA = "Hatena";
   const LINE = "LINE";
   const TWITTER = "Twitter";
@@ -329,6 +330,7 @@
         const {newValue} = obj;
         switch (item) {
           case FACEBOOK:
+          case GOOGLE:
           case HATENA:
           case LINE:
           case TWITTER:
