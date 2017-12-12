@@ -139,10 +139,8 @@
       };
       const selText =
         isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
-      const canonicalUrl = isString(info.canonicalUrl) &&
-                           info.canonicalUrl.trim() ||
-                           isString(contextInfo.canonicalUrl) &&
-                           contextInfo.canonicalUrl.trim() || null;
+      const canonicalUrl =
+        info.canonicalUrl || contextInfo.canonicalUrl || null;
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`: {
           const text = encodeURIComponent(selText || linkText);

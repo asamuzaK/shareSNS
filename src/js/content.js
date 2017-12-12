@@ -87,11 +87,11 @@
   /* context info */
   const contextInfo = {
     isLink: false,
-    canonicalUrl: null,
     content: null,
     selectionText: null,
     title: null,
     url: null,
+    canonicalUrl: null,
   };
 
   /**
@@ -100,11 +100,11 @@
    */
   const initContextInfo = async () => {
     contextInfo.isLink = false;
-    contextInfo.canonicalUrl = null;
     contextInfo.content = null;
     contextInfo.selectionText = null;
     contextInfo.title = null;
     contextInfo.url = null;
+    contextInfo.canonicalUrl = null;
     return contextInfo;
   };
 
