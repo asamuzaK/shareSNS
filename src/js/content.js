@@ -9,6 +9,7 @@
   /* constants */
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
+  const MOUSE_BUTTON_RIGHT = 2;
 
   /**
    * log error
@@ -86,6 +87,7 @@
   /* context info */
   const contextInfo = {
     isLink: false,
+    canonicalUrl: null,
     content: null,
     selectionText: null,
     title: null,
@@ -98,6 +100,7 @@
    */
   const initContextInfo = async () => {
     contextInfo.isLink = false;
+    contextInfo.canonicalUrl = null;
     contextInfo.content = null;
     contextInfo.selectionText = null;
     contextInfo.title = null;
@@ -114,9 +117,9 @@
     await initContextInfo();
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
+      const canonical = document.querySelector("link[rel=canonical][href]");
       const selectionText =
         window.getSelection().toString().replace(/\s+/g, " ");
-      contextInfo.selectionText = selectionText || "";
       if (anchor) {
         const {textContent, href, title} = anchor;
         if (href) {
@@ -128,6 +131,10 @@
           contextInfo.url = url;
         }
       }
+      if (canonical) {
+        contextInfo.canonicalUrl = canonical.getAttribute("href");
+      }
+      contextInfo.selectionText = selectionText || "";
     }
     return contextInfo;
   };
@@ -170,4 +177,18 @@
 
   /* listeners */
   runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
+
+  window.addEventListener(
+    "keydown",
+    evt => (evt.altKey && evt.shiftKey && evt.key === "C" ||
+            evt.shiftKey && evt.key === "F10" ||
+            evt.key === "ContextMenu") && sendContextInfo().catch(logError),
+    true
+  );
+  window.addEventListener(
+    "mousedown",
+    evt => evt.button === MOUSE_BUTTON_RIGHT &&
+             sendContextInfo().catch(logError),
+    true
+  );
 }

@@ -102,6 +102,7 @@
   /* context info */
   const contextInfo = {
     isLink: false,
+    canonicalUrl: null,
     content: null,
     selectionText: null,
     title: null,
@@ -114,6 +115,7 @@
    */
   const initContextInfo = async () => {
     contextInfo.isLink = false;
+    contextInfo.canonicalUrl = null;
     contextInfo.content = null;
     contextInfo.selectionText = null;
     contextInfo.title = null;
@@ -136,12 +138,15 @@
         const info = {
           menuItemId,
         };
-        const {content, isLink, selectionText, title, url} = contextInfo;
-        info.selectionText = selectionText || "";
+        const {
+          canonicalUrl, content, isLink, selectionText, title, url,
+        } = contextInfo;
         if (isLink) {
           info.linkText = content || title;
           info.linkUrl = url;
         }
+        info.canonicalUrl = canonicalUrl || null;
+        info.selectionText = selectionText || "";
         func = sendMsg({
           [SHARE_SNS]: {
             info, tab,

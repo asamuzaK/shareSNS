@@ -7,6 +7,7 @@
   const {i18n, menus, runtime, storage, tabs} = browser;
 
   /* contants */
+  const CONTEXT_INFO = "contextInfo";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
   const SHARE_SNS = "shareSNS";
@@ -92,6 +93,31 @@
     }
   };
 
+  /* context info */
+  const contextInfo = {
+    canonicalUrl: null,
+  };
+
+  /**
+   * set context info
+   * @param {Object} info - info
+   * @returns {void}
+   */
+  const setContextInfo = async (info = {}) => {
+    const {canonicalUrl} = info;
+    contextInfo.canonicalUrl =
+      isString(canonicalUrl) && canonicalUrl.trim() || null;
+  };
+
+  /**
+   * init context info
+   * @returns {Object} - context info
+   */
+  const initContextInfo = async () => {
+    contextInfo.canonicalUrl = null;
+    return contextInfo;
+  };
+
   /**
    * extract clicked data
    * @param {Object} data - clicked data
@@ -112,6 +138,10 @@
       };
       const selText =
         isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
+      const canonicalUrl = isString(info.canonicalUrl) &&
+                           info.canonicalUrl.trim() ||
+                           isString(contextInfo.canonicalUrl) &&
+                           contextInfo.canonicalUrl.trim() || null;
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`: {
           const text = encodeURIComponent(selText || linkText);
@@ -122,7 +152,7 @@
         }
         case `${SHARE_PAGE}${TWITTER}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(tabUrl);
+          const url = encodeURIComponent(canonicalUrl || tabUrl);
           opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
@@ -134,7 +164,7 @@
           break;
         }
         case `${SHARE_PAGE}${FACEBOOK}`: {
-          const url = encodeURIComponent(tabUrl);
+          const url = encodeURIComponent(canonicalUrl || tabUrl);
           opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
@@ -148,7 +178,7 @@
         }
         case `${SHARE_PAGE}${LINE}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(tabUrl);
+          const url = encodeURIComponent(canonicalUrl || tabUrl);
           opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
@@ -163,7 +193,7 @@
         }
         case `${SHARE_PAGE}${HATENA}`: {
           const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(tabUrl);
+          const url = encodeURIComponent(canonicalUrl || tabUrl);
           opt.url =
             `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
@@ -176,7 +206,7 @@
           break;
         }
         case `${SHARE_PAGE}${GOOGLE}`: {
-          const url = encodeURIComponent(tabUrl);
+          const url = encodeURIComponent(canonicalUrl || tabUrl);
           opt.url = `${GOOGLE_URL}?url=${url}`;
           func.push(createTab(opt));
           break;
@@ -184,7 +214,7 @@
         default:
       }
     }
-    return Promise.all(func);
+    return Promise.all(func).then(initContextInfo);
   };
 
   /* context menu */
@@ -251,9 +281,15 @@
     for (const item of items) {
       const obj = msg[item];
       switch (item) {
-        case SHARE_SNS:
+        case CONTEXT_INFO: {
+          const {contextInfo: info} = obj;
+          func.push(setContextInfo(info));
+          break;
+        }
+        case SHARE_SNS: {
           func.push(extractClickedData(obj));
           break;
+        }
         default:
       }
     }
