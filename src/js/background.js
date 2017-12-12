@@ -99,22 +99,23 @@
   };
 
   /**
-   * set context info
-   * @param {Object} info - info
-   * @returns {void}
-   */
-  const setContextInfo = async (info = {}) => {
-    const {canonicalUrl} = info;
-    contextInfo.canonicalUrl =
-      isString(canonicalUrl) && canonicalUrl.trim() || null;
-  };
-
-  /**
    * init context info
    * @returns {Object} - context info
    */
   const initContextInfo = async () => {
     contextInfo.canonicalUrl = null;
+    return contextInfo;
+  };
+
+  /**
+   * update context info
+   * @param {Object} data - context info data
+   * @returns {Object} - context info
+   */
+  const updateContextInfo = async (data = {}) => {
+    await initContextInfo();
+    const {contextInfo: {canonicalUrl}} = data;
+    contextInfo.canonicalUrl = canonicalUrl;
     return contextInfo;
   };
 
@@ -282,8 +283,7 @@
       const obj = msg[item];
       switch (item) {
         case CONTEXT_INFO: {
-          const {contextInfo: info} = obj;
-          func.push(setContextInfo(info));
+          func.push(updateContextInfo(obj));
           break;
         }
         case SHARE_SNS: {
