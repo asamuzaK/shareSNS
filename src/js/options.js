@@ -120,7 +120,6 @@
   const localizeHtml = async () => {
     const lang = i18n.getMessage(LANG);
     if (lang) {
-      document.documentElement.setAttribute("lang", lang);
       const nodes = document.querySelectorAll(`[${DATA_ATTR_I18N}]`);
       if (nodes instanceof NodeList) {
         for (const node of nodes) {
@@ -130,6 +129,7 @@
           node.hasAttributes() && localizeAttr(node);
         }
       }
+      document.documentElement.setAttribute("lang", lang);
     }
   };
 

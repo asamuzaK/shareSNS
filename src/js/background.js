@@ -113,9 +113,13 @@
    * @returns {Object} - context info
    */
   const updateContextInfo = async (data = {}) => {
-    await initContextInfo();
-    const {contextInfo: {canonicalUrl}} = data;
-    contextInfo.canonicalUrl = canonicalUrl;
+    const {contextInfo: info} = data;
+    if (info) {
+      const {canonicalUrl} = info;
+      contextInfo.canonicalUrl = canonicalUrl || null;
+    } else {
+      await initContextInfo();
+    }
     return contextInfo;
   };
 
@@ -218,6 +222,12 @@
 
   /* context menu */
   /**
+   * remove context menu
+   * @returns {AsyncFunction} - menus.removeAll()
+   */
+  const removeMenu = async () => menus.removeAll();
+
+  /**
    * create context menu item
    * @param {string} id - menu item ID
    * @param {string} title - menu item title
@@ -241,7 +251,7 @@
    * create context menu items
    * @returns {Promise.<Array>} - results of each handler
    */
-  const createContextMenu = async () => {
+  const createMenu = async () => {
     const func = [];
     const items = Object.keys(sns);
     for (const item of items) {
@@ -326,9 +336,7 @@
     extractClickedData({info, tab}).catch(logError)
   );
   storage.onChanged.addListener(data =>
-    handleStoredData(data).then(
-      () => menus.removeAll()
-    ).then(createContextMenu).catch(logError)
+    handleStoredData(data).then(removeMenu).then(createMenu).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
@@ -337,7 +345,7 @@
   /* startup */
   document.addEventListener(
     "DOMContentLoaded",
-    () => storage.local.get().then(handleStoredData).then(createContextMenu)
+    () => storage.local.get().then(handleStoredData).then(createMenu)
       .catch(logError),
     false
   );
