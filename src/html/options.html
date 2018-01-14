@@ -106,6 +106,37 @@
               </div>
             </details>
           </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Mastodon" />
+                <label for="Mastodon" class="checkboxLabel"
+                       aria-details="enableMastodonDetail">
+                  Mastodon
+                </label>
+              </span>
+              <span class="sub-item">
+                <label for="mastodonInstanceUrl" class="label"
+                       aria-details="enableMastodonDetail">
+                  Instance URL
+                </label>
+                <input type="url" id="mastodonInstanceUrl"
+                       placeholder="https://"
+                       pattern="https?://(?:\[(?:(?:(?:(?:(?:[\da-f]{1,4}:){0,4}[\da-f]{1,4})?::|(?:(?:[\da-f]{1,4}:){0,3}[\da-f]{1,4})?::[\da-f]{1,4}:|(?:(?:[\da-f]{1,4}:){0,2}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){2}|(?:(?:[\da-f]{1,4}:){0,1}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){3}|[\da-f]{1,4}?::(?:[\da-f]{1,4}:){4}|::(?:[\da-f]{1,4}:){5}|(?:[\da-f]{1,4}:){6})(?:(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|[\da-f]{1,4}:[\da-f]{1,4})|(?:(?:[\da-f]{1,4}:){0,5}[\da-f]{1,4})?::[\da-f]{1,4}|(?:(?:[\da-f]{1,4}:){0,6}[\da-f]{1,4})?::)%25(?:[\w\-\.~]|%[\dA-F]{2})+|(?:(?:(?:[\da-f]{1,4}:){0,4}[\da-f]{1,4})?::|(?:(?:[\da-f]{1,4}:){0,3}[\da-f]{1,4})?::[\da-f]{1,4}:|(?:(?:[\da-f]{1,4}:){0,2}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){2}|(?:(?:[\da-f]{1,4}:){0,1}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){3}|[\da-f]{1,4}?::(?:[\da-f]{1,4}:){4}|::(?:[\da-f]{1,4}:){5}|(?:[\da-f]{1,4}:){6})(?:(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|[\da-f]{1,4}:[\da-f]{1,4})|(?:(?:[\da-f]{1,4}:){0,5}[\da-f]{1,4})?::[\da-f]{1,4}|(?:(?:[\da-f]{1,4}:){0,6}[\da-f]{1,4})?::|v[\da-f]+\.[\w\-\.~!\$&'\(\)\*\+,;=:]+)\]|(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|(?:[\w\-\.~!\$&'\(\)\*\+,;=]|%[\dA-F]{2})*)/?" />
+              </span>
+            </p>
+            <details id="enableMastodonDetail">
+              <div>
+                <p data-i18n="optionsEnableSnsDetail,Mastodon">
+                  Enable sharing with Mastodon.
+                </p>
+                <p data-i18n="optionsMastodonInstanceUrlNote">
+                  If the browser has been registered  to handle the "web+mastodon:" protocol, leave the Instance URL input field empty.
+                  To check whether it is registered or not, refer to "Applications" from "about:preferences".
+                </p>
+              </div>
+            </details>
+          </div>
         </fieldset>
       </form>
     </main>

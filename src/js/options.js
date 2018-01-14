@@ -148,6 +148,7 @@
           elm.checked = !!data.checked;
           break;
         case "text":
+        case "url":
           elm.value = isString(data.value) && data.value || "";
           break;
         default:
