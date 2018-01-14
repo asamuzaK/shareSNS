@@ -22,6 +22,9 @@
   const HATENA_URL = "http://b.hatena.ne.jp/add";
   const LINE = "LINE";
   const LINE_URL = "http://line.me/R/msg/text/";
+  const MASTODON = "Mastodon";
+  const MASTODON_INSTANCE_URL = "mastodonInstanceUrl";
+  const MASTODON_URL = "web+mastodon://share";
   const TWITTER = "Twitter";
   const TWITTER_URL = "https://twitter.com/share";
 
@@ -75,6 +78,7 @@
     [LINE]: false,
     [HATENA]: false,
     [GOOGLE]: false,
+    [MASTODON]: false,
   };
 
   /**
@@ -91,6 +95,61 @@
         sns[id] = !!checked;
       }
     }
+  };
+
+  /* mastodon instance */
+  const mastodonInstance = {
+    url: null,
+    value: null,
+  };
+
+  /**
+   * init mastodon instance
+   * @returns {Object} - mastodonInstance
+   */
+  const initMastodonInstance = async () => {
+    mastodonInstance.url = null;
+    mastodonInstance.value = null;
+    return mastodonInstance;
+  };
+
+  /**
+   * update mastodon instance
+   * @param {Object} data - mastodon instance data
+   * @returns {Object} - mastodon instance
+   */
+  const updateMastodonInstance = async (data = {}) => {
+    const {value} = data;
+    if (isString(value) && value.length) {
+      try {
+        const instanceUrl = new URL(value.trim());
+        const {origin, protocol} = instanceUrl;
+        mastodonInstance.url =
+          /^https?:$/.test(protocol) && origin || null;
+        mastodonInstance.value = value;
+      } catch (e) {
+        await initMastodonInstance();
+      }
+    } else {
+      await initMastodonInstance();
+    }
+    return mastodonInstance;
+  };
+
+  /**
+   * create mastodon URL
+   * @param {!string} url - web+mastodon scheme URL
+   * @returns {string} - mastodon share URL
+   */
+  const createMastodonUrl = url => {
+    if (!isString(url)) {
+      throw new TypeError(`Expected String but got ${getType(url)}.`);
+    }
+    const {url: instanceUrl} = mastodonInstance;
+    if (isString(instanceUrl) && instanceUrl.length) {
+      url = `${instanceUrl}/intent?uri=${encodeURIComponent(url)}`;
+    }
+    return url;
   };
 
   /* context info */
@@ -145,75 +204,65 @@
         isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
       const canonicalUrl =
         info.canonicalUrl || contextInfo.canonicalUrl || null;
+      let text, url;
+      if (menuItemId.startsWith(SHARE_LINK)) {
+        text = encodeURIComponent(selText || linkText);
+        url = encodeURIComponent(linkUrl);
+      } else {
+        text = encodeURIComponent(selText || tabTitle);
+        url = encodeURIComponent(canonicalUrl || tabUrl);
+      }
       switch (menuItemId) {
-        case `${SHARE_LINK}${TWITTER}`: {
-          const text = encodeURIComponent(selText || linkText);
-          const url = encodeURIComponent(linkUrl);
+        case `${SHARE_LINK}${TWITTER}`:
           opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_PAGE}${TWITTER}`: {
-          const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(canonicalUrl || tabUrl);
+        case `${SHARE_PAGE}${TWITTER}`:
           opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_LINK}${FACEBOOK}`: {
-          const url = encodeURIComponent(linkUrl);
+        case `${SHARE_LINK}${FACEBOOK}`:
           opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_PAGE}${FACEBOOK}`: {
-          const url = encodeURIComponent(canonicalUrl || tabUrl);
+        case `${SHARE_PAGE}${FACEBOOK}`:
           opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_LINK}${LINE}`: {
-          const text = encodeURIComponent(selText || linkText);
-          const url = encodeURIComponent(linkUrl);
+        case `${SHARE_LINK}${LINE}`:
           opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_PAGE}${LINE}`: {
-          const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(canonicalUrl || tabUrl);
+        case `${SHARE_PAGE}${LINE}`:
           opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_LINK}${HATENA}`: {
-          const text = encodeURIComponent(selText || linkText);
-          const url = encodeURIComponent(linkUrl);
+        case `${SHARE_LINK}${HATENA}`:
           opt.url =
             `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_PAGE}${HATENA}`: {
-          const text = encodeURIComponent(selText || tabTitle);
-          const url = encodeURIComponent(canonicalUrl || tabUrl);
+        case `${SHARE_PAGE}${HATENA}`:
           opt.url =
             `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_LINK}${GOOGLE}`: {
-          const url = encodeURIComponent(linkUrl);
+        case `${SHARE_LINK}${GOOGLE}`:
           opt.url = `${GOOGLE_URL}?url=${url}`;
           func.push(createTab(opt));
           break;
-        }
-        case `${SHARE_PAGE}${GOOGLE}`: {
-          const url = encodeURIComponent(canonicalUrl || tabUrl);
+        case `${SHARE_PAGE}${GOOGLE}`:
           opt.url = `${GOOGLE_URL}?url=${url}`;
           func.push(createTab(opt));
           break;
-        }
+        case `${SHARE_LINK}${MASTODON}`:
+          opt.url = createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
+          func.push(createTab(opt));
+          break;
+        case `${SHARE_PAGE}${MASTODON}`:
+          opt.url = createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
+          func.push(createTab(opt));
+          break;
         default:
       }
     }
@@ -322,8 +371,12 @@
           case GOOGLE:
           case HATENA:
           case LINE:
+          case MASTODON:
           case TWITTER:
             func.push(toggleSnsItem(item, newValue || obj));
+            break;
+          case MASTODON_INSTANCE_URL:
+            func.push(updateMastodonInstance(newValue || obj));
             break;
           default:
         }
