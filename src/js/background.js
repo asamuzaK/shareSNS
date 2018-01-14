@@ -214,51 +214,32 @@
       }
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`:
-          opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${TWITTER}`:
           opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
           func.push(createTab(opt));
           break;
         case `${SHARE_LINK}${FACEBOOK}`:
-          opt.url = `${FACEBOOK_URL}?u=${url}`;
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${FACEBOOK}`:
           opt.url = `${FACEBOOK_URL}?u=${url}`;
           func.push(createTab(opt));
           break;
         case `${SHARE_LINK}${LINE}`:
-          opt.url = `${LINE_URL}?${text}%20${url}`;
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${LINE}`:
           opt.url = `${LINE_URL}?${text}%20${url}`;
           func.push(createTab(opt));
           break;
         case `${SHARE_LINK}${HATENA}`:
-          opt.url =
-            `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${HATENA}`:
           opt.url =
             `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
           func.push(createTab(opt));
           break;
         case `${SHARE_LINK}${GOOGLE}`:
-          opt.url = `${GOOGLE_URL}?url=${url}`;
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${GOOGLE}`:
           opt.url = `${GOOGLE_URL}?url=${url}`;
           func.push(createTab(opt));
           break;
         case `${SHARE_LINK}${MASTODON}`:
-          opt.url = createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
-          func.push(createTab(opt));
-          break;
         case `${SHARE_PAGE}${MASTODON}`:
           opt.url = createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
           func.push(createTab(opt));
