@@ -21,7 +21,7 @@
     }
   },
   "optionsMastodonInstanceUrlNote": {
-    "message": "ブラウザに \"web+mastodon:\" プロトコルへの関連付けが登録済みの場合、インスタンス URL の入力フィールドは空のままで構いません。関連付けがされているかどうかを確認するには、 \"about:preferences\" から \"プログラム\" を参照してください。"
+    "message": "ブラウザに \"web+mastodon:\" プロトコルへの関連付けが登録済みの場合、インスタンス URL の入力フィールドは空のままで構いません。関連付けが登録されているかどうかを確認するには、 \"about:preferences\" の \"プログラム\" の項目を参照してください。"
   },
   "optionsTitle": {
     "message": "SNSで共有 - 設定"
