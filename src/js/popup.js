@@ -22,6 +22,7 @@
   const GOOGLE = "Google+";
   const HATENA = "Hatena";
   const LINE = "LINE";
+  const MASTODON = "Mastodon";
   const TWITTER = "Twitter";
 
   /**
@@ -338,6 +339,7 @@
           case GOOGLE:
           case HATENA:
           case LINE:
+          case MASTODON:
           case TWITTER:
             func.push(toggleSnsItem(item, newValue || obj));
             break;
