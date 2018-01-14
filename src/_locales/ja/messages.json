@@ -20,6 +20,9 @@
       }
     }
   },
+  "optionsMastodonInstanceNote": {
+    "message": "\"about:preferences\"から、\"web+mastodon://\"プロトコルを取り扱うプログラムとして、マストドンのインスタンスを関連付ける必要があります。"
+  },
   "optionsTitle": {
     "message": "SNSで共有 - 設定"
   },

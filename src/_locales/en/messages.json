@@ -20,6 +20,9 @@
       }
     }
   },
+  "optionsMastodonInstanceNote": {
+    "message": "You need to register your Mastodon instance as a program to handle \"web+mastodon://\" protocol from \"about:preferences\"."
+  },
   "optionsTitle": {
     "message": "Share with SNS - Options"
   },
