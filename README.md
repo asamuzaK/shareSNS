@@ -1,3 +1,5 @@
+EN | [JA](./README.ja.md)
+
 # Share with SNS
 
 Web extension for Firefox.

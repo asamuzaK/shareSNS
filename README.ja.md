@@ -1,3 +1,5 @@
+[EN](./README.md) | JA
+
 # SNSで共有
 
 Firefox用の拡張機能。
