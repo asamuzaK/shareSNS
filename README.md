@@ -25,3 +25,5 @@ Experimental features are used, so you need to activate the following settings.
 * Hatena
 * Google+
 * Mastodon
+
+If the SNS you want to use is not on the list, please file [a feature request](https://github.com/asamuzaK/shareSNS/issues "Issues · asamuzaK/shareSNS").

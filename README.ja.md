@@ -25,3 +25,5 @@ Firefox用の拡張機能。
 * Hatena
 * Google+
 * Mastodon
+
+あなたが使いたいSNSがリストにない場合は、そのSNSの[追加要望](https://github.com/asamuzaK/shareSNS/issues "Issues · asamuzaK/shareSNS")をお待ちしています。
