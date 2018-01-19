@@ -204,13 +204,14 @@
         isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
       const canonicalUrl =
         info.canonicalUrl || contextInfo.canonicalUrl || null;
+      const {hash: tabUrlHash} = new URL(tabUrl);
       let text, url;
       if (menuItemId.startsWith(SHARE_LINK)) {
         text = encodeURIComponent(selText || linkText);
         url = encodeURIComponent(linkUrl);
       } else {
         text = encodeURIComponent(selText || tabTitle);
-        url = encodeURIComponent(canonicalUrl || tabUrl);
+        url = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
       }
       switch (menuItemId) {
         case `${SHARE_LINK}${TWITTER}`:
