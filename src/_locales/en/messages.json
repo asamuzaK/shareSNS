@@ -27,7 +27,7 @@
     "message": "Share with SNS - Options"
   },
   "shareLink": {
-    "message": "Share link with $SNS",
+    "message": "Share link with $SNS$",
     "placeholders": {
       "sns" : {
         "content" : "$1",
