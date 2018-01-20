@@ -99,7 +99,6 @@
 
   /* mastodon instance */
   const mastodonInstance = {
-    url: null,
     value: null,
   };
 
@@ -108,7 +107,6 @@
    * @returns {Object} - mastodonInstance
    */
   const initMastodonInstance = async () => {
-    mastodonInstance.url = null;
     mastodonInstance.value = null;
     return mastodonInstance;
   };
@@ -121,15 +119,7 @@
   const updateMastodonInstance = async (data = {}) => {
     const {value} = data;
     if (isString(value) && value.length) {
-      try {
-        const instanceUrl = new URL(value.trim());
-        const {origin, protocol} = instanceUrl;
-        mastodonInstance.url =
-          /^https?:$/.test(protocol) && origin || null;
-        mastodonInstance.value = value;
-      } catch (e) {
-        await initMastodonInstance();
-      }
+      mastodonInstance.value = value.trim();
     } else {
       await initMastodonInstance();
     }
@@ -141,13 +131,20 @@
    * @param {!string} url - web+mastodon scheme URL
    * @returns {string} - mastodon share URL
    */
-  const createMastodonUrl = url => {
+  const createMastodonUrl = async url => {
     if (!isString(url)) {
       throw new TypeError(`Expected String but got ${getType(url)}.`);
     }
-    const {url: instanceUrl} = mastodonInstance;
-    if (isString(instanceUrl) && instanceUrl.length) {
-      url = `${instanceUrl}/intent?uri=${encodeURIComponent(url)}`;
+    const {value} = mastodonInstance;
+    if (isString(value) && value.length) {
+      try {
+        const {origin, protocol} = new URL(value.trim());
+        if (/^https?:$/.test(protocol)) {
+          url = `${origin}/intent?uri=${encodeURIComponent(url)}`;
+        }
+      } catch (e) {
+        await initMastodonInstance();
+      }
     }
     return url;
   };
@@ -242,7 +239,8 @@
           break;
         case `${SHARE_LINK}${MASTODON}`:
         case `${SHARE_PAGE}${MASTODON}`:
-          opt.url = createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
+          opt.url =
+            await createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
           func.push(createTab(opt));
           break;
         default:
