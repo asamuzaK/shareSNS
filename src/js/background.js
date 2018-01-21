@@ -376,10 +376,7 @@
   );
 
   /* startup */
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => storage.local.get().then(handleStoredData).then(createMenu)
-      .catch(logError),
-    false
+  document.addEventListener("DOMContentLoaded", () =>
+    storage.local.get().then(handleStoredData).then(createMenu).catch(logError)
   );
 }
