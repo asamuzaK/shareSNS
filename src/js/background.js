@@ -8,25 +8,15 @@
 
   /* contants */
   const CONTEXT_INFO = "contextInfo";
+  const PATH_SNS_DATA = "data/sns.json";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
   const SHARE_SNS = "shareSNS";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
-  const FACEBOOK = "Facebook";
-  const FACEBOOK_URL = "https://www.facebook.com/sharer/sharer.php";
-  const GOOGLE = "Google+";
-  const GOOGLE_URL = "https://plus.google.com/share";
-  const HATENA = "Hatena";
-  const HATENA_URL = "http://b.hatena.ne.jp/add";
-  const LINE = "LINE";
-  const LINE_URL = "http://line.me/R/msg/text/";
   const MASTODON = "Mastodon";
   const MASTODON_INSTANCE_URL = "mastodonInstanceUrl";
-  const MASTODON_URL = "web+mastodon://share";
-  const TWITTER = "Twitter";
-  const TWITTER_URL = "https://twitter.com/share";
 
   /**
    * log error
@@ -71,18 +61,47 @@
   const createTab = async (opt = {}) =>
     tabs.create(isObjectNotEmpty(opt) && opt || null);
 
-  /* SNS */
-  const sns = {
-    [TWITTER]: false,
-    [FACEBOOK]: false,
-    [LINE]: false,
-    [HATENA]: false,
-    [GOOGLE]: false,
-    [MASTODON]: false,
+  /* sns */
+  const sns = new Map();
+
+  /**
+   * fetch sns data
+   * @param {string} path - data path
+   * @returns {void}
+   */
+  const fetchSnsData = async path => {
+    path = isString(path) && runtime.getURL(path);
+    if (path) {
+      const data = await fetch(path).then(res => res && res.json());
+      if (data) {
+        const items = Object.keys(data);
+        for (const item of items) {
+          const obj = data[item];
+          sns.set(item, obj);
+        }
+      }
+    }
   };
 
   /**
-   * toggle SNS item
+   * get sns item from menu item ID
+   * @param {string} id - menu item id
+   * @returns {Object} - sns item
+   */
+  const getSnsItemFromId = async id => {
+    let item;
+    if (isString(id)) {
+      if (id.startsWith(SHARE_LINK)) {
+        item = sns.get(id.replace(SHARE_LINK, ""));
+      } else if (id.startsWith(SHARE_PAGE)) {
+        item = sns.get(id.replace(SHARE_PAGE, ""));
+      }
+    }
+    return item || null;
+  };
+
+  /**
+   * toggle sns item
    * @param {string} id - item ID
    * @param {Object} obj - value object
    * @param {boolean} changed - changed
@@ -91,8 +110,10 @@
   const toggleSnsItem = async (id, obj = {}) => {
     if (isString(id)) {
       const {checked} = obj;
-      if (sns.hasOwnProperty(id)) {
-        sns[id] = !!checked;
+      const data = sns.get(id);
+      if (data) {
+        data.enabled = !!checked;
+        sns.set(id, data);
       }
     }
   };
@@ -192,54 +213,35 @@
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
       const {linkText, linkUrl, menuItemId, selectionText} = info;
-      const opt = {
-        windowId,
-        active: true,
-        index: tabIndex + 1,
-      };
-      const selText =
-        isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
-      const canonicalUrl =
-        info.canonicalUrl || contextInfo.canonicalUrl || null;
-      const {hash: tabUrlHash} = new URL(tabUrl);
-      let text, url;
-      if (menuItemId.startsWith(SHARE_LINK)) {
-        text = encodeURIComponent(selText || linkText);
-        url = encodeURIComponent(linkUrl);
-      } else {
-        text = encodeURIComponent(selText || tabTitle);
-        url = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
+      const snsItem = await getSnsItemFromId(menuItemId);
+      if (snsItem) {
+        const selText =
+          isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
+        const canonicalUrl =
+          info.canonicalUrl || contextInfo.canonicalUrl || null;
+        const {hash: tabUrlHash} = new URL(tabUrl);
+        const {id: snsId, url: snsUrl} = snsItem;
+        let {query} = snsItem, shareText, shareUrl, url;
+        if (menuItemId.startsWith(SHARE_LINK)) {
+          shareText = encodeURIComponent(selText || linkText);
+          shareUrl = encodeURIComponent(linkUrl);
+        } else {
+          shareText = encodeURIComponent(selText || tabTitle);
+          shareUrl =
+            encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
+        }
+        query = query.replace("%url%", shareUrl).replace("%text%", shareText);
+        if (snsId === MASTODON) {
+          url = await createMastodonUrl(`${snsUrl}${query}`);
+        } else {
+          url = `${snsUrl}${query}`;
+        }
+        func.push(createTab({
+          url, windowId,
+          active: true,
+          index: tabIndex + 1,
+        }));
       }
-      switch (menuItemId) {
-        case `${SHARE_LINK}${FACEBOOK}`:
-        case `${SHARE_PAGE}${FACEBOOK}`:
-          opt.url = `${FACEBOOK_URL}?u=${url}`;
-          break;
-        case `${SHARE_LINK}${GOOGLE}`:
-        case `${SHARE_PAGE}${GOOGLE}`:
-          opt.url = `${GOOGLE_URL}?url=${url}`;
-          break;
-        case `${SHARE_LINK}${HATENA}`:
-        case `${SHARE_PAGE}${HATENA}`:
-          opt.url =
-            `${HATENA_URL}?mode=confirm&amp;url=${url}&amp;title=${text}`;
-          break;
-        case `${SHARE_LINK}${LINE}`:
-        case `${SHARE_PAGE}${LINE}`:
-          opt.url = `${LINE_URL}?${text}%20${url}`;
-          break;
-        case `${SHARE_LINK}${MASTODON}`:
-        case `${SHARE_PAGE}${MASTODON}`:
-          opt.url =
-            await createMastodonUrl(`${MASTODON_URL}?text=${text}+${url}`);
-          break;
-        case `${SHARE_LINK}${TWITTER}`:
-        case `${SHARE_PAGE}${TWITTER}`:
-          opt.url = `${TWITTER_URL}?text=${text}&amp;url=${url}`;
-          break;
-        default:
-      }
-      opt.hasOwnProperty("url") && func.push(createTab(opt));
     }
     func.push(initContextInfo());
     return Promise.all(func);
@@ -278,28 +280,27 @@
    */
   const createMenu = async () => {
     const func = [];
-    const items = Object.keys(sns);
-    for (const item of items) {
-      if (sns[item]) {
-        const enabled = true;
+    sns.forEach((value, key) => {
+      const {enabled} = value;
+      if (enabled) {
         func.push(
           createMenuItem(
-            `${SHARE_PAGE}${item}`,
-            i18n.getMessage(SHARE_PAGE, item), {
+            `${SHARE_PAGE}${key}`,
+            i18n.getMessage(SHARE_PAGE, key), {
               enabled,
               contexts: ["page", "selection"],
             }
           ),
           createMenuItem(
-            `${SHARE_LINK}${item}`,
-            i18n.getMessage(SHARE_LINK, item), {
+            `${SHARE_LINK}${key}`,
+            i18n.getMessage(SHARE_LINK, key), {
               enabled,
               contexts: ["link"],
             }
           ),
         );
       }
-    }
+    });
     return Promise.all(func);
   };
 
@@ -335,26 +336,17 @@
    * @param {Object} data - stored data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const handleStoredData = async (data = {}) => {
+  const handleStoredData = async data => {
     const func = [];
-    const items = Object.keys(data);
-    if (items.length) {
+    if (isObjectNotEmpty(data)) {
+      const items = Object.keys(data);
       for (const item of items) {
         const obj = data[item];
         const {newValue} = obj;
-        switch (item) {
-          case FACEBOOK:
-          case GOOGLE:
-          case HATENA:
-          case LINE:
-          case MASTODON:
-          case TWITTER:
-            func.push(toggleSnsItem(item, newValue || obj));
-            break;
-          case MASTODON_INSTANCE_URL:
-            func.push(updateMastodonInstance(newValue || obj));
-            break;
-          default:
+        if (item === MASTODON_INSTANCE_URL) {
+          func.push(updateMastodonInstance(newValue || obj));
+        } else {
+          sns.has(item) && func.push(toggleSnsItem(item, newValue || obj));
         }
       }
     }
@@ -373,6 +365,8 @@
 
   /* startup */
   document.addEventListener("DOMContentLoaded", () =>
-    storage.local.get().then(handleStoredData).then(createMenu).catch(logError)
+    fetchSnsData(PATH_SNS_DATA).then(() =>
+      storage.local.get()
+    ).then(handleStoredData).then(createMenu).catch(logError)
   );
 }
