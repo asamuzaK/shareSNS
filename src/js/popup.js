@@ -13,17 +13,11 @@
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
+  const PATH_SNS_DATA = "data/sns.json";
   const SHARE_SNS = "shareSNS";
   const SNS_NOT_SELECTED = "warnSnsNotSelected";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
-
-  const FACEBOOK = "Facebook";
-  const GOOGLE = "Google+";
-  const HATENA = "Hatena";
-  const LINE = "LINE";
-  const MASTODON = "Mastodon";
-  const TWITTER = "Twitter";
 
   /**
    * log error
@@ -98,6 +92,28 @@
    */
   const setTabInfo = async tab => {
     tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
+  };
+
+  /* sns */
+  const sns = new Map();
+
+  /**
+   * fetch sns data
+   * @param {string} path - data path
+   * @returns {void}
+   */
+  const fetchSnsData = async path => {
+    path = isString(path) && runtime.getURL(path);
+    if (path) {
+      const data = await fetch(path).then(res => res && res.json());
+      if (data) {
+        const items = Object.keys(data);
+        for (const item of items) {
+          const obj = data[item];
+          sns.set(item, obj);
+        }
+      }
+    }
   };
 
   /* context info */
@@ -211,24 +227,26 @@
    * @param {Object} data - context data;
    * @returns {void}
    */
-  const updateMenu = async (data = {}) => {
-    const {contextInfo: info} = data;
+  const updateMenu = async data => {
     await initContextInfo();
-    if (info) {
-      const {content, isLink, selectionText, title, url} = info;
-      const nodes = document.getElementsByClassName(CLASS_LINK);
-      contextInfo.isLink = isLink;
-      contextInfo.content = content;
-      contextInfo.selectionText = selectionText;
-      contextInfo.title = title;
-      contextInfo.url = url;
-      if (nodes && nodes.length) {
-        for (const node of nodes) {
-          const attr = "disabled";
-          if (isLink) {
-            node.removeAttribute(attr);
-          } else {
-            node.setAttribute(attr, attr);
+    if (isObjectNotEmpty(data)) {
+      const {contextInfo: info} = data;
+      if (info) {
+        const {content, isLink, selectionText, title, url} = info;
+        const nodes = document.getElementsByClassName(CLASS_LINK);
+        contextInfo.isLink = isLink;
+        contextInfo.content = content;
+        contextInfo.selectionText = selectionText;
+        contextInfo.title = title;
+        contextInfo.url = url;
+        if (nodes && nodes.length) {
+          for (const node of nodes) {
+            const attr = "disabled";
+            if (isLink) {
+              node.removeAttribute(attr);
+            } else {
+              node.setAttribute(attr, attr);
+            }
           }
         }
       }
@@ -240,24 +258,26 @@
    * @param {Object} tab - tabs.Tab
    * @returns {void}
    */
-  const requestContextInfo = async (tab = {}) => {
-    const {id} = tab;
+  const requestContextInfo = async tab => {
     await initContextInfo();
-    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
-      try {
-        await tabs.sendMessage(id, {
-          [CONTEXT_INFO_GET]: true,
-        });
-      } catch (e) {
-        await updateMenu({
-          contextInfo: {
-            isLink: false,
-            content: null,
-            selectionText: null,
-            title: null,
-            url: null,
-          },
-        });
+    if (isObjectNotEmpty(tab)) {
+      const {id} = tab;
+      if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+        try {
+          await tabs.sendMessage(id, {
+            [CONTEXT_INFO_GET]: true,
+          });
+        } catch (e) {
+          await updateMenu({
+            contextInfo: {
+              isLink: false,
+              content: null,
+              selectionText: null,
+              title: null,
+              url: null,
+            },
+          });
+        }
       }
     }
   };
@@ -327,24 +347,14 @@
    * @param {Object} data - stored data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const handleStoredData = async (data = {}) => {
+  const handleStoredData = async data => {
     const func = [];
-    const items = Object.keys(data);
-    if (items.length) {
+    if (isObjectNotEmpty(data)) {
+      const items = Object.keys(data);
       for (const item of items) {
         const obj = data[item];
         const {newValue} = obj;
-        switch (item) {
-          case FACEBOOK:
-          case GOOGLE:
-          case HATENA:
-          case LINE:
-          case MASTODON:
-          case TWITTER:
-            func.push(toggleSnsItem(item, newValue || obj));
-            break;
-          default:
-        }
+        sns.has(item) && func.push(toggleSnsItem(item, newValue || obj));
       }
     }
     return Promise.all(func);
@@ -361,7 +371,9 @@
   document.addEventListener("DOMContentLoaded", () => Promise.all([
     localizeHtml(),
     addListenerToMenu(),
-    storage.local.get().then(handleStoredData).then(toggleWarning),
+    fetchSnsData(PATH_SNS_DATA).then(() =>
+      storage.local.get()
+    ).then(handleStoredData).then(toggleWarning),
     getActiveTab().then(tab => Promise.all([
       requestContextInfo(tab),
       setTabInfo(tab),
