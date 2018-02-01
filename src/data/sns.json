@@ -1,0 +1,32 @@
+{
+  "Twitter": {
+    "id": "Twitter",
+    "url": "https://twitter.com/share",
+    "query": "?text=%text%&amp;url=%url%"
+  },
+  "Facebook": {
+    "id": "Facebook",
+    "url": "https://www.facebook.com/sharer/sharer.php",
+    "query": "?u=%url%"
+  },
+  "LINE": {
+    "id": "LINE",
+    "url": "http://line.me/R/msg/text/",
+    "query": "?%text%%20%url%"
+  },
+  "Hatena": {
+    "id": "Hatena",
+    "url": "http://b.hatena.ne.jp/add",
+    "query": "?mode=confirm&amp;url=%url%&amp;title=%text%"
+  },
+  "Google+": {
+    "id": "Google+",
+    "url": "https://plus.google.com/share",
+    "query": "?url=%url%"
+  },
+  "Mastodon": {
+    "id": "Mastodon",
+    "url": "web+mastodon://share",
+    "query": "?text=%text%+%url%"
+  }
+}
