@@ -66,19 +66,16 @@
 
   /**
    * fetch sns data
-   * @param {string} path - data path
    * @returns {void}
    */
-  const fetchSnsData = async path => {
-    path = isString(path) && runtime.getURL(path);
-    if (path) {
-      const data = await fetch(path).then(res => res && res.json());
-      if (data) {
-        const items = Object.keys(data);
-        for (const item of items) {
-          const obj = data[item];
-          sns.set(item, obj);
-        }
+  const fetchSnsData = async () => {
+    const path = await runtime.getURL(PATH_SNS_DATA);
+    const data = await fetch(path).then(res => res && res.json());
+    if (data) {
+      const items = Object.keys(data);
+      for (const item of items) {
+        const obj = data[item];
+        sns.set(item, obj);
       }
     }
   };
@@ -327,6 +324,13 @@
 
   /* storage */
   /**
+   * get storage
+   * @param {*} key - key
+   * @returns {AsyncFunction} - storage.local.get
+   */
+  const getStorage = async key => storage.local.get(key);
+
+  /**
    * handle stored data
    * @param {Object} data - stored data
    * @returns {Promise.<Array>} - results of each handler
@@ -360,8 +364,7 @@
 
   /* startup */
   document.addEventListener("DOMContentLoaded", () =>
-    fetchSnsData(PATH_SNS_DATA).then(() =>
-      storage.local.get()
-    ).then(handleStoredData).then(createMenu).catch(logError)
+    fetchSnsData().then(getStorage).then(handleStoredData).then(createMenu)
+      .catch(logError)
   );
 }

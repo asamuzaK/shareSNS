@@ -99,19 +99,16 @@
 
   /**
    * fetch sns data
-   * @param {string} path - data path
    * @returns {void}
    */
-  const fetchSnsData = async path => {
-    path = isString(path) && runtime.getURL(path);
-    if (path) {
-      const data = await fetch(path).then(res => res && res.json());
-      if (data) {
-        const items = Object.keys(data);
-        for (const item of items) {
-          const obj = data[item];
-          sns.set(item, obj);
-        }
+  const fetchSnsData = async () => {
+    const path = await runtime.getURL(PATH_SNS_DATA);
+    const data = await fetch(path).then(res => res && res.json());
+    if (data) {
+      const items = Object.keys(data);
+      for (const item of items) {
+        const obj = data[item];
+        sns.set(item, obj);
       }
     }
   };
@@ -343,6 +340,13 @@
   };
 
   /**
+   * get storage
+   * @param {*} key - key
+   * @returns {AsyncFunction} - storage.local.get
+   */
+  const getStorage = async key => storage.local.get(key);
+
+  /**
    * handle stored data
    * @param {Object} data - stored data
    * @returns {Promise.<Array>} - results of each handler
@@ -371,9 +375,7 @@
   document.addEventListener("DOMContentLoaded", () => Promise.all([
     localizeHtml(),
     addListenerToMenu(),
-    fetchSnsData(PATH_SNS_DATA).then(() =>
-      storage.local.get()
-    ).then(handleStoredData).then(toggleWarning),
+    fetchSnsData().then(getStorage).then(handleStoredData).then(toggleWarning),
     getActiveTab().then(tab => Promise.all([
       requestContextInfo(tab),
       setTabInfo(tab),
