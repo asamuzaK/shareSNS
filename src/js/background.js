@@ -93,7 +93,7 @@
     if (isString(id)) {
       if (id.startsWith(SHARE_LINK)) {
         item = sns.get(id.replace(SHARE_LINK, ""));
-      } else if (id.startsWith(SHARE_PAGE)) {
+      } else {
         item = sns.get(id.replace(SHARE_PAGE, ""));
       }
     }
@@ -104,7 +104,6 @@
    * toggle sns item
    * @param {string} id - item ID
    * @param {Object} obj - value object
-   * @param {boolean} changed - changed
    * @returns {void}
    */
   const toggleSnsItem = async (id, obj = {}) => {
@@ -227,8 +226,7 @@
           shareUrl = encodeURIComponent(linkUrl);
         } else {
           shareText = encodeURIComponent(selText || tabTitle);
-          shareUrl =
-            encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
+          shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
         }
         query = query.replace("%url%", shareUrl).replace("%text%", shareText);
         if (snsId === MASTODON) {
