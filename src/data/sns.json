@@ -1,32 +1,20 @@
 {
   "Twitter": {
-    "id": "Twitter",
-    "url": "https://twitter.com/share",
-    "query": "?text=%text%&amp;url=%url%"
+    "url": "https://twitter.com/share?text=%text%&amp;url=%url%"
   },
   "Facebook": {
-    "id": "Facebook",
-    "url": "https://www.facebook.com/sharer/sharer.php",
-    "query": "?u=%url%"
+    "url": "https://www.facebook.com/sharer/sharer.php?u=%url%"
   },
   "LINE": {
-    "id": "LINE",
-    "url": "http://line.me/R/msg/text/",
-    "query": "?%text%%20%url%"
+    "url": "http://line.me/R/msg/text/?%text%%20%url%"
   },
   "Hatena": {
-    "id": "Hatena",
-    "url": "http://b.hatena.ne.jp/add",
-    "query": "?mode=confirm&amp;url=%url%&amp;title=%text%"
+    "url": "http://b.hatena.ne.jp/add?mode=confirm&amp;url=%url%&amp;title=%text%"
   },
   "Google+": {
-    "id": "Google+",
-    "url": "https://plus.google.com/share",
-    "query": "?url=%url%"
+    "url": "https://plus.google.com/share?url=%url%"
   },
   "Mastodon": {
-    "id": "Mastodon",
-    "url": "web+mastodon://share",
-    "query": "?text=%text%+%url%"
+    "url": "web+mastodon://share?text=%text%+%url%"
   }
 }

@@ -219,8 +219,7 @@
         const canonicalUrl =
           info.canonicalUrl || contextInfo.canonicalUrl || null;
         const {hash: tabUrlHash} = new URL(tabUrl);
-        const {id: snsId, url: snsUrl} = snsItem;
-        let {query} = snsItem, shareText, shareUrl, url;
+        let {url} = snsItem, shareText, shareUrl;
         if (menuItemId.startsWith(SHARE_LINK)) {
           shareText = encodeURIComponent(selText || linkText);
           shareUrl = encodeURIComponent(linkUrl);
@@ -228,11 +227,9 @@
           shareText = encodeURIComponent(selText || tabTitle);
           shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
         }
-        query = query.replace("%url%", shareUrl).replace("%text%", shareText);
-        if (snsId === MASTODON) {
-          url = await createMastodonUrl(`${snsUrl}${query}`);
-        } else {
-          url = `${snsUrl}${query}`;
+        url = url.replace("%url%", shareUrl).replace("%text%", shareText);
+        if (menuItemId.endsWith(MASTODON)) {
+          url = await createMastodonUrl(url);
         }
         func.push(createTab({
           url, windowId,
