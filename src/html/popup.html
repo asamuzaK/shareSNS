@@ -5,105 +5,24 @@
     <title>Share with SNS - popup menu</title>
     <link rel="stylesheet" href="../css/popup.css" />
     <script src="../js/popup.js"></script>
+    <template id="snsItemTemplate">
+      <section id="" class="snsItem">
+        <h1></h1>
+        <ul>
+          <li>
+            <button id="" class="sharePage" data-i18n="">
+            </button>
+          </li>
+          <li>
+            <button id="" class="shareLink" data-i18n="">
+            </button>
+          </li>
+        </ul>
+      </section>
+    </template>
   </head>
   <body>
-    <main>
-      <section id="Twitter" class="snsItem">
-        <h1>Twitter</h1>
-        <ul>
-          <li>
-            <button id="sharePageTwitter" data-i18n="sharePage,Twitter">
-              Share page with Twitter
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkTwitter" class="link"
-                    data-i18n="shareLink,Twitter">
-              Share link with Twitter
-            </button>
-          </li>
-        </ul>
-      </section>
-      <section id="Facebook" class="snsItem">
-        <h1>Facebook</h1>
-        <ul>
-          <li>
-            <button id="sharePageFacebook" data-i18n="sharePage,Facebook">
-              Share page with Facebook
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkFacebook" class="link"
-                    data-i18n="shareLink,Facebook">
-              Share link with Facebook
-            </button>
-          </li>
-        </ul>
-      </section>
-      <section id="LINE" class="snsItem">
-        <h1>LINE</h1>
-        <ul>
-          <li>
-            <button id="sharePageLINE" data-i18n="sharePage,LINE">
-              Share page with LINE
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkLINE" class="link"
-                    data-i18n="shareLink,LINE">
-              Share link with LINE
-            </button>
-          </li>
-        </ul>
-      </section>
-      <section id="Hatena" class="snsItem">
-        <h1>Hatena</h1>
-        <ul>
-          <li>
-            <button id="sharePageHatena" data-i18n="sharePage,Hatena">
-              Share page with Hatena
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkHatena" class="link"
-                    data-i18n="shareLink,Hatena">
-              Share link with Hatena
-            </button>
-          </li>
-        </ul>
-      </section>
-      <section id="Google+" class="snsItem">
-        <h1>Google+</h1>
-        <ul>
-          <li>
-            <button id="sharePageGoogle+" data-i18n="sharePage,Google+">
-              Share page with Google+
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkGoogle+" class="link"
-                    data-i18n="shareLink,Google+">
-              Share link with Google+
-            </button>
-          </li>
-        </ul>
-      </section>
-      <section id="Mastodon" class="snsItem">
-        <h1>Mastodon</h1>
-        <ul>
-          <li>
-            <button id="sharePageMastodon" data-i18n="sharePage,Mastodon">
-              Share page with Mastodon
-            </button>
-          </li>
-          <li>
-            <button id="shareLinkMastodon" class="link"
-                    data-i18n="shareLink,Mastodon">
-              Share link with Mastodon
-            </button>
-          </li>
-        </ul>
-      </section>
+    <main id="snsItems">
       <div id="warnSnsNotSelected">
         <p data-i18n="snsNotSelected">
           SNS is not selected.

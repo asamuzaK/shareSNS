@@ -7,14 +7,18 @@
   const {i18n, runtime, storage, tabs} = browser;
 
   /* constants */
-  const CLASS_LINK = "link";
   const CLASS_SNS_ITEM = "snsItem";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
   const PATH_SNS_DATA = "data/sns.json";
+  const SHARE_LINK = "shareLink";
+  const SHARE_PAGE = "sharePage";
   const SHARE_SNS = "shareSNS";
+  const SNS_ITEMS = "snsItems";
+  const SNS_ITEM = "snsItem";
+  const SNS_ITEM_TMPL = "snsItemTemplate";
   const SNS_NOT_SELECTED = "warnSnsNotSelected";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -172,6 +176,36 @@
   };
 
   /**
+   * create html from template
+   * @returns {void}
+   */
+  const createHtml = async () => {
+    const container = document.getElementById(SNS_ITEMS);
+    const tmpl = document.getElementById(SNS_ITEM_TMPL);
+    if (container && tmpl) {
+      sns.forEach(value => {
+        const {id} = value;
+        const {content} = tmpl;
+        const item = content.querySelector(`.${SNS_ITEM}`);
+        const {firstElementChild} = item;
+        const page = item.querySelector(`.${SHARE_PAGE}`);
+        const link = item.querySelector(`.${SHARE_LINK}`);
+        if (item && firstElementChild && page && link) {
+          item.id = id;
+          firstElementChild.textContent = id;
+          page.id = `${SHARE_PAGE}${id}`;
+          page.dataset.i18n = `${SHARE_PAGE},${id}`;
+          page.textContent = `Share page with ${id}`;
+          link.id = `${SHARE_LINK}${id}`;
+          link.dataset.i18n = `${SHARE_LINK},${id}`;
+          link.textContent = `Share link with ${id}`;
+          container.appendChild(document.importNode(content, true));
+        }
+      });
+    }
+  };
+
+  /**
    * add listener to menu
    * @returns {void}
    */
@@ -230,7 +264,7 @@
       const {contextInfo: info} = data;
       if (info) {
         const {content, isLink, selectionText, title, url} = info;
-        const nodes = document.getElementsByClassName(CLASS_LINK);
+        const nodes = document.getElementsByClassName(SHARE_LINK);
         contextInfo.isLink = isLink;
         contextInfo.content = content;
         contextInfo.selectionText = selectionText;
@@ -372,13 +406,15 @@
     handleMsg(msg, sender).catch(logError)
   );
 
-  document.addEventListener("DOMContentLoaded", () => Promise.all([
-    localizeHtml(),
-    addListenerToMenu(),
-    fetchSnsData().then(getStorage).then(handleStoredData).then(toggleWarning),
-    getActiveTab().then(tab => Promise.all([
-      requestContextInfo(tab),
-      setTabInfo(tab),
-    ])),
-  ]).catch(logError));
+  document.addEventListener("DOMContentLoaded", () =>
+    fetchSnsData().then(createHtml).then(() => Promise.all([
+      localizeHtml(),
+      addListenerToMenu(),
+      getStorage().then(handleStoredData).then(toggleWarning),
+      getActiveTab().then(tab => Promise.all([
+        requestContextInfo(tab),
+        setTabInfo(tab),
+      ])),
+    ])).catch(logError)
+  );
 }
