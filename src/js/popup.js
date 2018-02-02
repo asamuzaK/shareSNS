@@ -7,7 +7,6 @@
   const {i18n, runtime, storage, tabs} = browser;
 
   /* constants */
-  const CLASS_SNS_ITEM = "snsItem";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
@@ -343,7 +342,7 @@
    */
   const toggleWarning = async () => {
     const elm = document.getElementById(SNS_NOT_SELECTED);
-    const items = document.getElementsByClassName(CLASS_SNS_ITEM);
+    const items = document.getElementsByClassName(SNS_ITEM);
     if (elm && items && items.length) {
       let bool = false;
       for (const item of items) {
