@@ -278,14 +278,16 @@
         func.push(
           createMenuItem(
             `${SHARE_PAGE}${key}`,
-            i18n.getMessage(SHARE_PAGE, key), {
+            i18n.getMessage(SHARE_PAGE, key),
+            {
               enabled,
               contexts: ["page", "selection"],
             }
           ),
           createMenuItem(
             `${SHARE_LINK}${key}`,
-            i18n.getMessage(SHARE_LINK, key), {
+            i18n.getMessage(SHARE_LINK, key),
+            {
               enabled,
               contexts: ["link"],
             }
