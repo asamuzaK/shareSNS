@@ -15,9 +15,6 @@
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
-  const MASTODON = "Mastodon";
-  const MASTODON_INSTANCE_URL = "mastodonInstanceUrl";
-
   /**
    * log error
    * @param {!Object} e - Error
@@ -111,7 +108,7 @@
       if (data) {
         if (subItemOf) {
           const {subItem} = data;
-          if (subItem.hasOwnProperty(id)) {
+          if (isObjectNotEmpty(subItem) && subItem.hasOwnProperty(id)) {
             data.subItem[id].value = value || null;
             sns.set(item, data);
           }
@@ -135,15 +132,13 @@
     }
     let snsUrl;
     if (isObjectNotEmpty(info)) {
-      const {type, url: template, value} = info;
-      if (type === "url" && isString(template) &&
-          isString(value) && value.length) {
+      const {url: tmpl, value} = info;
+      if (isString(tmpl) && isString(value)) {
         try {
           const {origin, protocol} = new URL(value.trim());
           if (/^https?:$/.test(protocol)) {
-            snsUrl =
-              template.replace("%origin%", origin)
-                .replace("%url%", encodeURIComponent(url));
+            const query = encodeURIComponent(url);
+            snsUrl = tmpl.replace("%origin%", origin).replace("%query%", query);
           }
         } catch (e) {
           snsUrl = null;
@@ -198,13 +193,13 @@
       const {linkText, linkUrl, menuItemId, selectionText} = info;
       const snsItem = await getSnsItemFromId(menuItemId);
       if (snsItem) {
-        const {subItem} = snsItem;
+        const {subItem, url: tmpl} = snsItem;
         const selText =
           isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
         const canonicalUrl =
           info.canonicalUrl || contextInfo.canonicalUrl || null;
         const {hash: tabUrlHash} = new URL(tabUrl);
-        let {url} = snsItem, shareText, shareUrl;
+        let shareText, shareUrl, url;
         if (menuItemId.startsWith(SHARE_LINK)) {
           shareText = encodeURIComponent(selText || linkText);
           shareUrl = encodeURIComponent(linkUrl);
@@ -212,14 +207,14 @@
           shareText = encodeURIComponent(selText || tabTitle);
           shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
         }
-        url = url.replace("%url%", shareUrl).replace("%text%", shareText);
+        url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
         if (subItem) {
           const items = Object.keys(subItem);
           let itemInfo;
           for (const item of items) {
-            const {type} = subItem[item];
-            if (type === "url") {
-              itemInfo = subItem[item];
+            const obj = subItem[item];
+            if (isObjectNotEmpty(obj) && obj.hasOwnProperty("url")) {
+              itemInfo = obj;
               break;
             }
           }
@@ -271,21 +266,21 @@
    */
   const createMenu = async () => {
     const func = [];
-    sns.forEach((value, key) => {
-      const {enabled} = value;
-      if (enabled) {
+    sns.forEach(value => {
+      const {enabled, id} = value;
+      if (enabled && isString(id)) {
         func.push(
           createMenuItem(
-            `${SHARE_PAGE}${key}`,
-            i18n.getMessage(SHARE_PAGE, key),
+            `${SHARE_PAGE}${id}`,
+            i18n.getMessage(SHARE_PAGE, id),
             {
               enabled,
               contexts: ["page", "selection"],
             }
           ),
           createMenuItem(
-            `${SHARE_LINK}${key}`,
-            i18n.getMessage(SHARE_LINK, key),
+            `${SHARE_LINK}${id}`,
+            i18n.getMessage(SHARE_LINK, id),
             {
               enabled,
               contexts: ["link"],
@@ -344,10 +339,10 @@
         const obj = data[item];
         const {newValue} = obj;
         // NOTE: remove this statement in the future release
-        if (item === MASTODON_INSTANCE_URL) {
+        if (item === "mastodonInstanceUrl") {
           const pref = newValue || obj;
           if (!pref.subItemOf) {
-            pref.subItemOf = MASTODON;
+            pref.subItemOf = "Mastodon";
             func.push(storage.local.set({
               [item]: pref,
             }));

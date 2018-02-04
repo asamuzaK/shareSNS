@@ -24,8 +24,7 @@
     "url": "web+mastodon://share?text=%text%+%url%",
     "subItem": {
       "mastodonInstanceUrl": {
-        "type": "url",
-        "url": "%origin%/intent?uri=%url%"
+        "url": "%origin%/intent?uri=%query%"
       }
     }
   }
