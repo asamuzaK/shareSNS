@@ -104,66 +104,53 @@
    * @returns {void}
    */
   const toggleSnsItem = async (id, obj = {}) => {
-    if (isString(id)) {
-      const {checked} = obj;
-      const data = sns.get(id);
+    const {checked, subItemOf, value} = obj;
+    const item = subItemOf || id;
+    if (item) {
+      const data = sns.get(item);
       if (data) {
-        data.enabled = !!checked;
-        sns.set(id, data);
+        if (subItemOf) {
+          const {subItem} = data;
+          if (subItem.hasOwnProperty(id)) {
+            data.subItem[id].value = value || null;
+            sns.set(item, data);
+          }
+        } else {
+          data.enabled = !!checked;
+          sns.set(item, data);
+        }
       }
     }
   };
 
-  /* mastodon instance */
-  const mastodonInstance = {
-    value: null,
-  };
-
   /**
-   * init mastodon instance
-   * @returns {Object} - mastodonInstance
+   * create sns item url
+   * @param {string} url - url
+   * @param {Object} info - sns item url info
+   * @returns {string} - sns url
    */
-  const initMastodonInstance = async () => {
-    mastodonInstance.value = null;
-    return mastodonInstance;
-  };
-
-  /**
-   * update mastodon instance
-   * @param {Object} data - mastodon instance data
-   * @returns {Object} - mastodon instance
-   */
-  const updateMastodonInstance = async (data = {}) => {
-    const {value} = data;
-    if (isString(value) && value.length) {
-      mastodonInstance.value = value.trim();
-    } else {
-      await initMastodonInstance();
-    }
-    return mastodonInstance;
-  };
-
-  /**
-   * create mastodon URL
-   * @param {!string} url - web+mastodon scheme URL
-   * @returns {string} - mastodon share URL
-   */
-  const createMastodonUrl = async url => {
+  const createSnsUrl = async (url, info) => {
     if (!isString(url)) {
       throw new TypeError(`Expected String but got ${getType(url)}.`);
     }
-    const {value} = mastodonInstance;
-    if (isString(value) && value.length) {
-      try {
-        const {origin, protocol} = new URL(value.trim());
-        if (/^https?:$/.test(protocol)) {
-          url = `${origin}/intent?uri=${encodeURIComponent(url)}`;
+    let snsUrl;
+    if (isObjectNotEmpty(info)) {
+      const {type, url: template, value} = info;
+      if (type === "url" && isString(template) &&
+          isString(value) && value.length) {
+        try {
+          const {origin, protocol} = new URL(value.trim());
+          if (/^https?:$/.test(protocol)) {
+            snsUrl =
+              template.replace("%origin%", origin)
+                .replace("%url%", encodeURIComponent(url));
+          }
+        } catch (e) {
+          snsUrl = null;
         }
-      } catch (e) {
-        await initMastodonInstance();
       }
     }
-    return url;
+    return snsUrl || url;
   };
 
   /* context info */
@@ -211,6 +198,7 @@
       const {linkText, linkUrl, menuItemId, selectionText} = info;
       const snsItem = await getSnsItemFromId(menuItemId);
       if (snsItem) {
+        const {subItem} = snsItem;
         const selText =
           isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
         const canonicalUrl =
@@ -225,8 +213,19 @@
           shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
         }
         url = url.replace("%url%", shareUrl).replace("%text%", shareText);
-        if (menuItemId.endsWith(MASTODON)) {
-          url = await createMastodonUrl(url);
+        if (subItem) {
+          const items = Object.keys(subItem);
+          let itemInfo;
+          for (const item of items) {
+            const {type} = subItem[item];
+            if (type === "url") {
+              itemInfo = subItem[item];
+              break;
+            }
+          }
+          if (itemInfo) {
+            url = await createSnsUrl(url, itemInfo);
+          }
         }
         func.push(createTab({
           url, windowId,
@@ -344,11 +343,17 @@
       for (const item of items) {
         const obj = data[item];
         const {newValue} = obj;
+        // NOTE: remove this statement in the future release
         if (item === MASTODON_INSTANCE_URL) {
-          func.push(updateMastodonInstance(newValue || obj));
-        } else {
-          sns.has(item) && func.push(toggleSnsItem(item, newValue || obj));
+          const pref = newValue || obj;
+          if (!pref.subItemOf) {
+            pref.subItemOf = MASTODON;
+            func.push(storage.local.set({
+              [item]: pref,
+            }));
+          }
         }
+        func.push(toggleSnsItem(item, newValue || obj));
       }
     }
     return Promise.all(func);
