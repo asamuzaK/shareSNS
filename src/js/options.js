@@ -46,7 +46,7 @@
         id,
         checked: !!elm.checked,
         value: elm.value || "",
-        subItemOf: dataset.subItemOf || null,
+        subItemOf: dataset && dataset.subItemOf || null,
       },
     } || null;
   };
