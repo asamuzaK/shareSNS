@@ -5,24 +5,22 @@
     <title>Share with SNS - popup menu</title>
     <link rel="stylesheet" href="../css/popup.css" />
     <script src="../js/popup.js"></script>
-    <template id="snsItemTemplate">
-      <section id="" class="snsItem">
-        <h1></h1>
-        <ul>
-          <li>
-            <button id="" class="sharePage" data-i18n="">
-            </button>
-          </li>
-          <li>
-            <button id="" class="shareLink" data-i18n="">
-            </button>
-          </li>
-        </ul>
-      </section>
-    </template>
   </head>
   <body>
     <main id="snsItems">
+      <template id="snsItemTemplate">
+        <section class="snsItem">
+          <h1></h1>
+          <ul>
+            <li>
+              <button class="sharePage"></button>
+            </li>
+            <li>
+              <button class="shareLink"></button>
+            </li>
+          </ul>
+        </section>
+      </template>
       <div id="warnSnsNotSelected">
         <p data-i18n="snsNotSelected">
           SNS is not selected.
