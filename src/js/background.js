@@ -267,26 +267,28 @@
   const createMenu = async () => {
     const func = [];
     sns.forEach(value => {
-      const {enabled, id} = value;
-      if (enabled && isString(id)) {
-        func.push(
-          createMenuItem(
-            `${SHARE_PAGE}${id}`,
-            i18n.getMessage(SHARE_PAGE, id),
-            {
-              enabled,
-              contexts: ["page", "selection"],
-            }
-          ),
-          createMenuItem(
-            `${SHARE_LINK}${id}`,
-            i18n.getMessage(SHARE_LINK, id),
-            {
-              enabled,
-              contexts: ["link"],
-            }
-          ),
-        );
+      if (isObjectNotEmpty(value)) {
+        const {enabled, id} = value;
+        if (enabled && isString(id)) {
+          func.push(
+            createMenuItem(
+              `${SHARE_PAGE}${id}`,
+              i18n.getMessage(SHARE_PAGE, id),
+              {
+                enabled,
+                contexts: ["page", "selection"],
+              }
+            ),
+            createMenuItem(
+              `${SHARE_LINK}${id}`,
+              i18n.getMessage(SHARE_LINK, id),
+              {
+                enabled,
+                contexts: ["link"],
+              }
+            ),
+          );
+        }
       }
     });
     return Promise.all(func);

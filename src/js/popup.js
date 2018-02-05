@@ -183,22 +183,24 @@
     const tmpl = document.getElementById(SNS_ITEM_TMPL);
     if (container && tmpl) {
       sns.forEach(value => {
-        const {id} = value;
-        const {content} = tmpl;
-        const item = content.querySelector(`.${SNS_ITEM}`);
-        const {firstElementChild} = item;
-        const page = item.querySelector(`.${SHARE_PAGE}`);
-        const link = item.querySelector(`.${SHARE_LINK}`);
-        if (item && firstElementChild && page && link) {
-          item.id = id;
-          firstElementChild.textContent = id;
-          page.id = `${SHARE_PAGE}${id}`;
-          page.dataset.i18n = `${SHARE_PAGE},${id}`;
-          page.textContent = `Share page with ${id}`;
-          link.id = `${SHARE_LINK}${id}`;
-          link.dataset.i18n = `${SHARE_LINK},${id}`;
-          link.textContent = `Share link with ${id}`;
-          container.appendChild(document.importNode(content, true));
+        if (isObjectNotEmpty(value)) {
+          const {id} = value;
+          const {content} = tmpl;
+          const item = content.querySelector(`.${SNS_ITEM}`);
+          const {firstElementChild} = item;
+          const page = item.querySelector(`.${SHARE_PAGE}`);
+          const link = item.querySelector(`.${SHARE_LINK}`);
+          if (item && firstElementChild && page && link) {
+            item.id = id;
+            firstElementChild.textContent = id;
+            page.id = `${SHARE_PAGE}${id}`;
+            page.dataset.i18n = `${SHARE_PAGE},${id}`;
+            page.textContent = `Share page with ${id}`;
+            link.id = `${SHARE_LINK}${id}`;
+            link.dataset.i18n = `${SHARE_LINK},${id}`;
+            link.textContent = `Share link with ${id}`;
+            container.appendChild(document.importNode(content, true));
+          }
         }
       });
     }
