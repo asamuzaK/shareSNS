@@ -108,10 +108,10 @@
     const path = await runtime.getURL(PATH_SNS_DATA);
     const data = await fetch(path).then(res => res && res.json());
     if (data) {
-      const items = Object.keys(data);
+      const items = Object.entries(data);
       for (const item of items) {
-        const obj = data[item];
-        sns.set(item, obj);
+        const [key, value] = item;
+        sns.set(key, value);
       }
     }
   };
@@ -214,10 +214,8 @@
     const nodes = document.querySelectorAll("button");
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
-        node.addEventListener(
-          "click",
-          evt => createShareData(evt).catch(logError),
-          false
+        node.addEventListener("click", evt =>
+          createShareData(evt).catch(logError)
         );
       }
     }
@@ -321,15 +319,15 @@
    */
   const handleMsg = async msg => {
     const func = [];
-    const items = msg && Object.keys(msg);
-    if (items && items.length) {
+    const items = msg && Object.entries(msg);
+    if (items) {
       for (const item of items) {
-        const obj = msg[item];
-        switch (item) {
+        const [key, value] = item;
+        switch (key) {
           case CONTEXT_INFO:
           case "keydown":
           case "mousedown":
-            func.push(updateMenu(obj));
+            func.push(updateMenu(value));
             break;
           default:
         }
@@ -389,11 +387,13 @@
   const handleStoredData = async data => {
     const func = [];
     if (isObjectNotEmpty(data)) {
-      const items = Object.keys(data);
+      const items = Object.entries(data);
       for (const item of items) {
-        const obj = data[item];
-        const {newValue} = obj;
-        sns.has(item) && func.push(toggleSnsItem(item, newValue || obj));
+        const [key, value] = item;
+        if (isObjectNotEmpty(value)) {
+          const {newValue} = value;
+          sns.has(key) && func.push(toggleSnsItem(key, newValue || value));
+        }
       }
     }
     return Promise.all(func);

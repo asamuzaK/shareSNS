@@ -69,10 +69,10 @@
     const path = await runtime.getURL(PATH_SNS_DATA);
     const data = await fetch(path).then(res => res && res.json());
     if (data) {
-      const items = Object.keys(data);
+      const items = Object.entries(data);
       for (const item of items) {
-        const obj = data[item];
-        sns.set(item, obj);
+        const [key, value] = item;
+        sns.set(key, value);
       }
     }
   };
@@ -209,12 +209,11 @@
         }
         url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
         if (subItem) {
-          const items = Object.keys(subItem);
+          const items = Object.values(subItem);
           let itemInfo;
           for (const item of items) {
-            const obj = subItem[item];
-            if (isObjectNotEmpty(obj) && obj.hasOwnProperty("url")) {
-              itemInfo = obj;
+            if (isObjectNotEmpty(item) && item.hasOwnProperty("url")) {
+              itemInfo = item;
               break;
             }
           }
@@ -301,17 +300,17 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async msg => {
-    const items = Object.keys(msg);
+    const items = Object.entries(msg);
     const func = [];
     for (const item of items) {
-      const obj = msg[item];
-      switch (item) {
+      const [key, value] = item;
+      switch (key) {
         case CONTEXT_INFO: {
-          func.push(updateContextInfo(obj));
+          func.push(updateContextInfo(value));
           break;
         }
         case SHARE_SNS: {
-          func.push(extractClickedData(obj));
+          func.push(extractClickedData(value));
           break;
         }
         default:
@@ -336,21 +335,23 @@
   const handleStoredData = async data => {
     const func = [];
     if (isObjectNotEmpty(data)) {
-      const items = Object.keys(data);
+      const items = Object.entries(data);
       for (const item of items) {
-        const obj = data[item];
-        const {newValue} = obj;
-        // NOTE: remove this statement in the future release
-        if (item === "mastodonInstanceUrl") {
-          const pref = newValue || obj;
-          if (!pref.subItemOf) {
-            pref.subItemOf = "Mastodon";
-            func.push(storage.local.set({
-              [item]: pref,
-            }));
+        const [key, value] = item;
+        if (isObjectNotEmpty(value)) {
+          const {newValue} = value;
+          // NOTE: remove this statement in the future release
+          if (key === "mastodonInstanceUrl") {
+            const pref = newValue || value;
+            if (!pref.subItemOf) {
+              pref.subItemOf = "Mastodon";
+              func.push(storage.local.set({
+                [key]: pref,
+              }));
+            }
           }
+          func.push(toggleSnsItem(key, newValue || value));
         }
-        func.push(toggleSnsItem(item, newValue || obj));
       }
     }
     return Promise.all(func);

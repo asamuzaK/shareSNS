@@ -82,9 +82,7 @@
     const nodes = document.querySelectorAll("input");
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
-        node.addEventListener(
-          "change", evt => storePref(evt).catch(logError), false
-        );
+        node.addEventListener("change", evt => storePref(evt).catch(logError));
       }
     }
   };
@@ -95,21 +93,23 @@
    * @returns {void}
    */
   const localizeAttr = async elm => {
-    if (elm && elm.nodeType === Node.ELEMENT_NODE && elm.hasAttributes()) {
-      const attrs = {
-        alt: "alt",
-        ariaLabel: "aria-label",
-        href: "href",
-        placeholder: "placeholder",
-        title: "title",
-      };
-      const dataAttr = elm.getAttribute(DATA_ATTR_I18N);
-      const items = Object.keys(attrs);
-      for (const item of items) {
-        const attr = attrs[item];
-        const [id] = dataAttr.split(/\s*,\s*/);
-        elm.hasAttribute(attr) &&
-          elm.setAttribute(attr, i18n.getMessage(`${id}_${item}`));
+    if (elm && elm.nodeType === Node.ELEMENT_NODE &&
+        elm.hasAttribute(DATA_ATTR_I18N)) {
+      const [id] = elm.getAttribute(DATA_ATTR_I18N).split(/\s*,\s*/);
+      if (id) {
+        const attrs = {
+          alt: "alt",
+          ariaLabel: "aria-label",
+          href: "href",
+          placeholder: "placeholder",
+          title: "title",
+        };
+        const items = Object.entries(attrs);
+        for (const item of items) {
+          const [key, value] = item;
+          elm.hasAttribute(value) &&
+            elm.setAttribute(value, i18n.getMessage(`${id}_${key}`));
+        }
       }
     }
   };
@@ -140,17 +140,18 @@
    * @returns {void}
    */
   const setHtmlInputValue = async (data = {}) => {
-    const {id} = data;
+    const {checked, id, value} = data;
     const elm = id && document.getElementById(id);
     if (elm) {
-      switch (elm.type) {
+      const {type} = elm;
+      switch (type) {
         case "checkbox":
         case "radio":
-          elm.checked = !!data.checked;
+          elm.checked = !!checked;
           break;
         case "text":
         case "url":
-          elm.value = isString(data.value) && data.value || "";
+          elm.value = isString(value) && value || "";
           break;
         default:
       }
@@ -164,10 +165,10 @@
   const setValuesFromStorage = async () => {
     const func = [];
     const pref = await storage.local.get();
-    const items = pref && Object.keys(pref);
-    if (items && items.length) {
+    const items = pref && Object.values(pref);
+    if (items) {
       for (const item of items) {
-        func.push(setHtmlInputValue(pref[item]));
+        func.push(setHtmlInputValue(item));
       }
     }
     return Promise.all(func);
