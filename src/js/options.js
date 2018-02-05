@@ -9,6 +9,8 @@
   /* constants */
   const DATA_ATTR_I18N = "data-i18n";
   const LANG = "extensionLocale";
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
 
   /**
    * log error
@@ -21,11 +23,29 @@
   };
 
   /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
    * is string
    * @param {*} o - object to check
    * @returns {boolean} - result
    */
   const isString = o => typeof o === "string" || o instanceof String;
+
+  /**
+   * is object, and not an empty object
+   * @param {*} o - object to check;
+   * @returns {boolean} - result
+   */
+  const isObjectNotEmpty = o => {
+    const items = /Object/i.test(getType(o)) && Object.keys(o);
+    return !!(items && items.length);
+  };
 
   /**
    * set storage
@@ -165,10 +185,10 @@
   const setValuesFromStorage = async () => {
     const func = [];
     const pref = await storage.local.get();
-    const items = pref && Object.values(pref);
-    if (items) {
+    if (isObjectNotEmpty(pref)) {
+      const items = Object.values(pref);
       for (const item of items) {
-        func.push(setHtmlInputValue(item));
+        isObjectNotEmpty(item) && func.push(setHtmlInputValue(item));
       }
     }
     return Promise.all(func);
