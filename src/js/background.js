@@ -340,16 +340,6 @@
         const [key, value] = item;
         if (isObjectNotEmpty(value)) {
           const {newValue} = value;
-          // NOTE: remove this statement in the future release
-          if (key === "mastodonInstanceUrl") {
-            const pref = newValue || value;
-            if (!pref.subItemOf) {
-              pref.subItemOf = "Mastodon";
-              func.push(storage.local.set({
-                [key]: pref,
-              }));
-            }
-          }
           func.push(toggleSnsItem(key, newValue || value));
         }
       }
