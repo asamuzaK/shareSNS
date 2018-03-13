@@ -223,7 +223,7 @@
 
   /**
    * localize node
-   * @param {Object} node - Element
+   * @param {Object} node - element
    * @returns {Object} - node
    */
   const localizeNode = async node => {
