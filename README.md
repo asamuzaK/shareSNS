@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/asamuzaK/shareSNS.svg?branch=master)](https://travis-ci.org/asamuzaK/shareSNS)
+[![devDependency Status](https://david-dm.org/asamuzaK/shareSNS/dev-status.svg)](https://david-dm.org/asamuzaK/shareSNS#info=devDependencies)
+
 EN | [JA](./README.ja.md)
 
 # Share with SNS
