@@ -358,8 +358,6 @@
   );
 
   /* startup */
-  document.addEventListener("DOMContentLoaded", () =>
-    fetchSnsData().then(getStorage).then(handleStoredData).then(createMenu)
-      .catch(logError)
-  );
+  fetchSnsData().then(getStorage).then(handleStoredData).then(createMenu)
+    .catch(logError);
 }

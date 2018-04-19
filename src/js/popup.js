@@ -407,15 +407,14 @@
     handleMsg(msg, sender).catch(logError)
   );
 
-  document.addEventListener("DOMContentLoaded", () =>
-    fetchSnsData().then(createHtml).then(() => Promise.all([
-      localizeHtml(),
-      addListenerToMenu(),
-      getStorage().then(handleStoredData).then(toggleWarning),
-      getActiveTab().then(tab => Promise.all([
-        requestContextInfo(tab),
-        setTabInfo(tab),
-      ])),
-    ])).catch(logError)
-  );
+  /* startup */
+  fetchSnsData().then(createHtml).then(() => Promise.all([
+    localizeHtml(),
+    addListenerToMenu(),
+    getStorage().then(handleStoredData).then(toggleWarning),
+    getActiveTab().then(tab => Promise.all([
+      requestContextInfo(tab),
+      setTabInfo(tab),
+    ])),
+  ])).catch(logError);
 }

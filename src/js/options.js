@@ -194,9 +194,10 @@
     return Promise.all(func);
   };
 
-  document.addEventListener("DOMContentLoaded", () => Promise.all([
+  /* startup */
+  Promise.all([
     localizeHtml(),
     setValuesFromStorage(),
     addInputChangeListener(),
-  ]).catch(logError));
+  ]).catch(logError);
 }
