@@ -1,12 +1,12 @@
 {
+  "extensionLocale": {
+    "message": "ja"
+  },
   "extensionDescription": {
     "message": "ページやリンクをソーシャルネットワーキングサービスで共有します。"
   },
   "extensionName": {
     "message": "SNSで共有"
-  },
-  "extensionLocale": {
-    "message": "ja"
   },
   "extensionShortName": {
     "message": "共有"

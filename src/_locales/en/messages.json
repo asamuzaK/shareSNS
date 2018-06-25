@@ -1,12 +1,12 @@
 {
+  "extensionLocale": {
+    "message": "en"
+  },
   "extensionDescription": {
     "message": "Share page or link with social networking services."
   },
   "extensionName": {
     "message": "Share with SNS"
-  },
-  "extensionLocale": {
-    "message": "en"
   },
   "extensionShortName": {
     "message": "Share"
