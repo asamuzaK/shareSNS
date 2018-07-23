@@ -10,9 +10,20 @@
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icon.svg#context",
     "default_popup": "html/popup.html",
-    "default_title": "__MSG_extensionName__"
+    "default_title": "__MSG_extensionName__",
+    "theme_icons": [
+      {
+        "light": "icon.svg#light",
+        "dark": "icon.svg#dark",
+        "size": 16
+      },
+      {
+        "light": "icon.svg#light",
+        "dark": "icon.svg#dark",
+        "size": 32
+      }
+    ]
   },
   "content_scripts": [
     {

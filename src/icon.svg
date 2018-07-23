@@ -33,16 +33,31 @@
              M 94 82 A 20 20 0 0 0 74 102 A 20 20 0 0 0 94 122
              A 20 20 0 0 0 114 102 A 20 20 0 0 0 94 82 z"/>
   </symbol>
+  <symbol id="outline">
+    <path d="M 94,6 A 20,20 0 0 0 74,26 20,20 0 0 0 94,46
+             20,20 0 0 0 114,26 20,20 0 0 0 94,6 Z
+             M 34,44 A 20,20 0 0 0 14,64 20,20 0 0 0 34,84
+             20,20 0 0 0 54,64 20,20 0 0 0 34,44 Z
+             m 60,38 a 20,20 0 0 0 -20,20 20,20 0 0 0 20,20
+             20,20 0 0 0 20,-20 20,20 0 0 0 -20,-20 z
+             m -3.210938,-61.068359 -60,38
+             L 34,64 l -3.210938,5.068359 60,38.000001
+             L 97.210938,96.931641 45.212891,64 97.210938,31.068359 Z"/>
+  </symbol>
   <g id="context" fill="context-fill" fill-opacity="context-fill-opacity">
-    <use href="#line"/>
-    <use href="#dot"/>
+    <use href="#outline"/>
   </g>
-  <g id="gray" fill="#4C4C4C">
-    <use href="#line"/>
-    <use href="#dot"/>
+  <g id="gray" fill="#4C4C4C" fill-opacity="1">
+    <use href="#outline"/>
+  </g>
+  <g id="dark" fill="#0C0C0D" fill-opacity="0.8">
+    <use href="#outline"/>
+  </g>
+  <g id="light" fill="#F9F9FA" fill-opacity="0.8">
+    <use href="#outline"/>
   </g>
   <g id="color">
-    <use href="#line" fill="#002147"/>
-    <use href="#dot" fill="#E66000"/>
+    <use href="#line" fill="#002147" fill-opacity="1"/>
+    <use href="#dot" fill="#E66000" fill-opacity="1"/>
   </g>
 </svg>
