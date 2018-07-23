@@ -42,7 +42,7 @@ header > h1::before {
   margin-right: 0.5rem;
   width: 1.44em;
   height: 1.44em;
-  background-image: url(../icon.svg);
+  background-image: url(../img/icon.svg);
   background-size: 1.44em 1.44em;
   content: "";
   vertical-align: top;
