@@ -44,6 +44,15 @@
       }
     }
   },
+  "shareTab": {
+    "message": "タブを $SNS$ で共有",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
   "snsNotSelected": {
     "message": "SNS が選択されていません。"
   }
