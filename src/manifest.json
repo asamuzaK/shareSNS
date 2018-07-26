@@ -14,13 +14,13 @@
     "default_title": "__MSG_extensionName__",
     "theme_icons": [
       {
-        "light": "img/icon.svg#light",
         "dark": "img/icon.svg#dark",
+        "light": "img/icon.svg#light",
         "size": 16
       },
       {
-        "light": "img/icon.svg#light",
         "dark": "img/icon.svg#dark",
+        "light": "img/icon.svg#light",
         "size": 32
       }
     ]
