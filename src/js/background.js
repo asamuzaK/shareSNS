@@ -11,8 +11,8 @@
   const PATH_SNS_DATA = "data/sns.json";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
-  const SHARE_TAB = "shareTab";
   const SHARE_SNS = "shareSNS";
+  const SHARE_TAB = "shareTab";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
