@@ -88,16 +88,19 @@
    * @param {string} id - extension ID
    * @param {*} msg - message
    * @param {Object} opt - options
-   * @returns {AsyncFunction} - runtime.sendMessage()
+   * @returns {?AsyncFunction} - runtime.sendMessage()
    */
   const sendMsg = async (id, msg, opt) => {
     let func;
-    if (id && externalExts.has(id)) {
-      func = runtime.sendMessage(id, msg, isObjectNotEmpty(opt) && opt || null);
-    } else {
-      func = runtime.sendMessage(msg, isObjectNotEmpty(opt) && opt || null);
+    if (msg) {
+      if (id && externalExts.has(id)) {
+        func =
+          runtime.sendMessage(id, msg, isObjectNotEmpty(opt) && opt || null);
+      } else {
+        func = runtime.sendMessage(msg, isObjectNotEmpty(opt) && opt || null);
+      }
     }
-    return func;
+    return func || null;
   };
 
   /**
@@ -133,7 +136,7 @@
 
   /**
    * get sns item from menu item ID
-   * @param {string} id - menu item id
+   * @param {string} id - menu item ID
    * @returns {Object} - sns item
    */
   const getSnsItemFromId = async id => {
