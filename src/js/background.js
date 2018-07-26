@@ -4,10 +4,11 @@
 "use strict";
 {
   /* api */
-  const {i18n, menus, runtime, storage, tabs} = browser;
+  const {i18n, management, menus, runtime, storage, tabs} = browser;
 
   /* contants */
   const CONTEXT_INFO = "contextInfo";
+  const EXT_TST = "treestyletab@piro.sakura.ne.jp";
   const PATH_SNS_DATA = "data/sns.json";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
@@ -58,6 +59,58 @@
    */
   const createTab = async (opt = {}) =>
     tabs.create(isObjectNotEmpty(opt) && opt || null);
+
+  /* external extensions */
+  const externalExts = new Set();
+
+  /**
+   * set external extensions
+   * @returns {void}
+   */
+  const setExternalExts = async () => {
+    const exts = [EXT_TST];
+    const items = await management.getAll();
+    for (const item of items) {
+      const {enabled, id} = item;
+      if (exts.includes(id)) {
+        if (enabled) {
+          externalExts.add(id);
+        } else {
+          externalExts.has(id) && externalExts.delete(id);
+        }
+      } else {
+        externalExts.has(id) && externalExts.delete(id);
+      }
+    }
+  };
+
+  /** send message
+   * @param {string} id - extension id
+   * @param {*} msg - message
+   * @param {Object} opt - options
+   * @returns {?AsyncFunction} - runtime.sendMessage()
+   */
+  const sendMsg = async (id, msg, opt) => {
+    let func;
+    if (id && externalExts.has(id)) {
+      func = runtime.sendMessage(id, msg, isObjectNotEmpty(opt) && opt || null);
+    } else {
+      func = runtime.sendMessage(msg, isObjectNotEmpty(opt) && opt || null);
+    }
+    return func;
+  };
+
+  /**
+   * handle external extension requirements
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleExternalExtsRequirements = async () => {
+    const func = [];
+    if (externalExts.has(EXT_TST)) {
+      // push registration to tst
+    }
+    return Promise.all(func);
+  };
 
   /* sns */
   const sns = new Map();
@@ -298,6 +351,20 @@
               }
             ),
           );
+          if (externalExts.has(EXT_TST)) {
+            // handle tst requirement here
+            // for example:
+            // const msg = {
+            //   type: "fake-contextMenu-create",
+            //   params: {
+            //     enabled,
+            //     contexts: ["tab"],
+            //     id: `${SHARE_TAB}${id}`,
+            //     title: i18n.getMessage(SHARE_TAB, id),
+            //   },
+            // };
+            // func.push(sendMsg(EXT_TST, msg));
+          }
         }
       }
     });
@@ -308,23 +375,31 @@
   /**
    * handle runtime message
    * @param {Object} msg - message
+   * @param {Object} sender - sender
    * @returns {Promise.<Array>} - results of each handler
    */
-  const handleMsg = async msg => {
-    const items = Object.entries(msg);
+  const handleMsg = async (msg, sender) => {
+    const {id} = sender;
     const func = [];
-    for (const item of items) {
-      const [key, value] = item;
-      switch (key) {
-        case CONTEXT_INFO: {
-          func.push(updateContextInfo(value));
-          break;
+    if (id && externalExts.has(id)) {
+      if (id === EXT_TST) {
+        // handle message from tst
+      }
+    } else {
+      const items = Object.entries(msg);
+      for (const item of items) {
+        const [key, value] = item;
+        switch (key) {
+          case CONTEXT_INFO: {
+            func.push(updateContextInfo(value));
+            break;
+          }
+          case SHARE_SNS: {
+            func.push(extractClickedData(value));
+            break;
+          }
+          default:
         }
-        case SHARE_SNS: {
-          func.push(extractClickedData(value));
-          break;
-        }
-        default:
       }
     }
     return Promise.all(func);
@@ -367,8 +442,13 @@
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
   );
+  runtime.onMessageExternal.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(logError)
+  );
 
   /* startup */
-  fetchSnsData().then(getStorage).then(handleStoredData).then(createMenu)
-    .catch(logError);
+  Promise.all([
+    fetchSnsData().then(getStorage).then(handleStoredData),
+    setExternalExts().then(handleExternalExtsRequirements),
+  ]).then(createMenu).catch(logError);
 }
