@@ -44,6 +44,15 @@
       }
     }
   },
+  "shareTab": {
+    "message": "Share tab with $SNS$",
+        "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
   "snsNotSelected": {
     "message": "SNS is not selected."
   }

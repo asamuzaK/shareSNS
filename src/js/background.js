@@ -12,6 +12,7 @@
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
   const SHARE_SNS = "shareSNS";
+  const SHARE_TAB = "shareTab";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
@@ -87,6 +88,8 @@
     if (isString(id)) {
       if (id.startsWith(SHARE_LINK)) {
         item = sns.get(id.replace(SHARE_LINK, ""));
+      } else if (id.startsWith(SHARE_TAB)) {
+        item = sns.get(id.replace(SHARE_TAB, ""));
       } else {
         item = sns.get(id.replace(SHARE_PAGE, ""));
       }
@@ -276,6 +279,14 @@
               {
                 enabled,
                 contexts: ["page", "selection"],
+              }
+            ),
+            createMenuItem(
+              `${SHARE_TAB}${id}`,
+              i18n.getMessage(SHARE_TAB, id),
+              {
+                enabled,
+                contexts: ["tab"],
               }
             ),
             createMenuItem(
