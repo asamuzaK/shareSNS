@@ -132,7 +132,11 @@
         }
       }
       if (canonical) {
-        contextInfo.canonicalUrl = canonical.getAttribute("href");
+        const {origin} = new URL(document.URL);
+        const url = new URL(canonical.getAttribute("href"), origin);
+        if (url) {
+          contextInfo.canonicalUrl = url.href;
+        }
       }
       contextInfo.selectionText = selectionText || "";
     }
