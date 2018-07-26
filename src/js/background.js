@@ -85,10 +85,10 @@
   };
 
   /** send message
-   * @param {string} id - extension id
+   * @param {string} id - extension ID
    * @param {*} msg - message
    * @param {Object} opt - options
-   * @returns {?AsyncFunction} - runtime.sendMessage()
+   * @returns {AsyncFunction} - runtime.sendMessage()
    */
   const sendMsg = async (id, msg, opt) => {
     let func;
