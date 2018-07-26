@@ -10,12 +10,6 @@ Share page or link with social networking services.
 
 [Share with SNS – Add-ons for Firefox](https://addons.mozilla.org/firefox/addon/share-with-sns/ "Share with SNS – Add-ons for Firefox")
 
-## about:config
-
-Experimental features are used, so you need to activate the following settings.
-
-* set `svg.context-properties.content.enabled` to `true`.
-
 ## Usage
 
 * From the toolbar button or from the context menu (right-click), you can share page or link with SNS.
