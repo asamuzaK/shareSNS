@@ -275,7 +275,7 @@
               i18n.getMessage(SHARE_PAGE, id),
               {
                 enabled,
-                contexts: ["page", "selection"],
+                contexts: ["page", "tab", "selection"],
               }
             ),
             createMenuItem(
