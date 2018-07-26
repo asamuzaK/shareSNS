@@ -53,6 +53,7 @@
   },
   "permissions": [
     "activeTab",
+    "management",
     "menus",
     "storage",
     "tabs"
