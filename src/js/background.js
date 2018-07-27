@@ -284,6 +284,7 @@
           url, windowId,
           active: true,
           index: tabIndex + 1,
+          openerTabId: tabId,
         }));
       }
     }
