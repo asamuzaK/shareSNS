@@ -308,7 +308,7 @@
     const func = [menus.removeAll()];
     if (externalExts.has(EXT_TST)) {
       func.push(sendMsg(EXT_TST, {
-          type: "fake-contextMenu-removeAll",
+        type: "fake-contextMenu-removeAll",
       }));
     }
     return Promise.all(func);
