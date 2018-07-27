@@ -105,8 +105,8 @@
 
   const registerToExtTST = async () => sendMsg(EXT_TST, {
     type: "register-self",
-    name: browser.i18n.getMessage("extensionName"),
-    icons: browser.runtime.getManifest().icons,
+    name: i18n.getMessage("extensionName"),
+    icons: runtime.getManifest().icons,
     listeningTypes: ["ready", "fake-contextMenu-click"],
   });
 
