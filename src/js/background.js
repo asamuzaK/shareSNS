@@ -392,16 +392,32 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg, sender) => {
-    const {id} = sender;
+    const {id: senderId} = sender;
     const func = [];
-    if (id && externalExts.has(id)) {
-      if (id === EXT_TST) {
+    if (senderId) {
+      if (senderId === EXT_TST) {
         switch (msg.type) {
           case "ready": {
-            func.push(
-              handleExternalExtsRequirements()
-                .then(createMenu)
-            );
+            if (externalExts.has(senderId)) {
+              await handleExternalExtsRequirements();
+            } else {
+              await setExternalExts().then(handleExternalExtsRequirements);
+            }
+            sns.forEach(value => {
+              if (isObjectNotEmpty(value)) {
+                const {enabled, id: snsId} = value;
+                if (enabled && isString(snsId)) {
+                  func.push(sendMsg(EXT_TST, {
+                    type: "fake-contextMenu-create",
+                    params: {
+                      id: `${SHARE_TAB}${snsId}`,
+                      title: i18n.getMessage(SHARE_TAB, snsId),
+                      contexts: ["tab"],
+                    },
+                  }));
+                }
+              }
+            });
             break;
           }
           case "fake-contextMenu-click": {
