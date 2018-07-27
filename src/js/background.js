@@ -404,8 +404,10 @@
       if (id === EXT_TST) {
         switch (msg.type) {
           case "ready": {
-            func.push(setExternalExts().then(registerToExtTST)
-              .then(createMenu));
+            func.push(
+              setExternalExts().then(registerToExtTST)
+                .then(createMenu)
+            );
             break;
           }
           case "fake-contextMenu-click": {
