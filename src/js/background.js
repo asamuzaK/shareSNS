@@ -110,7 +110,12 @@
   const handleExternalExtsRequirements = async () => {
     const func = [];
     if (externalExts.has(EXT_TST)) {
-      // push registration to tst
+      func.push(sendMsg(EXT_TST, {
+        type: "register-self",
+        name: i18n.getMessage("extensionName"),
+        icons: runtime.getManifest().icons,
+        listeningTypes: ["ready", "fake-contextMenu-click"],
+      }));
     }
     return Promise.all(func);
   };
@@ -284,6 +289,7 @@
           url, windowId,
           active: true,
           index: tabIndex + 1,
+          openerTabId: tabId,
         }));
       }
     }
@@ -296,7 +302,15 @@
    * remove context menu
    * @returns {AsyncFunction} - menus.removeAll()
    */
-  const removeMenu = async () => menus.removeAll();
+  const removeMenu = async () => {
+    const func = [menus.removeAll()];
+    if (externalExts.has(EXT_TST)) {
+      func.push(sendMsg(EXT_TST, {
+        type: "fake-contextMenu-removeAll",
+      }));
+    }
+    return Promise.all(func);
+  };
 
   /**
    * create context menu item
@@ -355,18 +369,14 @@
             ),
           );
           if (externalExts.has(EXT_TST)) {
-            // handle tst requirement here
-            // for example:
-            // const msg = {
-            //   type: "fake-contextMenu-create",
-            //   params: {
-            //     enabled,
-            //     contexts: ["tab"],
-            //     id: `${SHARE_TAB}${id}`,
-            //     title: i18n.getMessage(SHARE_TAB, id),
-            //   },
-            // };
-            // func.push(sendMsg(EXT_TST, msg));
+            func.push(sendMsg(EXT_TST, {
+              type: "fake-contextMenu-create",
+              params: {
+                id: `${SHARE_TAB}${id}`,
+                title: i18n.getMessage(SHARE_TAB, id),
+                contexts: ["tab"],
+              },
+            }));
           }
         }
       }
@@ -386,7 +396,20 @@
     const func = [];
     if (id && externalExts.has(id)) {
       if (id === EXT_TST) {
-        // handle message from tst
+        switch (msg.type) {
+          case "ready": {
+            func.push(
+              handleExternalExtsRequirements()
+                .then(createMenu)
+            );
+            break;
+          }
+          case "fake-contextMenu-click": {
+            func.push(extractClickedData(msg));
+            break;
+          }
+          default:
+        }
       }
     } else {
       const items = Object.entries(msg);
