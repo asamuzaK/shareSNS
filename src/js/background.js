@@ -377,7 +377,7 @@
                 id: `${SHARE_TAB}${id}`,
                 title: i18n.getMessage(SHARE_TAB, id),
                 contexts: ["tab"],
-              }
+              },
             }));
           }
         }
