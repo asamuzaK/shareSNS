@@ -103,6 +103,10 @@
     return func || null;
   };
 
+  /**
+   * register myself to the external extension "Tree Style Tab".
+   * @returns {AsyncFunction} - runtime.sendMessage()
+   */
   const registerToExtTST = async () => sendMsg(EXT_TST, {
     type: "register-self",
     name: i18n.getMessage("extensionName"),
