@@ -104,24 +104,18 @@
   };
 
   /**
-   * register myself to the external extension "Tree Style Tab".
-   * @returns {AsyncFunction} - runtime.sendMessage()
-   */
-  const registerToExtTST = async () => sendMsg(EXT_TST, {
-    type: "register-self",
-    name: i18n.getMessage("extensionName"),
-    icons: runtime.getManifest().icons,
-    listeningTypes: ["ready", "fake-contextMenu-click"],
-  });
-
-  /**
    * handle external extension requirements
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleExternalExtsRequirements = async () => {
     const func = [];
     if (externalExts.has(EXT_TST)) {
-      func.push(registerToExtTST());
+      func.push(sendMsg(EXT_TST, {
+        type: "register-self",
+        name: i18n.getMessage("extensionName"),
+        icons: runtime.getManifest().icons,
+        listeningTypes: ["ready", "fake-contextMenu-click"],
+      }));
     }
     return Promise.all(func);
   };
@@ -405,7 +399,7 @@
         switch (msg.type) {
           case "ready": {
             func.push(
-              setExternalExts().then(registerToExtTST)
+              handleExternalExtsRequirements()
                 .then(createMenu)
             );
             break;
