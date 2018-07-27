@@ -107,6 +107,7 @@
     type: "register-self",
     name: browser.i18n.getMessage("extensionName"),
     icons: browser.runtime.getManifest().icons,
+    listeningTypes: ["ready", "fake-contextMenu-click"],
   });
 
   /**
