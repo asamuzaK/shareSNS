@@ -9,6 +9,7 @@
   /* contants */
   const CONTEXT_INFO = "contextInfo";
   const EXT_TST = "treestyletab@piro.sakura.ne.jp";
+  const MSG_NAME = "extensionName";
   const PATH_SNS_DATA = "data/sns.json";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
@@ -386,15 +387,16 @@
 
   /* runtime */
   /**
-   * handle external extension requirements
+   * handle external extension
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleExternalExts = async () => {
     const func = [];
+    // Tree Style Tab
     if (externalExts.has(EXT_TST)) {
       func.push(sendMsg(EXT_TST, {
         type: "register-self",
-        name: i18n.getMessage("extensionName"),
+        name: i18n.getMessage(MSG_NAME),
         icons: runtime.getManifest().icons,
         listeningTypes: ["ready", "fake-contextMenu-click"],
       }));
