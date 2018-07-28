@@ -508,5 +508,5 @@
   ]).then(() => Promise.all([
     createMenu(),
     handleExternalExts(),
-  ]).catch(logError);
+  ])).catch(logError);
 }
