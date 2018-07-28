@@ -443,7 +443,7 @@
       if (senderId === EXT_TST) {
         switch (msg.type) {
           case "ready": {
-            func.push(handleExternalExts());
+            func.push(addExternalExt(EXT_TST).then(handleExternalExts));
             break;
           }
           case "fake-contextMenu-click": {
