@@ -88,19 +88,30 @@
    * @param {string} id - extension ID
    * @param {*} msg - message
    * @param {Object} opt - options
-   * @returns {?AsyncFunction} - runtime.sendMessage()
+   * @returns {Promise.<Array>} - results of each handler
    */
   const sendMsg = async (id, msg, opt) => {
-    let func;
+    const func = [];
     if (msg) {
-      if (id && externalExts.has(id)) {
-        func =
-          runtime.sendMessage(id, msg, isObjectNotEmpty(opt) && opt || null);
+      opt = isObjectNotEmpty(opt) && opt || null;
+      if (id && isString(id)) {
+        const ext = await management.get(id);
+        if (ext) {
+          const {enabled} = ext;
+          if (enabled) {
+            func.push(runtime.sendMessage(id, msg, opt));
+            !externalExts.has(id) && func.push(setExternalExts());
+          } else {
+            externalExts.has(id) && externalExts.delete(id);
+          }
+        } else {
+          externalExts.has(id) && externalExts.delete(id);
+        }
       } else {
-        func = runtime.sendMessage(msg, isObjectNotEmpty(opt) && opt || null);
+        func.push(runtime.sendMessage(msg, opt));
       }
     }
-    return func || null;
+    return Promise.all(func);
   };
 
   /**
