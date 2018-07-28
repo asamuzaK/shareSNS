@@ -409,11 +409,7 @@
       if (senderId === EXT_TST) {
         switch (msg.type) {
           case "ready": {
-            if (externalExts.has(senderId)) {
-              await handleExternalExtsRequirements();
-            } else {
-              await setExternalExts().then(handleExternalExtsRequirements);
-            }
+            await handleExternalExtsRequirements();
             sns.forEach(value => {
               if (isObjectNotEmpty(value)) {
                 const {enabled, id: snsId} = value;
