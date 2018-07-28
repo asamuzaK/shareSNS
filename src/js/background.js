@@ -79,9 +79,7 @@
    */
   const addExternalExt = async id => {
     const exts = [EXT_TST];
-    if (id && exts.includes(id)) {
-      externalExts.add(id);
-    }
+    id && exts.includes(id) && externalExts.add(id);
   };
 
   /**
@@ -99,7 +97,7 @@
         func.push(removeExternalExt(id));
       }
     }
-    await Promise.all(func);
+    return Promise.all(func);
   };
 
   /** send message
@@ -128,23 +126,6 @@
       } else {
         func.push(runtime.sendMessage(msg, opt));
       }
-    }
-    return Promise.all(func);
-  };
-
-  /**
-   * handle external extension requirements
-   * @returns {Promise.<Array>} - results of each handler
-   */
-  const handleExternalExtsRequirements = async () => {
-    const func = [];
-    if (externalExts.has(EXT_TST)) {
-      func.push(sendMsg(EXT_TST, {
-        type: "register-self",
-        name: i18n.getMessage("extensionName"),
-        icons: runtime.getManifest().icons,
-        listeningTypes: ["ready", "fake-contextMenu-click"],
-      }));
     }
     return Promise.all(func);
   };
@@ -397,7 +378,30 @@
               }
             ),
           );
-          if (externalExts.has(EXT_TST)) {
+        }
+      }
+    });
+    return Promise.all(func);
+  };
+
+  /* runtime */
+  /**
+   * handle external extension requirements
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleExternalExts = async () => {
+    const func = [];
+    if (externalExts.has(EXT_TST)) {
+      func.push(sendMsg(EXT_TST, {
+        type: "register-self",
+        name: i18n.getMessage("extensionName"),
+        icons: runtime.getManifest().icons,
+        listeningTypes: ["ready", "fake-contextMenu-click"],
+      }));
+      sns.forEach(value => {
+        if (isObjectNotEmpty(value)) {
+          const {enabled, id} = value;
+          if (enabled && isString(id)) {
             func.push(sendMsg(EXT_TST, {
               type: "fake-contextMenu-create",
               params: {
@@ -408,12 +412,11 @@
             }));
           }
         }
-      }
-    });
+      });
+    }
     return Promise.all(func);
   };
 
-  /* runtime */
   /**
    * handle runtime message
    * @param {Object} msg - message
@@ -427,22 +430,7 @@
       if (senderId === EXT_TST) {
         switch (msg.type) {
           case "ready": {
-            await handleExternalExtsRequirements();
-            sns.forEach(value => {
-              if (isObjectNotEmpty(value)) {
-                const {enabled, id: snsId} = value;
-                if (enabled && isString(snsId)) {
-                  func.push(sendMsg(EXT_TST, {
-                    type: "fake-contextMenu-create",
-                    params: {
-                      id: `${SHARE_TAB}${snsId}`,
-                      title: i18n.getMessage(SHARE_TAB, snsId),
-                      contexts: ["tab"],
-                    },
-                  }));
-                }
-              }
-            });
+            func.push(handleExternalExts());
             break;
           }
           case "fake-contextMenu-click": {
@@ -516,6 +504,9 @@
   /* startup */
   Promise.all([
     fetchSnsData().then(getStorage).then(handleStoredData),
-    setExternalExts().then(handleExternalExtsRequirements),
-  ]).then(createMenu).catch(logError);
+    setExternalExts(),
+  ]).then(() => Promise.all([
+    createMenu(),
+    handleExternalExts(),
+  ]).catch(logError);
 }
