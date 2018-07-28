@@ -64,24 +64,42 @@
   const externalExts = new Set();
 
   /**
-   * set external extensions
+   * remove external extension
+   * @param {string} id - extension ID
    * @returns {void}
    */
-  const setExternalExts = async () => {
+  const removeExternalExt = async id => {
+    id && externalExts.has(id) && externalExts.delete(id);
+  };
+
+  /**
+   * add external extension
+   * @param {string} id - extension ID
+   * @returns {void}
+   */
+  const addExternalExt = async id => {
     const exts = [EXT_TST];
+    if (id && exts.includes(id)) {
+      externalExts.add(id);
+    }
+  };
+
+  /**
+   * set external extensions
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setExternalExts = async () => {
     const items = await management.getAll();
+    const func = [];
     for (const item of items) {
       const {enabled, id} = item;
-      if (exts.includes(id)) {
-        if (enabled) {
-          externalExts.add(id);
-        } else {
-          externalExts.has(id) && externalExts.delete(id);
-        }
+      if (enabled) {
+        func.push(addExternalExt(id));
       } else {
-        externalExts.has(id) && externalExts.delete(id);
+        func.push(removeExternalExt(id));
       }
     }
+    await Promise.all(func);
   };
 
   /** send message
@@ -100,12 +118,12 @@
           const {enabled} = ext;
           if (enabled) {
             func.push(runtime.sendMessage(id, msg, opt));
-            !externalExts.has(id) && func.push(setExternalExts());
+            !externalExts.has(id) && func.push(addExternalExt(id));
           } else {
-            externalExts.has(id) && externalExts.delete(id);
+            func.push(removeExternalExt(id));
           }
         } else {
-          externalExts.has(id) && externalExts.delete(id);
+          func.push(removeExternalExt(id));
         }
       } else {
         func.push(runtime.sendMessage(msg, opt));
