@@ -315,6 +315,7 @@
    */
   const removeMenu = async () => {
     const func = [menus.removeAll()];
+    // Tree Style Tab
     if (externalExts.has(EXT_TST)) {
       func.push(sendMsg(EXT_TST, {
         type: "fake-contextMenu-removeAll",
@@ -420,6 +421,15 @@
   };
 
   /**
+   * prepare menu
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const prepareMenu = () => Promise.all([
+    createMenu(),
+    handleExternalExts(),
+  ]);
+
+  /**
    * handle runtime message
    * @param {Object} msg - message
    * @param {Object} sender - sender
@@ -429,6 +439,7 @@
     const {id: senderId} = sender;
     const func = [];
     if (senderId) {
+      // Tree Style Tab
       if (senderId === EXT_TST) {
         switch (msg.type) {
           case "ready": {
@@ -494,7 +505,7 @@
     extractClickedData({info, tab}).catch(logError)
   );
   storage.onChanged.addListener(data =>
-    handleStoredData(data).then(removeMenu).then(createMenu).catch(logError)
+    handleStoredData(data).then(removeMenu).then(prepareMenu).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
@@ -507,8 +518,5 @@
   Promise.all([
     fetchSnsData().then(getStorage).then(handleStoredData),
     setExternalExts(),
-  ]).then(() => Promise.all([
-    createMenu(),
-    handleExternalExts(),
-  ])).catch(logError);
+  ]).then(prepareMenu).catch(logError);
 }
