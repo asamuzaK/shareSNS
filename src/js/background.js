@@ -311,7 +311,7 @@
   /* context menu */
   /**
    * remove context menu
-   * @returns {AsyncFunction} - menus.removeAll()
+   * @returns {Promise.<Array>} - results of each handler
    */
   const removeMenu = async () => {
     const func = [menus.removeAll()];
