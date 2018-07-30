@@ -255,11 +255,11 @@
 
   /**
    * extract clicked data
-   * @param {Object} data - clicked data
+   * @param {Object} info - clicked menu info
+   * @param {Object} tab - tabs.Tab
    * @returns {Promise.<Array>} - results of each handler
    */
-  const extractClickedData = async (data = {}) => {
-    const {info, tab} = data;
+  const extractClickedData = async (info = {}, tab = {}) => {
     const {
       id: tabId, index: tabIndex, title: tabTitle, url: tabUrl, windowId,
     } = tab;
@@ -438,20 +438,19 @@
   const handleMsg = async (msg, sender) => {
     const {id: senderId} = sender;
     const func = [];
-    if (senderId) {
-      // Tree Style Tab
-      if (senderId === EXT_TST) {
-        switch (msg.type) {
-          case "ready": {
-            func.push(addExternalExt(EXT_TST).then(handleExternalExts));
-            break;
-          }
-          case "fake-contextMenu-click": {
-            func.push(extractClickedData(msg));
-            break;
-          }
-          default:
+    // Tree Style Tab
+    if (senderId === EXT_TST) {
+      const {info, tab, type} = msg;
+      switch (type) {
+        case "ready": {
+          func.push(addExternalExt(EXT_TST).then(handleExternalExts));
+          break;
         }
+        case "fake-contextMenu-click": {
+          func.push(extractClickedData(info, tab));
+          break;
+        }
+        default:
       }
     } else {
       const items = Object.entries(msg);
@@ -463,7 +462,8 @@
             break;
           }
           case SHARE_SNS: {
-            func.push(extractClickedData(value));
+            const {info, tab} = value;
+            func.push(extractClickedData(info, tab));
             break;
           }
           default:
@@ -502,7 +502,7 @@
   };
 
   menus.onClicked.addListener((info, tab) =>
-    extractClickedData({info, tab}).catch(logError)
+    extractClickedData(info, tab).catch(logError)
   );
   storage.onChanged.addListener(data =>
     handleStoredData(data).then(removeMenu).then(prepareMenu).catch(logError)
