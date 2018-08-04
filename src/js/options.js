@@ -13,13 +13,12 @@
   const TYPE_TO = -1;
 
   /**
-   * log error
+   * throw error
    * @param {!Object} e - Error
-   * @returns {boolean} - false
+   * @throws
    */
-  const logError = e => {
-    console.error(e);
-    return false;
+  const throwErr = e => {
+    throw e;
   };
 
   /**
@@ -102,7 +101,7 @@
     const nodes = document.querySelectorAll("input");
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
-        node.addEventListener("change", evt => storePref(evt).catch(logError));
+        node.addEventListener("change", evt => storePref(evt).catch(throwErr));
       }
     }
   };
@@ -199,5 +198,5 @@
     localizeHtml(),
     setValuesFromStorage(),
     addInputChangeListener(),
-  ]).catch(logError);
+  ]).catch(throwErr);
 }

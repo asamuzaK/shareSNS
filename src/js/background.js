@@ -9,7 +9,7 @@
   /* contants */
   const CONTEXT_INFO = "contextInfo";
   const EXT_TST = "treestyletab@piro.sakura.ne.jp";
-  const MSG_NAME = "extensionName";
+  const MSG_EXT_NAME = "extensionName";
   const PATH_SNS_DATA = "data/sns.json";
   const SHARE_LINK = "shareLink";
   const SHARE_PAGE = "sharePage";
@@ -19,13 +19,12 @@
   const TYPE_TO = -1;
 
   /**
-   * log error
+   * throw error
    * @param {!Object} e - Error
-   * @returns {boolean} - false
+   * @throws
    */
-  const logError = e => {
-    console.error(e);
-    return false;
+  const throwErr = e => {
+    throw e;
   };
 
   /**
@@ -397,7 +396,7 @@
     if (externalExts.has(EXT_TST)) {
       func.push(sendMsg(EXT_TST, {
         type: "register-self",
-        name: i18n.getMessage(MSG_NAME),
+        name: i18n.getMessage(MSG_EXT_NAME),
         icons: runtime.getManifest().icons,
         listeningTypes: ["ready", "fake-contextMenu-click"],
       }));
@@ -502,21 +501,21 @@
   };
 
   menus.onClicked.addListener((info, tab) =>
-    extractClickedData(info, tab).catch(logError)
+    extractClickedData(info, tab).catch(throwErr)
   );
   storage.onChanged.addListener(data =>
-    handleStoredData(data).then(removeMenu).then(prepareMenu).catch(logError)
+    handleStoredData(data).then(removeMenu).then(prepareMenu).catch(throwErr)
   );
   runtime.onMessage.addListener((msg, sender) =>
-    handleMsg(msg, sender).catch(logError)
+    handleMsg(msg, sender).catch(throwErr)
   );
   runtime.onMessageExternal.addListener((msg, sender) =>
-    handleMsg(msg, sender).catch(logError)
+    handleMsg(msg, sender).catch(throwErr)
   );
 
   /* startup */
   Promise.all([
     fetchSnsData().then(getStorage).then(handleStoredData),
     setExternalExts(),
-  ]).then(prepareMenu).catch(logError);
+  ]).then(prepareMenu).catch(throwErr);
 }

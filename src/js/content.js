@@ -12,13 +12,12 @@
   const MOUSE_BUTTON_RIGHT = 2;
 
   /**
-   * log error
+   * throw error
    * @param {!Object} e - Error
-   * @returns {boolean} - false
+   * @throws
    */
-  const logError = e => {
-    console.error(e);
-    return false;
+  const throwErr = e => {
+    throw e;
   };
 
   /**
@@ -191,12 +190,12 @@
       case "keydown":
         if (altKey && shiftKey && key === "C" ||
             shiftKey && key === "F10" || key === "ContextMenu") {
-          func = sendContextInfo().catch(logError);
+          func = sendContextInfo().catch(throwErr);
         }
         break;
       case "mousedown":
         if (button === MOUSE_BUTTON_RIGHT) {
-          func = sendContextInfo().catch(logError);
+          func = sendContextInfo().catch(throwErr);
         }
         break;
       default:
@@ -205,7 +204,7 @@
   };
 
   /* listeners */
-  runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
+  runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
 
   window.addEventListener("keydown", handleKeyMouseEvt, true);
   window.addEventListener("mousedown", handleKeyMouseEvt, true);

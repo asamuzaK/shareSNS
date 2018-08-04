@@ -23,13 +23,12 @@
   const TYPE_TO = -1;
 
   /**
-   * log error
+   * throw error
    * @param {!Object} e - Error
-   * @returns {boolean} - false
+   * @throws
    */
-  const logError = e => {
-    console.error(e);
-    return false;
+  const throwErr = e => {
+    throw e;
   };
 
   /**
@@ -215,7 +214,7 @@
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
         node.addEventListener("click", evt =>
-          createShareData(evt).catch(logError)
+          createShareData(evt).catch(throwErr)
         );
       }
     }
@@ -401,10 +400,10 @@
 
   /* listeners */
   storage.onChanged.addListener(data =>
-    handleStoredData(data).then(toggleWarning).catch(logError)
+    handleStoredData(data).then(toggleWarning).catch(throwErr)
   );
   runtime.onMessage.addListener((msg, sender) =>
-    handleMsg(msg, sender).catch(logError)
+    handleMsg(msg, sender).catch(throwErr)
   );
 
   /* startup */
@@ -416,5 +415,5 @@
       requestContextInfo(tab),
       setTabInfo(tab),
     ])),
-  ])).catch(logError);
+  ])).catch(throwErr);
 }
