@@ -26,7 +26,7 @@ export const sendMessage = async (id, msg, opt) => {
     } else if (id && isString(id)) {
       func = runtime.sendMessage(id, msg, opt);
     } else {
-      func = runtime.sendMessage(msg, opt);
+      func = runtime.sendMessage(runtime.id, msg, opt);
     }
   }
   return func || null;

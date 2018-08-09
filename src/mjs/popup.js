@@ -100,7 +100,7 @@ const createShareData = async evt => {
       }
       info.canonicalUrl = canonicalUrl || null;
       info.selectionText = selectionText || "";
-      func = sendMessage(null, {
+      func = sendMessage(runtime.id, {
         [SHARE_SNS]: {
           info, tab,
         },
