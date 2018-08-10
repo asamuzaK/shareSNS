@@ -2,9 +2,7 @@
  * common.js
  */
 
-/* constants */
-const TYPE_FROM = 8;
-const TYPE_TO = -1;
+import {TYPE_FROM, TYPE_TO} from "./constant.js";
 
 /**
  * throw error
