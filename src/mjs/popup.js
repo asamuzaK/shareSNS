@@ -19,20 +19,6 @@ const SNS_ITEM = "snsItem";
 const SNS_ITEM_TMPL = "snsItemTemplate";
 const SNS_NOT_SELECTED = "warnSnsNotSelected";
 
-/* tab info */
-const tabInfo = {
-  tab: null,
-};
-
-/**
- * set tab info
- * @param {Object} tab - tabs.Tab
- * @returns {void}
- */
-const setTabInfo = async tab => {
-  tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
-};
-
 /* sns */
 const sns = new Map();
 
@@ -50,6 +36,20 @@ const fetchSnsData = async () => {
       sns.set(key, value);
     }
   }
+};
+
+/* tab info */
+const tabInfo = {
+  tab: null,
+};
+
+/**
+ * set tab info
+ * @param {Object} tab - tabs.Tab
+ * @returns {void}
+ */
+const setTabInfo = async tab => {
+  tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
 };
 
 /* context info */
