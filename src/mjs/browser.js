@@ -5,12 +5,35 @@
 import {isObjectNotEmpty, isString} from "./common.js";
 
 /* api */
-const {runtime, storage, tabs} = browser;
+const {runtime, storage, tabs, windows} = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
 
 /* runtime */
+/**
+ * fetch data
+ * @param {string} path - data path
+ * @returns {?Object} - JSON data
+ */
+export const fetchData = async path => {
+  let data;
+  if (isString(path)) {
+    path = await runtime.getURL(path);
+    data = await fetch(path).then(res => res && res.json());
+  }
+  return data || null;
+};
+
+/**
+ * get manifest icons
+ * @returns {Object|string} - icons
+ */
+export const getManifestIcons = () => {
+  const {icons} = runtime.getManifest();
+  return icons;
+};
+
 /** send message
  * @param {number|string} id - tabId or extension ID
  * @param {*} msg - message
@@ -34,12 +57,10 @@ export const sendMessage = async (id, msg, opt) => {
 
 /* storage */
 /**
- * set storage
- * @param {Object} obj - object to store
- * @returns {?AsyncFunction} - storage.local.set
+ * get all storage
+ * @returns {AsyncFunction} - storage.local.get
  */
-export const setStorage = async obj =>
-  obj && storage && storage.local.set(obj) || null;
+export const getAllStorage = async () => storage.local.get();
 
 /**
  * get storage
@@ -47,6 +68,21 @@ export const setStorage = async obj =>
  * @returns {AsyncFunction} - storage.local.get
  */
 export const getStorage = async key => storage.local.get(key);
+
+/**
+ * remove storage
+ * @param {*} key - key
+ * @returns {AsyncFunction} - storage.local.remove
+ */
+export const removeStorage = async key => storage.local.remove(key);
+
+/**
+ * set storage
+ * @param {Object} obj - object to store
+ * @returns {?AsyncFunction} - storage.local.set
+ */
+export const setStorage = async obj =>
+  obj && storage && storage.local.set(obj) || null;
 
 /* tabs */
 /**
@@ -59,12 +95,17 @@ export const createTab = async (opt = {}) =>
 
 /**
  * get active tab
+ * @param {number} windowId - window ID
  * @returns {Object} - tabs.Tab
  */
-export const getActiveTab = async () => {
+export const getActiveTab = async windowId => {
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
+  }
   const arr = await tabs.query({
+    windowId,
     active: true,
-    currentWindow: true,
+    windowType: "normal",
   });
   let tab;
   if (arr.length) {

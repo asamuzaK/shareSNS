@@ -7,14 +7,17 @@ import {
   SHARE_TAB,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
-import {createTab, getStorage, sendMessage} from "./browser.js";
+import {
+  createTab, fetchData, getManifestIcons, getStorage, sendMessage,
+} from "./browser.js";
 
 /* api */
 const {i18n, management, menus, runtime, storage, tabs} = browser;
 
 /**
  * constants */
-const EXTERNAL_TST = "treestyletab@piro.sakura.ne.jp";
+const {TAB_ID_NONE} = tabs;
+const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
 /* external extensions */
 const externalExts = new Set();
@@ -34,7 +37,7 @@ const removeExternalExt = async id => {
  * @returns {void}
  */
 const addExternalExt = async id => {
-  const exts = [EXTERNAL_TST];
+  const exts = [WEBEXT_TST];
   id && exts.includes(id) && externalExts.add(id);
 };
 
@@ -94,8 +97,7 @@ const sns = new Map();
  * @returns {void}
  */
 const fetchSnsData = async () => {
-  const path = await runtime.getURL(PATH_SNS_DATA);
-  const data = await fetch(path).then(res => res && res.json());
+  const data = await fetchData(PATH_SNS_DATA);
   if (data) {
     const items = Object.entries(data);
     for (const item of items) {
@@ -219,7 +221,7 @@ const extractClickedData = async (info = {}, tab = {}) => {
     id: tabId, index: tabIndex, title: tabTitle, url: tabUrl, windowId,
   } = tab;
   const func = [];
-  if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
+  if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
     const {linkText, linkUrl, menuItemId, selectionText} = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
@@ -271,8 +273,8 @@ const extractClickedData = async (info = {}, tab = {}) => {
 const removeMenu = async () => {
   const func = [menus.removeAll()];
   // Tree Style Tab
-  if (externalExts.has(EXTERNAL_TST)) {
-    func.push(sendMsg(EXTERNAL_TST, {
+  if (externalExts.has(WEBEXT_TST)) {
+    func.push(sendMsg(WEBEXT_TST, {
       type: "fake-contextMenu-removeAll",
     }));
   }
@@ -349,18 +351,18 @@ const createMenu = async () => {
 const handleExternalExts = async () => {
   const func = [];
   // Tree Style Tab
-  if (externalExts.has(EXTERNAL_TST)) {
-    func.push(sendMsg(EXTERNAL_TST, {
+  if (externalExts.has(WEBEXT_TST)) {
+    func.push(sendMsg(WEBEXT_TST, {
       type: "register-self",
       name: i18n.getMessage(EXT_NAME),
-      icons: runtime.getManifest().icons,
+      icons: getManifestIcons(),
       listeningTypes: ["ready", "fake-contextMenu-click"],
     }));
     sns.forEach(value => {
       if (isObjectNotEmpty(value)) {
         const {enabled, id} = value;
         if (enabled && isString(id)) {
-          func.push(sendMsg(EXTERNAL_TST, {
+          func.push(sendMsg(WEBEXT_TST, {
             type: "fake-contextMenu-create",
             params: {
               id: `${SHARE_TAB}${id}`,
@@ -394,11 +396,11 @@ const handleMsg = async (msg, sender) => {
   const {id: senderId} = sender;
   const func = [];
   // Tree Style Tab
-  if (senderId === EXTERNAL_TST) {
+  if (senderId === WEBEXT_TST) {
     const {info, tab, type} = msg;
     switch (type) {
       case "ready": {
-        func.push(addExternalExt(EXTERNAL_TST).then(handleExternalExts));
+        func.push(addExternalExt(WEBEXT_TST).then(handleExternalExts));
         break;
       }
       case "fake-contextMenu-click": {

@@ -7,13 +7,14 @@ import {
   SHARE_SNS,
 } from "./constant.js";
 import {isObjectNotEmpty, isString, throwErr} from "./common.js";
-import {getActiveTab, getStorage, sendMessage} from "./browser.js";
+import {fetchData, getActiveTab, getStorage, sendMessage} from "./browser.js";
 import {localizeHtml} from "./localize.js";
 
 /* api */
 const {runtime, storage, tabs} = browser;
 
 /* constants */
+const {TAB_ID_NONE} = tabs;
 const SNS_ITEMS = "snsItems";
 const SNS_ITEM = "snsItem";
 const SNS_ITEM_TMPL = "snsItemTemplate";
@@ -41,8 +42,7 @@ const sns = new Map();
  * @returns {void}
  */
 const fetchSnsData = async () => {
-  const path = await runtime.getURL(PATH_SNS_DATA);
-  const data = await fetch(path).then(res => res && res.json());
+  const data = await fetchData(PATH_SNS_DATA);
   if (data) {
     const items = Object.entries(data);
     for (const item of items) {
@@ -197,7 +197,7 @@ const requestContextInfo = async tab => {
   await initContextInfo();
   if (isObjectNotEmpty(tab)) {
     const {id} = tab;
-    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+    if (Number.isInteger(id) && id !== TAB_ID_NONE) {
       try {
         await sendMessage(id, {
           [CONTEXT_INFO_GET]: true,
