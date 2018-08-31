@@ -8,12 +8,12 @@ import {
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
-  createTab, fetchData, getManifestIcons, getStorage, isAccessKeySupported,
-  sendMessage,
+  createTab, fetchData, getExtensionInfo, getExternalExtensions,
+  getManifestIcons, getStorage, isAccessKeySupported, sendMessage,
 } from "./browser.js";
 
 /* api */
-const {i18n, management, menus, runtime, storage, tabs} = browser;
+const {i18n, menus, runtime, storage, tabs} = browser;
 
 /**
  * constants */
@@ -47,7 +47,7 @@ const addExternalExt = async id => {
  * @returns {Promise.<Array>} - results of each handler
  */
 const setExternalExts = async () => {
-  const items = await management.getAll();
+  const items = await getExternalExtensions();
   const func = [];
   for (const item of items) {
     const {enabled, id} = item;
@@ -71,7 +71,7 @@ const sendMsg = async (id, msg, opt) => {
   if (msg) {
     opt = isObjectNotEmpty(opt) && opt || null;
     if (id && isString(id)) {
-      const ext = await management.get(id);
+      const ext = await getExtensionInfo(id);
       if (ext) {
         const {enabled} = ext;
         if (enabled) {
