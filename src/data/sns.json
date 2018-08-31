@@ -1,32 +1,32 @@
 {
   "Twitter": {
     "id": "Twitter",
-    "accesskey": "(&T)",
+    "menu": "&Twitter",
     "url": "https://twitter.com/share?text=%text%&amp;url=%url%"
   },
   "Facebook": {
     "id": "Facebook",
-    "accesskey": "(&F)",
+    "menu": "&Facebook",
     "url": "https://www.facebook.com/sharer/sharer.php?u=%url%"
   },
   "LINE": {
     "id": "LINE",
-    "accesskey": "(&L)",
+    "menu": "&LINE",
     "url": "http://line.me/R/msg/text/?%text%%20%url%"
   },
   "Hatena": {
     "id": "Hatena",
-    "accesskey": "(&H)",
+    "menu": "&Hatena",
     "url": "http://b.hatena.ne.jp/add?mode=confirm&amp;url=%url%&amp;title=%text%"
   },
   "Google+": {
     "id": "Google+",
-    "accesskey": "(&G)",
+    "menu": "&Google+",
     "url": "https://plus.google.com/share?url=%url%"
   },
   "Mastodon": {
     "id": "Mastodon",
-    "accesskey": "(&M)",
+    "menu": "&Mastodon",
     "url": "web+mastodon://share?text=%text%+%url%",
     "subItem": {
       "mastodonInstanceUrl": {

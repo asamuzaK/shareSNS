@@ -8,7 +8,8 @@ import {
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
-  createTab, fetchData, getManifestIcons, getStorage, sendMessage,
+  createTab, fetchData, getManifestIcons, getStorage, isAccessKeySupported,
+  sendMessage,
 } from "./browser.js";
 
 /* api */
@@ -307,14 +308,16 @@ const createMenuItem = async (id, title, data = {}) => {
  */
 const createMenu = async () => {
   const func = [];
+  const acckey = await isAccessKeySupported();
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
-      const {enabled, id} = value;
-      if (enabled && isString(id)) {
+      const {enabled, id, menu} = value;
+      const key = acckey && menu || id;
+      if (enabled && isString(id) && isString(key)) {
         func.push(
           createMenuItem(
             `${SHARE_PAGE}${id}`,
-            i18n.getMessage(SHARE_PAGE, id),
+            i18n.getMessage(SHARE_PAGE, key),
             {
               enabled,
               contexts: ["page", "selection"],
@@ -322,7 +325,7 @@ const createMenu = async () => {
           ),
           createMenuItem(
             `${SHARE_TAB}${id}`,
-            i18n.getMessage(SHARE_TAB, id),
+            i18n.getMessage(SHARE_TAB, key),
             {
               enabled,
               contexts: ["tab"],
@@ -330,7 +333,7 @@ const createMenu = async () => {
           ),
           createMenuItem(
             `${SHARE_LINK}${id}`,
-            i18n.getMessage(SHARE_LINK, id),
+            i18n.getMessage(SHARE_LINK, key),
             {
               enabled,
               contexts: ["link"],
@@ -352,6 +355,7 @@ const handleExternalExts = async () => {
   const func = [];
   // Tree Style Tab
   if (externalExts.has(WEBEXT_TST)) {
+    const acckey = await isAccessKeySupported();
     func.push(sendMsg(WEBEXT_TST, {
       type: "register-self",
       name: i18n.getMessage(EXT_NAME),
@@ -360,13 +364,14 @@ const handleExternalExts = async () => {
     }));
     sns.forEach(value => {
       if (isObjectNotEmpty(value)) {
-        const {enabled, id} = value;
-        if (enabled && isString(id)) {
+        const {enabled, id, menu} = value;
+        const key = acckey && menu || id;
+        if (enabled && isString(id) && isString(key)) {
           func.push(sendMsg(WEBEXT_TST, {
             type: "fake-contextMenu-create",
             params: {
               id: `${SHARE_TAB}${id}`,
-              title: i18n.getMessage(SHARE_TAB, id),
+              title: i18n.getMessage(SHARE_TAB, key),
               contexts: ["tab"],
             },
           }));
