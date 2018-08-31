@@ -14,9 +14,9 @@
   "optionsEnableSnsDetail": {
     "message": "Enable sharing with $SNS$.",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
@@ -29,27 +29,27 @@
   "shareLink": {
     "message": "Share link with $SNS$",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "sharePage": {
     "message": "Share page with $SNS$",
         "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "shareTab": {
     "message": "Share tab with $SNS$",
         "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },

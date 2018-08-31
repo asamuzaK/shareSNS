@@ -14,9 +14,9 @@
   "optionsEnableSnsDetail": {
     "message": "$SNS$ との共有を有効化します。",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
@@ -29,27 +29,27 @@
   "shareLink": {
     "message": "リンクを $SNS$ で共有",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "sharePage": {
     "message": "ページを $SNS$ で共有",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "shareTab": {
     "message": "タブを $SNS$ で共有",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },

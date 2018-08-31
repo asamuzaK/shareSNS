@@ -14,9 +14,9 @@
   "optionsEnableSnsDetail": {
     "message": "启用分享到 $SNS$。",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
@@ -29,27 +29,27 @@
   "shareLink": {
     "message": "链接分享到 $SNS$",
     "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "sharePage": {
     "message": "页面分享到 $SNS$",
-        "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+    "placeholders": {
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
   "shareTab": {
     "message": "标签页分享到 $SNS$",
-        "placeholders": {
-      "sns" : {
-        "content" : "$1",
-        "example" : "Twitter"
+    "placeholders": {
+      "sns": {
+        "content": "$1",
+        "example": "Twitter"
       }
     }
   },
