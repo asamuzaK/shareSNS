@@ -1,0 +1,59 @@
+{
+  "extensionLocale": {
+    "message": "zh-CN"
+  },
+  "extensionDescription": {
+    "message": "分享网页或链接到社交网络。"
+  },
+  "extensionName": {
+    "message": "分享到社交网络"
+  },
+  "extensionShortName": {
+    "message": "分享"
+  },
+  "optionsEnableSnsDetail": {
+    "message": "启用分享到 $SNS$。",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "optionsMastodonInstanceUrlNote": {
+    "message": "如果浏览器已注册了 web+mastodon: 协议的处理程序，请将 Instance URL 框留空。要检查它是否已注册，在 about:preferences - “应用程序”中检查。"
+  },
+  "optionsTitle": {
+    "message": "Share with SNS - 选项"
+  },
+  "shareLink": {
+    "message": "链接分享到 $SNS$",
+    "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "sharePage": {
+    "message": "页面分享到 $SNS$",
+        "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "shareTab": {
+    "message": "标签页分享到 $SNS$",
+        "placeholders": {
+      "sns" : {
+        "content" : "$1",
+        "example" : "Twitter"
+      }
+    }
+  },
+  "snsNotSelected": {
+    "message": "未选择社交网络。"
+  }
+}
