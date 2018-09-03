@@ -15,6 +15,7 @@ const {runtime, storage, tabs} = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
+const OPTIONS_OPEN = "openOptions";
 const SNS_ITEMS = "snsItems";
 const SNS_ITEM = "snsItem";
 const SNS_ITEM_TMPL = "snsItemTemplate";
@@ -150,9 +151,14 @@ const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll("button");
   if (nodes instanceof NodeList) {
     for (const node of nodes) {
-      node.addEventListener("click", evt =>
-        createShareData(evt).catch(throwErr)
-      );
+      const {id} = node;
+      if (id === OPTIONS_OPEN) {
+        node.addEventListener("click", () => runtime.openOptionsPage());
+      } else {
+        node.addEventListener("click", evt =>
+          createShareData(evt).catch(throwErr)
+        );
+      }
     }
   }
 };

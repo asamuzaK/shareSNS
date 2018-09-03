@@ -23,6 +23,9 @@
   "optionsMastodonInstanceUrlNote": {
     "message": "If the browser is registered to handle the \"web+mastodon:\" protocol, leave the Instance URL input field empty. To check whether it is registered, refer to \"Applications\" section from \"about:preferences\"."
   },
+  "optionsLabel": {
+    "message": "Options"
+  },
   "optionsTitle": {
     "message": "Share with SNS - Options"
   },
