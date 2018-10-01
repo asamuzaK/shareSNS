@@ -30,7 +30,7 @@
     "message": "Share with SNS - Options"
   },
   "shareLink": {
-    "message": "Share link with $SNS$",
+    "message": "Share Link with $SNS$",
     "placeholders": {
       "sns": {
         "content": "$1",
@@ -39,7 +39,7 @@
     }
   },
   "sharePage": {
-    "message": "Share page with $SNS$",
+    "message": "Share Page with $SNS$",
         "placeholders": {
       "sns": {
         "content": "$1",
@@ -48,7 +48,7 @@
     }
   },
   "shareTab": {
-    "message": "Share tab with $SNS$",
+    "message": "Share Tab with $SNS$",
         "placeholders": {
       "sns": {
         "content": "$1",
