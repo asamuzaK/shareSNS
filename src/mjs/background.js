@@ -29,7 +29,9 @@ const externalExts = new Set();
  * @returns {void}
  */
 const removeExternalExt = async id => {
-  id && externalExts.has(id) && externalExts.delete(id);
+  if (id && externalExts.has(id)) {
+    externalExts.delete(id);
+  }
 };
 
 /**
@@ -39,7 +41,9 @@ const removeExternalExt = async id => {
  */
 const addExternalExt = async id => {
   const exts = [WEBEXT_TST];
-  id && exts.includes(id) && externalExts.add(id);
+  if (id && exts.includes(id)) {
+    externalExts.add(id);
+  }
 };
 
 /**
@@ -76,7 +80,9 @@ const sendMsg = async (id, msg, opt) => {
         const {enabled} = ext;
         if (enabled) {
           func.push(sendMessage(id, msg, opt));
-          !externalExts.has(id) && func.push(addExternalExt(id));
+          if (!externalExts.has(id)) {
+            func.push(addExternalExt(id));
+          }
         } else {
           func.push(removeExternalExt(id));
         }

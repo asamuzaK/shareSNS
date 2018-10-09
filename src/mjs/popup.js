@@ -296,7 +296,9 @@ const handleStoredData = async data => {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
         const {newValue} = value;
-        sns.has(key) && func.push(toggleSnsItem(key, newValue || value));
+        if (sns.has(key)) {
+          func.push(toggleSnsItem(key, newValue || value));
+        }
       }
     }
   }

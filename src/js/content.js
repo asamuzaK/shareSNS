@@ -26,7 +26,10 @@
    * @returns {?AsyncFunction} - send message to runtime
    */
   const sendMsg = async msg => {
-    const func = msg && runtime.sendMessage(msg);
+    let func;
+    if (msg) {
+      func = runtime.sendMessage(msg);
+    }
     return func || null;
   };
 
