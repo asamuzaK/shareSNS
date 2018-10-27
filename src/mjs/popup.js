@@ -2,11 +2,7 @@
  * popup.js
  */
 
-import {
-  CONTEXT_INFO, CONTEXT_INFO_GET, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE,
-  SHARE_SNS,
-} from "./constant.js";
-import {isObjectNotEmpty, isString, throwErr} from "./common.js";
+import {isObjectNotEmpty, isString, logErr, throwErr} from "./common.js";
 import {fetchData, getActiveTab, getStorage, sendMessage} from "./browser.js";
 import {localizeHtml} from "./localize.js";
 
@@ -14,6 +10,10 @@ import {localizeHtml} from "./localize.js";
 const {runtime, storage, tabs} = browser;
 
 /* constants */
+import {
+  CONTEXT_INFO, CONTEXT_INFO_GET, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE,
+  SHARE_SNS,
+} from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
 const SNS_ITEMS = "snsItems";
@@ -209,6 +209,7 @@ const requestContextInfo = async tab => {
           [CONTEXT_INFO_GET]: true,
         });
       } catch (e) {
+        logErr(e);
         await updateMenu({
           contextInfo: {
             isLink: false,

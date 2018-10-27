@@ -3,10 +3,8 @@
  */
 
 import {
-  CONTEXT_INFO, EXT_NAME, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
-  SHARE_TAB,
-} from "./constant.js";
-import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
+  getType, isObjectNotEmpty, isString, logErr, throwErr,
+} from "./common.js";
 import {
   createTab, fetchData, getExtensionInfo, getExternalExtensions,
   getManifestIcons, getStorage, isAccessKeySupported, sendMessage,
@@ -15,8 +13,11 @@ import {
 /* api */
 const {i18n, menus, runtime, storage, tabs} = browser;
 
-/**
- * constants */
+/* constants */
+import {
+  CONTEXT_INFO, EXT_NAME, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
+  SHARE_TAB,
+} from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
@@ -180,6 +181,7 @@ const createSnsUrl = async (url, info) => {
           snsUrl = tmpl.replace("%origin%", origin).replace("%query%", query);
         }
       } catch (e) {
+        logErr(e);
         snsUrl = null;
       }
     }
