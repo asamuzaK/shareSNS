@@ -283,15 +283,13 @@ describe("options", () => {
 
   describe("set html input values from storage", () => {
     const func = mjs.setValuesFromStorage;
-    let window, document;
+    let window;
     beforeEach(() => {
       const dom = createJsdom();
       window = dom && dom.window;
-      document = window && window.document;
     });
     afterEach(() => {
       window = null;
-      document = null;
     });
 
     it("should get empty array", async () => {
