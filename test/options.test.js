@@ -180,6 +180,24 @@ describe("options", () => {
       assert.strictEqual(elm.checked, false, "checked");
     });
 
+    it("should not set value if type does not match", async () => {
+      const elm = document.createElement("input");
+      const body = document.querySelector("body");
+      window.func = func;
+      elm.id = "foo";
+      elm.type = "bar";
+      elm.checked = false;
+      elm.value = "baz";
+      body.appendChild(elm);
+      await window.func({
+        id: "foo",
+        checked: true,
+        value: "qux",
+      });
+      assert.strictEqual(elm.checked, false, "checked");
+      assert.strictEqual(elm.value, "baz", "checked");
+    });
+
     it("should set checkbox value", async () => {
       const elm = document.createElement("input");
       const body = document.querySelector("body");
