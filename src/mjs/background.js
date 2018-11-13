@@ -6,30 +6,30 @@ import {
   getType, isObjectNotEmpty, isString, logErr, throwErr,
 } from "./common.js";
 import {
-  createTab, fetchData, getExtensionInfo, getExternalExtensions,
+  createTab, getExtensionInfo, getExternalExtensions,
   getManifestIcons, getStorage, isAccessKeySupported, sendMessage,
 } from "./browser.js";
+import snsData from "./sns.js";
 
 /* api */
 const {i18n, menus, runtime, storage, tabs} = browser;
 
 /* constants */
 import {
-  CONTEXT_INFO, EXT_NAME, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
-  SHARE_TAB,
+  CONTEXT_INFO, EXT_NAME, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
 /* external extensions */
-const externalExts = new Set();
+export const externalExts = new Set();
 
 /**
  * remove external extension
  * @param {string} id - extension ID
  * @returns {void}
  */
-const removeExternalExt = async id => {
+export const removeExternalExt = async id => {
   if (id && externalExts.has(id)) {
     externalExts.delete(id);
   }
@@ -40,7 +40,7 @@ const removeExternalExt = async id => {
  * @param {string} id - extension ID
  * @returns {void}
  */
-const addExternalExt = async id => {
+export const addExternalExt = async id => {
   const exts = [WEBEXT_TST];
   if (id && exts.includes(id)) {
     externalExts.add(id);
@@ -51,7 +51,7 @@ const addExternalExt = async id => {
  * set external extensions
  * @returns {Promise.<Array>} - results of each handler
  */
-const setExternalExts = async () => {
+export const setExternalExts = async () => {
   const items = await getExternalExtensions();
   const func = [];
   for (const item of items) {
@@ -71,7 +71,7 @@ const setExternalExts = async () => {
  * @param {Object} opt - options
  * @returns {Promise.<Array>} - results of each handler
  */
-const sendMsg = async (id, msg, opt) => {
+export const sendMsg = async (id, msg, opt) => {
   const func = [];
   if (msg) {
     opt = isObjectNotEmpty(opt) && opt || null;
@@ -98,20 +98,17 @@ const sendMsg = async (id, msg, opt) => {
 };
 
 /* sns */
-const sns = new Map();
+export const sns = new Map();
 
 /**
- * fetch sns data
+ * set sns item
  * @returns {void}
  */
-const fetchSnsData = async () => {
-  const data = await fetchData(PATH_SNS_DATA);
-  if (data) {
-    const items = Object.entries(data);
-    for (const item of items) {
-      const [key, value] = item;
-      sns.set(key, value);
-    }
+export const setSnsItems = async () => {
+  const items = Object.entries(snsData);
+  for (const item of items) {
+    const [key, value] = item;
+    sns.set(key, value);
   }
 };
 
@@ -120,7 +117,7 @@ const fetchSnsData = async () => {
  * @param {string} id - menu item ID
  * @returns {Object} - sns item
  */
-const getSnsItemFromId = async id => {
+export const getSnsItemFromId = async id => {
   let item;
   if (isString(id)) {
     if (id.startsWith(SHARE_LINK)) {
@@ -140,7 +137,7 @@ const getSnsItemFromId = async id => {
  * @param {Object} obj - value object
  * @returns {void}
  */
-const toggleSnsItem = async (id, obj = {}) => {
+export const toggleSnsItem = async (id, obj = {}) => {
   const {checked, subItemOf, value} = obj;
   const item = subItemOf || id;
   if (item) {
@@ -166,7 +163,7 @@ const toggleSnsItem = async (id, obj = {}) => {
  * @param {Object} info - sns item url info
  * @returns {string} - sns url
  */
-const createSnsUrl = async (url, info) => {
+export const createSnsUrl = async (url, info) => {
   if (!isString(url)) {
     throw new TypeError(`Expected String but got ${getType(url)}.`);
   }
@@ -190,7 +187,7 @@ const createSnsUrl = async (url, info) => {
 };
 
 /* context info */
-const contextInfo = {
+export const contextInfo = {
   canonicalUrl: null,
 };
 
@@ -198,7 +195,7 @@ const contextInfo = {
  * init context info
  * @returns {Object} - context info
  */
-const initContextInfo = async () => {
+export const initContextInfo = async () => {
   contextInfo.canonicalUrl = null;
   return contextInfo;
 };
@@ -208,7 +205,7 @@ const initContextInfo = async () => {
  * @param {Object} data - context info data
  * @returns {Object} - context info
  */
-const updateContextInfo = async (data = {}) => {
+export const updateContextInfo = async (data = {}) => {
   const {contextInfo: info} = data;
   if (info) {
     const {canonicalUrl} = info;
@@ -225,7 +222,7 @@ const updateContextInfo = async (data = {}) => {
  * @param {Object} tab - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
  */
-const extractClickedData = async (info = {}, tab = {}) => {
+export const extractClickedData = async (info = {}, tab = {}) => {
   const {
     id: tabId, index: tabIndex, title: tabTitle, url: tabUrl, windowId,
   } = tab;
@@ -279,7 +276,7 @@ const extractClickedData = async (info = {}, tab = {}) => {
  * remove context menu
  * @returns {Promise.<Array>} - results of each handler
  */
-const removeMenu = async () => {
+export const removeMenu = async () => {
   const func = [menus.removeAll()];
   // Tree Style Tab
   if (externalExts.has(WEBEXT_TST)) {
@@ -297,7 +294,7 @@ const removeMenu = async () => {
  * @param {Object} data - context data
  * @returns {?AsyncFunction} - menus.create()
  */
-const createMenuItem = async (id, title, data = {}) => {
+export const createMenuItem = async (id, title, data = {}) => {
   const {contexts, enabled} = data;
   let func;
   if (isString(id) && isString(title) && Array.isArray(contexts)) {
@@ -314,7 +311,7 @@ const createMenuItem = async (id, title, data = {}) => {
  * create context menu items
  * @returns {Promise.<Array>} - results of each handler
  */
-const createMenu = async () => {
+export const createMenu = async () => {
   const func = [];
   const acckey = await isAccessKeySupported();
   sns.forEach(value => {
@@ -359,7 +356,7 @@ const createMenu = async () => {
  * handle external extension
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleExternalExts = async () => {
+export const handleExternalExts = async () => {
   const func = [];
   // Tree Style Tab
   if (externalExts.has(WEBEXT_TST)) {
@@ -394,7 +391,7 @@ const handleExternalExts = async () => {
  * prepare menu
  * @returns {Promise.<Array>} - results of each handler
  */
-const prepareMenu = () => Promise.all([
+export const prepareMenu = () => Promise.all([
   createMenu(),
   handleExternalExts(),
 ]);
@@ -405,38 +402,40 @@ const prepareMenu = () => Promise.all([
  * @param {Object} sender - sender
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleMsg = async (msg, sender) => {
-  const {id: senderId} = sender;
+export const handleMsg = async (msg, sender = {}) => {
   const func = [];
-  // Tree Style Tab
-  if (senderId === WEBEXT_TST) {
-    const {info, tab, type} = msg;
-    switch (type) {
-      case "ready": {
-        func.push(addExternalExt(WEBEXT_TST).then(handleExternalExts));
-        break;
-      }
-      case "fake-contextMenu-click": {
-        func.push(extractClickedData(info, tab));
-        break;
-      }
-      default:
-    }
-  } else {
-    const items = Object.entries(msg);
-    for (const item of items) {
-      const [key, value] = item;
-      switch (key) {
-        case CONTEXT_INFO: {
-          func.push(updateContextInfo(value));
+  if (isObjectNotEmpty(msg)) {
+    const {id: senderId} = sender;
+    // Tree Style Tab
+    if (senderId === WEBEXT_TST) {
+      const {info, tab, type} = msg;
+      switch (type) {
+        case "ready": {
+          func.push(addExternalExt(WEBEXT_TST).then(handleExternalExts));
           break;
         }
-        case SHARE_SNS: {
-          const {info, tab} = value;
+        case "fake-contextMenu-click": {
           func.push(extractClickedData(info, tab));
           break;
         }
         default:
+      }
+    } else {
+      const items = Object.entries(msg);
+      for (const item of items) {
+        const [key, value] = item;
+        switch (key) {
+          case CONTEXT_INFO: {
+            func.push(updateContextInfo(value));
+            break;
+          }
+          case SHARE_SNS: {
+            const {info, tab} = value;
+            func.push(extractClickedData(info, tab));
+            break;
+          }
+          default:
+        }
       }
     }
   }
@@ -449,7 +448,7 @@ const handleMsg = async (msg, sender) => {
  * @param {Object} data - stored data
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleStoredData = async data => {
+export const handleStoredData = async data => {
   const func = [];
   if (isObjectNotEmpty(data)) {
     const items = Object.entries(data);
@@ -479,6 +478,6 @@ runtime.onMessageExternal.addListener((msg, sender) =>
 
 /* startup */
 Promise.all([
-  fetchSnsData().then(getStorage).then(handleStoredData),
+  setSnsItems().then(getStorage).then(handleStoredData),
   setExternalExts(),
 ]).then(prepareMenu).catch(throwErr);

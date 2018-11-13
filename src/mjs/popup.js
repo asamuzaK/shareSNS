@@ -3,16 +3,16 @@
  */
 
 import {isObjectNotEmpty, isString, logErr, throwErr} from "./common.js";
-import {fetchData, getActiveTab, getStorage, sendMessage} from "./browser.js";
+import {getActiveTab, getStorage, sendMessage} from "./browser.js";
 import {localizeHtml} from "./localize.js";
+import snsData from "./sns.js";
 
 /* api */
 const {runtime, storage, tabs} = browser;
 
 /* constants */
 import {
-  CONTEXT_INFO, CONTEXT_INFO_GET, PATH_SNS_DATA, SHARE_LINK, SHARE_PAGE,
-  SHARE_SNS,
+  CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
@@ -31,7 +31,7 @@ const tabInfo = {
  * @param {Object} tab - tabs.Tab
  * @returns {void}
  */
-const setTabInfo = async tab => {
+export const setTabInfo = async tab => {
   tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
 };
 
@@ -39,17 +39,14 @@ const setTabInfo = async tab => {
 const sns = new Map();
 
 /**
- * fetch sns data
+ * set sns items
  * @returns {void}
  */
-const fetchSnsData = async () => {
-  const data = await fetchData(PATH_SNS_DATA);
-  if (data) {
-    const items = Object.entries(data);
-    for (const item of items) {
-      const [key, value] = item;
-      sns.set(key, value);
-    }
+export const setSnsItems = async () => {
+  const items = Object.entries(snsData);
+  for (const item of items) {
+    const [key, value] = item;
+    sns.set(key, value);
   }
 };
 
@@ -67,7 +64,7 @@ const contextInfo = {
  * init context info
  * @returns {Object} - context info
  */
-const initContextInfo = async () => {
+export const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
   contextInfo.selectionText = null;
@@ -82,7 +79,7 @@ const initContextInfo = async () => {
  * @param {!Object} evt - Event
  * @returns {?AsyncFunction} - sendMessage()
  */
-const createShareData = async evt => {
+export const createShareData = async evt => {
   const {target} = evt;
   let func;
   if (target) {
@@ -115,7 +112,7 @@ const createShareData = async evt => {
  * create html from template
  * @returns {void}
  */
-const createHtml = async () => {
+export const createHtml = async () => {
   const container = document.getElementById(SNS_ITEMS);
   const tmpl = document.getElementById(SNS_ITEM_TMPL);
   if (container && tmpl) {
@@ -147,7 +144,7 @@ const createHtml = async () => {
  * add listener to menu
  * @returns {void}
  */
-const addListenerToMenu = async () => {
+export const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll("button");
   if (nodes instanceof NodeList) {
     for (const node of nodes) {
@@ -168,7 +165,7 @@ const addListenerToMenu = async () => {
  * @param {Object} data - context data;
  * @returns {void}
  */
-const updateMenu = async data => {
+export const updateMenu = async data => {
   await initContextInfo();
   if (isObjectNotEmpty(data)) {
     const {contextInfo: info} = data;
@@ -199,7 +196,7 @@ const updateMenu = async data => {
  * @param {Object} tab - tabs.Tab
  * @returns {void}
  */
-const requestContextInfo = async tab => {
+export const requestContextInfo = async tab => {
   await initContextInfo();
   if (isObjectNotEmpty(tab)) {
     const {id} = tab;
@@ -229,7 +226,7 @@ const requestContextInfo = async tab => {
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleMsg = async msg => {
+export const handleMsg = async msg => {
   const func = [];
   const items = msg && Object.entries(msg);
   if (items) {
@@ -252,7 +249,7 @@ const handleMsg = async msg => {
  * toggle warning message
  * @returns {void}
  */
-const toggleWarning = async () => {
+export const toggleWarning = async () => {
   const elm = document.getElementById(SNS_NOT_SELECTED);
   const items = document.getElementsByClassName(SNS_ITEM);
   if (elm && items && items.length) {
@@ -274,7 +271,7 @@ const toggleWarning = async () => {
  * @param {boolean} changed - changed
  * @returns {void}
  */
-const toggleSnsItem = async (id, obj = {}) => {
+export const toggleSnsItem = async (id, obj = {}) => {
   if (isString(id)) {
     const {checked} = obj;
     const elm = document.getElementById(id);
@@ -289,7 +286,7 @@ const toggleSnsItem = async (id, obj = {}) => {
  * @param {Object} data - stored data
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleStoredData = async data => {
+export const handleStoredData = async data => {
   const func = [];
   if (isObjectNotEmpty(data)) {
     const items = Object.entries(data);
@@ -315,7 +312,7 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 
 /* startup */
-fetchSnsData().then(createHtml).then(() => Promise.all([
+setSnsItems().then(createHtml).then(() => Promise.all([
   localizeHtml(),
   addListenerToMenu(),
   getStorage().then(handleStoredData).then(toggleWarning),
