@@ -54,12 +54,14 @@ export const addExternalExt = async id => {
 export const setExternalExts = async () => {
   const items = await getExternalExtensions();
   const func = [];
-  for (const item of items) {
-    const {enabled, id} = item;
-    if (enabled) {
-      func.push(addExternalExt(id));
-    } else {
-      func.push(removeExternalExt(id));
+  if (items && items.length) {
+    for (const item of items) {
+      const {enabled, id} = item;
+      if (enabled) {
+        func.push(addExternalExt(id));
+      } else {
+        func.push(removeExternalExt(id));
+      }
     }
   }
   return Promise.all(func);
@@ -101,7 +103,7 @@ export const sendMsg = async (id, msg, opt) => {
 export const sns = new Map();
 
 /**
- * set sns item
+ * set sns items
  * @returns {void}
  */
 export const setSnsItems = async () => {
@@ -227,7 +229,8 @@ export const extractClickedData = async (info = {}, tab = {}) => {
     id: tabId, index: tabIndex, title: tabTitle, url: tabUrl, windowId,
   } = tab;
   const func = [];
-  if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
+  if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
+      Number.isInteger(tabIndex)) {
     const {linkText, linkUrl, menuItemId, selectionText} = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
@@ -463,18 +466,38 @@ export const handleStoredData = async data => {
   return Promise.all(func);
 };
 
-menus.onClicked.addListener((info, tab) =>
-  extractClickedData(info, tab).catch(throwErr)
-);
-storage.onChanged.addListener(data =>
-  handleStoredData(data).then(removeMenu).then(prepareMenu).catch(throwErr)
-);
-runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
-runtime.onMessageExternal.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
+/* browser event handlers */
+/**
+ * handle menus.onClicked
+ * @param {!Object} info - info
+ * @param {!Object} tab - tabs.Tab
+ * @returns {AsyncFunction} - promise chain
+ */
+export const menusOnClicked = (info, tab) =>
+  extractClickedData(info, tab).catch(throwErr);
+
+/**
+ * handle storage.onChange
+ * @param {!Object} data - data
+ * @returns {AsyncFunction} - promise chain
+ */
+export const storageOnChanged = data =>
+  handleStoredData(data).then(removeMenu).then(prepareMenu).catch(throwErr);
+
+/**
+ * handle runtime.onMessage, runtime.onMessageExternal
+ * @param {!Object} msg - message
+ * @param {!Object} sender - sender
+ * @returns {AsyncFunction} - promise chain
+ */
+export const runtimeOnMessage = (msg, sender) =>
+  handleMsg(msg, sender).catch(throwErr);
+
+/* listeners */
+menus.onClicked.addListener(menusOnClicked);
+storage.onChanged.addListener(storageOnChanged);
+runtime.onMessage.addListener(runtimeOnMessage);
+runtime.onMessageExternal.addListener(runtimeOnMessage);
 
 /* startup */
 Promise.all([
