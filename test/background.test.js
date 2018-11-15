@@ -331,14 +331,7 @@ describe("background", () => {
     it("should init context info", async () => {
       mjs.contextInfo.canonicalUrl = "https://example.com";
       const res = await func();
-      assert.deepEqual(res, {
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }, "result");
+      assert.deepEqual(res, {canonicalUrl: null}, "result");
     });
   });
 
@@ -348,14 +341,7 @@ describe("background", () => {
     it("should init context info", async () => {
       mjs.contextInfo.canonicalUrl = "https://example.com";
       const res = await func();
-      assert.deepEqual(res, {
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }, "result");
+      assert.deepEqual(res, {canonicalUrl: null}, "result");
     });
 
     it("should set context info", async () => {
@@ -365,14 +351,7 @@ describe("background", () => {
           canonicalUrl: "https://example.com",
         },
       });
-      assert.deepEqual(res, {
-        canonicalUrl: "https://example.com",
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }, "result");
+      assert.deepEqual(res, {canonicalUrl: "https://example.com"}, "result");
     });
   });
 
@@ -387,14 +366,7 @@ describe("background", () => {
 
     it("should get array", async () => {
       const res = await func();
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -403,14 +375,7 @@ describe("background", () => {
         id: TAB_ID_NONE,
       };
       const res = await func({}, tab);
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -418,14 +383,7 @@ describe("background", () => {
         id: 1,
       };
       const res = await func({}, tab);
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -436,14 +394,7 @@ describe("background", () => {
         id: 1,
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -455,14 +406,7 @@ describe("background", () => {
         index: 0,
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -479,17 +423,7 @@ describe("background", () => {
         url: "http://example.com",
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [
-        {},
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          selectionText: null,
-          title: null,
-          url: null,
-        },
-      ], "result");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
       browser.tabs.create.flush();
     });
 
@@ -509,17 +443,7 @@ describe("background", () => {
         windowId: 2,
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [
-        {},
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          selectionText: null,
-          title: null,
-          url: null,
-        },
-      ], "result");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
       browser.tabs.create.flush();
     });
 
@@ -541,17 +465,7 @@ describe("background", () => {
         windowId: 2,
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [
-        {},
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          selectionText: null,
-          title: null,
-          url: null,
-        },
-      ], "result");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
       browser.tabs.create.flush();
     });
 
@@ -576,17 +490,7 @@ describe("background", () => {
         windowId: 2,
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [
-        {},
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          selectionText: null,
-          title: null,
-          url: null,
-        },
-      ], "result");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
       browser.tabs.create.flush();
     });
   });
@@ -865,14 +769,7 @@ describe("background", () => {
       }, {
         id: "treestyletab@piro.sakura.ne.jp",
       });
-      assert.deepEqual(res, [[{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }]], "result");
+      assert.deepEqual(res, [[{canonicalUrl: null}]], "result");
       browser.runtime.getManifest.flush();
     });
 
@@ -880,28 +777,14 @@ describe("background", () => {
       const res = await func({
         [SHARE_SNS]: {},
       });
-      assert.deepEqual(res, [[{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }]], "result");
+      assert.deepEqual(res, [[{canonicalUrl: null}]], "result");
     });
 
     it("should get array", async () => {
       const res = await func({
         [CONTEXT_INFO]: {},
       });
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
 
     it("should get array", async () => {
@@ -912,14 +795,7 @@ describe("background", () => {
           },
         },
       });
-      assert.deepEqual(res, [{
-        canonicalUrl: "//example.com",
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
-      }], "result");
+      assert.deepEqual(res, [{canonicalUrl: "//example.com"}], "result");
     });
   });
 
@@ -985,11 +861,6 @@ describe("background", () => {
       const res = await func();
       assert.deepEqual(res, [{
         canonicalUrl: null,
-        content: null,
-        isLink: false,
-        selectionText: null,
-        title: null,
-        url: null,
       }], "result");
     });
   });

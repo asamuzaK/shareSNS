@@ -190,11 +190,6 @@ export const createSnsUrl = async (url, info) => {
 
 /* context info */
 export const contextInfo = {
-  isLink: false,
-  content: null,
-  selectionText: null,
-  title: null,
-  url: null,
   canonicalUrl: null,
 };
 
@@ -203,11 +198,6 @@ export const contextInfo = {
  * @returns {Object} - context info
  */
 export const initContextInfo = async () => {
-  contextInfo.isLink = false;
-  contextInfo.content = null;
-  contextInfo.selectionText = null;
-  contextInfo.title = null;
-  contextInfo.url = null;
   contextInfo.canonicalUrl = null;
   return contextInfo;
 };
@@ -220,12 +210,7 @@ export const initContextInfo = async () => {
 export const updateContextInfo = async (data = {}) => {
   const {contextInfo: info} = data;
   if (info) {
-    const {canonicalUrl, content, isLink, selectionText, title, url} = info;
-    contextInfo.isLink = !!isLink;
-    contextInfo.content = content || null;
-    contextInfo.selectionText = selectionText || null;
-    contextInfo.title = title || null;
-    contextInfo.url = url || null;
+    const {canonicalUrl} = info;
     contextInfo.canonicalUrl = canonicalUrl || null;
   } else {
     await initContextInfo();
