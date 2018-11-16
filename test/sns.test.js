@@ -7,11 +7,21 @@ import {describe, it} from "mocha";
 import sns from "../src/mjs/sns.js";
 
 describe("sns", () => {
+  const itemKeys = [
+    "Twitter", "Facebook", "LINE", "Hatena", "Google+",
+    "Mastodon",
+  ];
   const items = Object.entries(sns);
-  for (const [key, value] of items) {
-    it("should get string and object", () => {
-      assert.isString(key);
-      assert.isObject(value);
-    });
-  }
+
+  it("should get equal length", () => {
+    assert.isTrue(items.length === itemKeys.length, "length");
+  });
+
+  it("should get string and object", () => {
+    for (const [key, value] of items) {
+      assert.isTrue(itemKeys.includes(key), "item");
+      assert.isString(key, "key");
+      assert.isObject(value, "value");
+    }
+  });
 });
