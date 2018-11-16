@@ -12,7 +12,7 @@ import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/popup.js";
 import {
-  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB,
+  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 const SNS_ITEMS = "snsItems";
@@ -142,7 +142,7 @@ describe("popup", () => {
 
     it("should call function", async () => {
       mjs.tabInfo.tab = {};
-      mjs.contextInfo.isLink = true,
+      mjs.contextInfo.isLink = true;
       mjs.contextInfo.title = "bar";
       mjs.contextInfo.url = "https://example.com";
       browser.runtime.sendMessage.withArgs(browser.runtime.id, {
@@ -168,7 +168,7 @@ describe("popup", () => {
       assert.isUndefined(res, "result");
       browser.runtime.sendMessage.flush();
       mjs.tabInfo.tab = null;
-      mjs.contextInfo.isLink = false,
+      mjs.contextInfo.isLink = false;
       mjs.contextInfo.title = null;
       mjs.contextInfo.url = null;
     });
@@ -177,7 +177,7 @@ describe("popup", () => {
       mjs.tabInfo.tab = {};
       mjs.contextInfo.canonicalUrl = "https://www.example.com";
       mjs.contextInfo.content = "baz";
-      mjs.contextInfo.isLink = true,
+      mjs.contextInfo.isLink = true;
       mjs.contextInfo.selectionText = "qux";
       mjs.contextInfo.title = "bar";
       mjs.contextInfo.url = "https://example.com";
@@ -206,7 +206,7 @@ describe("popup", () => {
       mjs.tabInfo.tab = null;
       mjs.contextInfo.canonicalUrl = null;
       mjs.contextInfo.content = null;
-      mjs.contextInfo.isLink = false,
+      mjs.contextInfo.isLink = false;
       mjs.contextInfo.selectionText = null;
       mjs.contextInfo.title = null;
       mjs.contextInfo.url = null;
