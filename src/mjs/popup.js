@@ -22,7 +22,7 @@ const SNS_ITEM_TMPL = "snsItemTemplate";
 const SNS_NOT_SELECTED = "warnSnsNotSelected";
 
 /* tab info */
-const tabInfo = {
+export const tabInfo = {
   tab: null,
 };
 
@@ -36,7 +36,7 @@ export const setTabInfo = async tab => {
 };
 
 /* sns */
-const sns = new Map();
+export const sns = new Map();
 
 /**
  * set sns items
@@ -51,7 +51,7 @@ export const setSnsItems = async () => {
 };
 
 /* context info */
-const contextInfo = {
+export const contextInfo = {
   isLink: false,
   content: null,
   selectionText: null,
@@ -76,33 +76,35 @@ export const initContextInfo = async () => {
 
 /**
  * create share data
- * @param {!Object} evt - Event
+ * @param {Object} evt - Event
  * @returns {?AsyncFunction} - sendMessage()
  */
 export const createShareData = async evt => {
-  const {target} = evt;
   let func;
-  if (target) {
-    const {id: menuItemId} = target;
-    const {tab} = tabInfo;
-    if (tab) {
-      const info = {
-        menuItemId,
-      };
-      const {
-        canonicalUrl, content, isLink, selectionText, title, url,
-      } = contextInfo;
-      if (isLink) {
-        info.linkText = content || title;
-        info.linkUrl = url;
+  if (isObjectNotEmpty(evt)) {
+    const {target} = evt;
+    if (isObjectNotEmpty(target)) {
+      const {id: menuItemId} = target;
+      const {tab} = tabInfo;
+      if (tab) {
+        const info = {
+          menuItemId,
+        };
+        const {
+          canonicalUrl, content, isLink, selectionText, title, url,
+        } = contextInfo;
+        if (isLink) {
+          info.linkText = content || title;
+          info.linkUrl = url;
+        }
+        info.canonicalUrl = canonicalUrl || null;
+        info.selectionText = selectionText || "";
+        func = sendMessage(runtime.id, {
+          [SHARE_SNS]: {
+            info, tab,
+          },
+        });
       }
-      info.canonicalUrl = canonicalUrl || null;
-      info.selectionText = selectionText || "";
-      func = sendMessage(runtime.id, {
-        [SHARE_SNS]: {
-          info, tab,
-        },
-      });
     }
   }
   return func || null;
@@ -121,18 +123,24 @@ export const createHtml = async () => {
         const {id} = value;
         const {content} = tmpl;
         const item = content.querySelector(`.${SNS_ITEM}`);
-        const {firstElementChild} = item;
-        const page = item.querySelector(`.${SHARE_PAGE}`);
-        const link = item.querySelector(`.${SHARE_LINK}`);
-        if (item && firstElementChild && page && link) {
+        if (item) {
+          const {firstElementChild} = item;
+          const page = item.querySelector(`.${SHARE_PAGE}`);
+          const link = item.querySelector(`.${SHARE_LINK}`);
           item.id = id;
-          firstElementChild.textContent = id;
-          page.id = `${SHARE_PAGE}${id}`;
-          page.dataset.i18n = `${SHARE_PAGE},${id}`;
-          page.textContent = `Share page with ${id}`;
-          link.id = `${SHARE_LINK}${id}`;
-          link.dataset.i18n = `${SHARE_LINK},${id}`;
-          link.textContent = `Share link with ${id}`;
+          if (firstElementChild) {
+            firstElementChild.textContent = id;
+          }
+          if (page) {
+            page.id = `${SHARE_PAGE}${id}`;
+            page.dataset.i18n = `${SHARE_PAGE},${id}`;
+            page.textContent = `Share page with ${id}`;
+          }
+          if (link) {
+            link.id = `${SHARE_LINK}${id}`;
+            link.dataset.i18n = `${SHARE_LINK},${id}`;
+            link.textContent = `Share link with ${id}`;
+          }
           container.appendChild(document.importNode(content, true));
         }
       }
@@ -141,21 +149,30 @@ export const createHtml = async () => {
 };
 
 /**
+ * handle open options on click
+ * @returns {AsyncFunction} - runtime.openOptionsPage()
+ */
+export const openOptionsOnClick = () => runtime.openOptionsPage();
+
+/**
+ * handle menu on click
+ * @param {!Object} evt - Event
+ * @returns {AsyncFunction} - createShareData()
+ */
+export const menuOnClick = evt => createShareData(evt).catch(throwErr);
+
+/**
  * add listener to menu
  * @returns {void}
  */
 export const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll("button");
-  if (nodes instanceof NodeList) {
-    for (const node of nodes) {
-      const {id} = node;
-      if (id === OPTIONS_OPEN) {
-        node.addEventListener("click", () => runtime.openOptionsPage());
-      } else {
-        node.addEventListener("click", evt =>
-          createShareData(evt).catch(throwErr)
-        );
-      }
+  for (const node of nodes) {
+    const {id} = node;
+    if (id === OPTIONS_OPEN) {
+      node.addEventListener("click", openOptionsOnClick);
+    } else {
+      node.addEventListener("click", menuOnClick);
     }
   }
 };
@@ -303,21 +320,48 @@ export const handleStoredData = async data => {
   return Promise.all(func);
 };
 
+/**
+ * prepare tab
+ * @returns {Promise.<Array>} - results of each handler
+ */
+export const prepareTab = async () => {
+  const func = [];
+  const tab = await getActiveTab();
+  if (tab) {
+    func.push(
+      requestContextInfo(tab),
+      setTabInfo(tab),
+    );
+  }
+  return Promise.all(func);
+};
+
+/* browser event handlers */
+/**
+ * handle storage.onChanged
+ * @param {Object} data - data
+ * @returns {AsyncFunction} - promise chain
+ */
+export const storageOnChanged = data =>
+  handleStoredData(data).then(toggleWarning).catch(throwErr);
+
+/**
+ * handle runtime.onMessage
+ * @param {*} msg - message
+ * @param {Object} sender - sender
+ * @returns {AsyncFunction} - handleMsg()
+ */
+export const runtimeOnMessage = (msg, sender) =>
+  handleMsg(msg, sender).catch(throwErr);
+
 /* listeners */
-storage.onChanged.addListener(data =>
-  handleStoredData(data).then(toggleWarning).catch(throwErr)
-);
-runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
+storage.onChanged.addListener(storageOnChanged);
+runtime.onMessage.addListener(runtimeOnMessage);
 
 /* startup */
 setSnsItems().then(createHtml).then(() => Promise.all([
   localizeHtml(),
   addListenerToMenu(),
   getStorage().then(handleStoredData).then(toggleWarning),
-  getActiveTab().then(tab => Promise.all([
-    requestContextInfo(tab),
-    setTabInfo(tab),
-  ])),
+  prepareTab(),
 ])).catch(throwErr);
