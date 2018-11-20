@@ -81,9 +81,9 @@ export const initContextInfo = async () => {
  */
 export const createShareData = async evt => {
   let func;
-  if (isObjectNotEmpty(evt)) {
+  if (evt) {
     const {target} = evt;
-    if (isObjectNotEmpty(target)) {
+    if (target) {
       const {id: menuItemId} = target;
       const {tab} = tabInfo;
       if (tab) {

@@ -106,7 +106,8 @@ describe("popup", () => {
       assert.isNull(res, "result");
     });
 
-    it("should get null", async () => {
+    it("should get null if tabInfo.tab not found", async () => {
+      mjs.tabInfo.tab = null;
       const res = await func({
         target: {
           id: "foo",
