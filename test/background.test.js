@@ -325,7 +325,7 @@ describe("background", () => {
     });
   });
 
-  describe("update context info", () => {
+  describe("init context info", () => {
     const func = mjs.initContextInfo;
 
     it("should init context info", async () => {
