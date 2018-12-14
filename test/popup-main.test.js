@@ -1,5 +1,5 @@
 /**
- * popup.test.js
+ * popup-main.test.js
  */
 /*
  eslint-disable no-magic-numbers, max-nested-callbacks, array-bracket-newline
@@ -10,7 +10,7 @@ import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
-import * as mjs from "../src/mjs/popup.js";
+import * as mjs from "../src/mjs/popup-main.js";
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
 } from "../src/mjs/constant.js";
@@ -20,7 +20,7 @@ const SNS_ITEM = "snsItem";
 const SNS_ITEM_TMPL = "snsItemTemplate";
 const SNS_NOT_SELECTED = "warnSnsNotSelected";
 
-describe("popup", () => {
+describe("popup-main", () => {
   /**
    * create jsdom
    * @returns {Object} - jsdom instance
@@ -628,24 +628,6 @@ describe("popup", () => {
       browser.tabs.query.resolves([{}]);
       const res = await func();
       assert.deepEqual(res, [undefined, undefined], "result");
-    });
-  });
-
-  describe("handle storage.onChanged", () => {
-    const func = mjs.storageOnChanged;
-
-    it("should get result", async () => {
-      const res = await func();
-      assert.isUndefined(res, "result");
-    });
-  });
-
-  describe("handle runtime.onMessage", () => {
-    const func = mjs.runtimeOnMessage;
-
-    it("should get empty array", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
     });
   });
 });

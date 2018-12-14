@@ -1,5 +1,5 @@
 /**
- * background.test.js
+ * main.test.js
  */
 /*
  eslint-disable no-magic-numbers, max-nested-callbacks, array-bracket-newline
@@ -10,12 +10,12 @@ import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
-import * as mjs from "../src/mjs/background.js";
+import * as mjs from "../src/mjs/main.js";
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB,
 } from "../src/mjs/constant.js";
 
-describe("background", () => {
+describe("main", () => {
   /**
    * create jsdom
    * @returns {Object} - jsdom instance
@@ -851,37 +851,6 @@ describe("background", () => {
       assert.deepEqual(spy.args, [["foo", {enabled: true}]], "spy");
       assert.deepEqual(res, [undefined], "result");
       mjs.sns.set.restore();
-    });
-  });
-
-  describe("handle menus.onClicked", () => {
-    const func = mjs.menusOnClicked;
-
-    it("should get function called", async () => {
-      const res = await func();
-      assert.deepEqual(res, [{
-        canonicalUrl: null,
-      }], "result");
-    });
-  });
-
-  describe("handle storage.onChange", () => {
-    const func = mjs.storageOnChanged;
-
-    it("should get function called", async () => {
-      browser.runtime.getBrowserInfo.returns({version: "63.0a1"});
-      const res = await func();
-      assert.deepEqual(res, [[], []], "result");
-      browser.runtime.getBrowserInfo.flush();
-    });
-  });
-
-  describe("handle runtime.onMessage, runtime.onMessageExternal", () => {
-    const func = mjs.runtimeOnMessage;
-
-    it("should get function called", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
     });
   });
 });
