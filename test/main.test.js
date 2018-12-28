@@ -5,7 +5,6 @@
  eslint-disable no-magic-numbers, max-nested-callbacks, array-bracket-newline
 */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";

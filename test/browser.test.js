@@ -3,7 +3,6 @@
  */
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
