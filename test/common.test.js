@@ -26,19 +26,14 @@ describe("common", () => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
+    global.window = window;
+    global.document = document;
   });
   afterEach(() => {
     window = null;
     document = null;
-  });
-
-  describe("throw error", () => {
-    const func = mjs.throwErr;
-
-    it("should throw", () => {
-      const e = new Error("error");
-      assert.throws(() => func(e), "error");
-    });
+    delete global.window;
+    delete global.document;
   });
 
   describe("log error", () => {
@@ -70,6 +65,19 @@ describe("common", () => {
       assert.strictEqual(msg, "error");
       assert.isTrue(calledOnce);
       assert.isFalse(res);
+    });
+  });
+
+  describe("throw error", () => {
+    const func = mjs.throwErr;
+
+    it("should throw", () => {
+      const stub = sinon.stub(console, "error");
+      const i = stub.callCount;
+      const e = new Error("error");
+      assert.throws(() => func(e), "error");
+      assert.strictEqual(stub.callCount, i + 1, "called");
+      stub.restore();
     });
   });
 
@@ -249,7 +257,7 @@ describe("common", () => {
     const func = mjs.parseStringifiedInt;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expexted String but got Undefined");
+      assert.throws(() => func(), "Expexted String but got Undefined.");
     });
 
     it("should throw", () => {
@@ -295,12 +303,12 @@ describe("common", () => {
     const func = mjs.escapeMatchingChars;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expexted String but got Undefined");
+      assert.throws(() => func(), "Expexted String but got Undefined.");
     });
 
     it("should throw", () => {
       assert.throws(() => func("foo", "bar"),
-                    "Expexted RegExp but got String");
+                    "Expexted RegExp but got String.");
     });
 
     it("should get null", () => {
@@ -322,7 +330,7 @@ describe("common", () => {
     const func = mjs.isValidToolkitVersion;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expected String but got Undefined");
+      assert.throws(() => func(), "Expected String but got Undefined.");
     });
 
     it("should get true", () => {
@@ -354,7 +362,7 @@ describe("common", () => {
     const func = mjs.parseVersion;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expected String but got Undefined");
+      assert.throws(() => func(), "Expected String but got Undefined.");
     });
 
     it("should throw", () => {
