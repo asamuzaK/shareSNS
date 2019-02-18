@@ -14,8 +14,8 @@ import {
 } from "./options-main.js";
 
 /* startup */
-Promise.all([
+document.addEventListener("DOMContentLoaded", () => Promise.all([
   localizeHtml(),
   setValuesFromStorage(),
   addInputChangeListener(),
-]).catch(throwErr);
+]).catch(throwErr));
