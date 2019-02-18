@@ -601,44 +601,6 @@ describe("main", () => {
       browser.i18n.getMessage.flush();
       browser.menus.create.flush();
     });
-
-    it("should get array", async () => {
-      mjs.sns.set("foo", {
-        enabled: true,
-        id: "bar",
-        menu: "foobar",
-      });
-      browser.runtime.getBrowserInfo.returns({version: "63.0a1"});
-      browser.i18n.getMessage.withArgs(SHARE_PAGE, "foobar").returns("baz");
-      browser.i18n.getMessage.withArgs(SHARE_TAB, "foobar").returns("qux");
-      browser.i18n.getMessage.withArgs(SHARE_LINK, "foobar").returns("quux");
-      browser.menus.create.withArgs({
-        id: `${SHARE_PAGE}bar`,
-        contexts: ["page", "selection"],
-        title: "baz",
-        enabled: true,
-      }).resolves(SHARE_PAGE);
-      browser.menus.create.withArgs({
-        id: `${SHARE_TAB}bar`,
-        contexts: ["tab"],
-        title: "qux",
-        enabled: true,
-      }).resolves(SHARE_TAB);
-      browser.menus.create.withArgs({
-        id: `${SHARE_LINK}bar`,
-        contexts: ["link"],
-        title: "quux",
-        enabled: true,
-      }).resolves(SHARE_LINK);
-      const i = browser.menus.create.callCount;
-      const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
-                       "result");
-      browser.runtime.getBrowserInfo.flush();
-      browser.i18n.getMessage.flush();
-      browser.menus.create.flush();
-    });
   });
 
   describe("handle external extension", () => {

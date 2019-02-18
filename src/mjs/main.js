@@ -7,7 +7,7 @@ import {
 } from "./common.js";
 import {
   createTab, getExtensionInfo, getExternalExtensions, getManifestIcons,
-  isAccessKeySupported, sendMessage,
+  sendMessage,
 } from "./browser.js";
 import snsData from "./sns.js";
 
@@ -316,11 +316,10 @@ export const createMenuItem = async (id, title, data = {}) => {
  */
 export const createMenu = async () => {
   const func = [];
-  const acckey = await isAccessKeySupported();
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
       const {enabled, id, menu} = value;
-      const key = acckey && menu || id;
+      const key = menu || id;
       if (enabled && isString(id) && isString(key)) {
         func.push(
           createMenuItem(
@@ -363,7 +362,6 @@ export const handleExternalExts = async () => {
   const func = [];
   // Tree Style Tab
   if (externalExts.has(WEBEXT_TST)) {
-    const acckey = await isAccessKeySupported();
     func.push(sendMsg(WEBEXT_TST, {
       type: "register-self",
       name: i18n.getMessage(EXT_NAME),
@@ -373,7 +371,7 @@ export const handleExternalExts = async () => {
     sns.forEach(value => {
       if (isObjectNotEmpty(value)) {
         const {enabled, id, menu} = value;
-        const key = acckey && menu || id;
+        const key = menu || id;
         if (enabled && isString(id) && isString(key)) {
           func.push(sendMsg(WEBEXT_TST, {
             type: "fake-contextMenu-create",
