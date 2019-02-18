@@ -2,7 +2,7 @@
   "applications": {
     "gecko": {
       "id": "shareSNS@asamuzak.jp",
-      "strict_min_version": "60.0"
+      "strict_min_version": "66.0a1"
     }
   },
   "background": {
@@ -24,6 +24,10 @@
         "size": 32
       }
     ]
+  },
+  "commands": {
+    "_execute_browser_action": {
+    }
   },
   "content_scripts": [
     {
