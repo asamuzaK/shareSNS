@@ -26,108 +26,6 @@ describe("main", () => {
     assert.isObject(browser, "browser");
   });
 
-  describe("set external extensions", () => {
-    const func = mjs.setExternalExts;
-    beforeEach(() => {
-      mjs.externalExts.clear();
-    });
-    afterEach(() => {
-      mjs.externalExts.clear();
-    });
-
-    it("should get empty array", async () => {
-      browser.management.getAll.resolves([]);
-      const res = await func();
-      assert.deepEqual(res, [], "result");
-      browser.management.getAll.flush();
-    });
-
-    it("should get array", async () => {
-      const id = "treestyletab@piro.sakura.ne.jp";
-      browser.management.getAll.resolves([{
-        id,
-        type: "extension",
-        enabled: true,
-      }]);
-      const res = await func();
-      assert.deepEqual(res, [undefined], "result");
-      assert.isTrue(mjs.externalExts.has(id), "set");
-      browser.management.getAll.flush();
-    });
-
-    it("should get array", async () => {
-      const id = "treestyletab@piro.sakura.ne.jp";
-      mjs.externalExts.add(id);
-      browser.management.getAll.resolves([{
-        id,
-        type: "extension",
-        enabled: false,
-      }]);
-      const res = await func();
-      assert.deepEqual(res, [undefined], "result");
-      assert.isFalse(mjs.externalExts.has(id), "set");
-      browser.management.getAll.flush();
-    });
-  });
-
-  describe("send message", () => {
-    const func = mjs.sendMsg;
-    beforeEach(() => {
-      mjs.externalExts.clear();
-    });
-    afterEach(() => {
-      mjs.externalExts.clear();
-    });
-
-    it("should get emtpy array", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should get array", async () => {
-      const id = "treestyletab@piro.sakura.ne.jp";
-      browser.runtime.sendMessage.withArgs(id, {bar: "baz"}, null)
-        .resolves(undefined);
-      browser.management.get.withArgs(id).resolves({enabled: true});
-      const i = browser.runtime.sendMessage.callCount;
-      const res = await func(id, {bar: "baz"});
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-      assert.deepEqual(res, [undefined, undefined], "result");
-      assert.isTrue(mjs.externalExts.has(id), "value");
-      browser.runtime.sendMessage.flush();
-      browser.management.get.flush();
-    });
-
-    it("should get array", async () => {
-      const id = "treestyletab@piro.sakura.ne.jp";
-      mjs.externalExts.add(id);
-      browser.runtime.sendMessage.withArgs(id, {bar: "baz"}, null)
-        .resolves(undefined);
-      browser.management.get.withArgs(id).resolves({enabled: false});
-      const i = browser.runtime.sendMessage.callCount;
-      const res = await func(id, {bar: "baz"});
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.deepEqual(res, [undefined], "result");
-      assert.isFalse(mjs.externalExts.has(id), "value");
-      browser.runtime.sendMessage.flush();
-      browser.management.get.flush();
-    });
-
-    it("should get array", async () => {
-      browser.runtime.sendMessage.withArgs(
-        browser.runtime.id, {bar: "baz"}, null
-      ).resolves(undefined);
-      const i = browser.runtime.sendMessage.callCount;
-      const res = await func(null, {bar: "baz"});
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-      assert.deepEqual(res, [undefined], "result");
-      browser.runtime.sendMessage.flush();
-    });
-  });
-
   describe("set sns item", () => {
     const func = mjs.setSnsItems;
 
@@ -476,37 +374,13 @@ describe("main", () => {
   describe("remove context menu", () => {
     const func = mjs.removeMenu;
 
-    it("should get array", async () => {
+    it("should get undefined", async () => {
       browser.menus.removeAll.resolves(undefined);
       const i = browser.menus.removeAll.callCount;
       const res = await func();
       assert.strictEqual(browser.menus.removeAll.callCount, i + 1, "called");
-      assert.deepEqual(res, [undefined], "result");
+      assert.isUndefined(res, "result");
       browser.menus.removeAll.flush();
-    });
-
-    it("should get array", async () => {
-      browser.menus.removeAll.resolves(undefined);
-      const stub = sinon.stub(mjs.externalExts, "has").returns(false);
-      const i = browser.menus.removeAll.callCount;
-      const res = await func();
-      assert.strictEqual(browser.menus.removeAll.callCount, i + 1, "called");
-      assert.deepEqual(res, [undefined], "result");
-      stub.restore();
-      browser.menus.removeAll.flush();
-    });
-
-    it("should get array", async () => {
-      browser.menus.removeAll.resolves(undefined);
-      browser.runtime.sendMessage.resolves(undefined);
-      const stub = sinon.stub(mjs.externalExts, "has").returns(true);
-      const i = browser.menus.removeAll.callCount;
-      const res = await func();
-      assert.strictEqual(browser.menus.removeAll.callCount, i + 1, "called");
-      assert.deepEqual(res, [undefined, [undefined]], "result");
-      stub.restore();
-      browser.menus.removeAll.flush();
-      browser.runtime.sendMessage.flush();
     });
   });
 
@@ -603,65 +477,6 @@ describe("main", () => {
     });
   });
 
-  describe("handle external extension", () => {
-    const func = mjs.handleExternalExts;
-    beforeEach(() => {
-      mjs.sns.clear();
-    });
-    afterEach(() => {
-      mjs.sns.clear();
-    });
-
-    it("should get empty array", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should get array", async () => {
-      browser.runtime.getManifest.returns({icons: {}});
-      const stub = sinon.stub(mjs.externalExts, "has").returns(true);
-      const res = await func();
-      assert.deepEqual(res, [[undefined]], "result");
-      stub.restore();
-      browser.runtime.getManifest.flush();
-    });
-
-    it("should get array", async () => {
-      mjs.sns.set("foo", {
-        enabled: false,
-        id: "foo",
-      });
-      browser.runtime.getManifest.returns({icons: {}});
-      const stub = sinon.stub(mjs.externalExts, "has").returns(true);
-      const res = await func();
-      assert.deepEqual(res, [[undefined]], "result");
-      stub.restore();
-      browser.runtime.getManifest.flush();
-    });
-
-    it("should get array", async () => {
-      mjs.sns.set("foo", {
-        enabled: true,
-        id: "foo",
-      });
-      browser.runtime.getManifest.returns({icons: {}});
-      const stub = sinon.stub(mjs.externalExts, "has").returns(true);
-      const res = await func();
-      assert.deepEqual(res, [[undefined], [undefined]], "result");
-      stub.restore();
-      browser.runtime.getManifest.flush();
-    });
-  });
-
-  describe("prepare menu", () => {
-    const func = mjs.prepareMenu;
-
-    it("should get array", async () => {
-      const res = await func();
-      assert.deepEqual(res, [[], []], "result");
-    });
-  });
-
   describe("handle runtime message", () => {
     const func = mjs.handleMsg;
 
@@ -698,7 +513,7 @@ describe("main", () => {
       }, {
         id: "treestyletab@piro.sakura.ne.jp",
       });
-      assert.deepEqual(res, [[[undefined]]], "result");
+      assert.deepEqual(res, [], "result");
       browser.runtime.getManifest.flush();
     });
 
@@ -709,7 +524,7 @@ describe("main", () => {
       }, {
         id: "treestyletab@piro.sakura.ne.jp",
       });
-      assert.deepEqual(res, [[{canonicalUrl: null}]], "result");
+      assert.deepEqual(res, [], "result");
       browser.runtime.getManifest.flush();
     });
 

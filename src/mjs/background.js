@@ -9,8 +9,8 @@ import {
   getStorage,
 } from "./browser.js";
 import {
-  extractClickedData, handleMsg, handleStoredData, prepareMenu, removeMenu,
-  setExternalExts, setSnsItems,
+  createMenu, extractClickedData, handleMsg, handleStoredData, removeMenu,
+  setSnsItems,
 } from "./main.js";
 
 /* api */
@@ -21,17 +21,14 @@ menus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
 );
 storage.onChanged.addListener(data =>
-  handleStoredData(data).then(removeMenu).then(prepareMenu).catch(throwErr)
+  handleStoredData(data).then(removeMenu).then(createMenu).catch(throwErr)
 );
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
-runtime.onMessageExternal.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
 
 /* startup */
-Promise.all([
-  setSnsItems().then(getStorage).then(handleStoredData),
-  setExternalExts(),
-]).then(prepareMenu).catch(throwErr);
+document.addEventListener("DOMContentLoaded", () =>
+  setSnsItems().then(getStorage).then(handleStoredData).then(createMenu)
+    .catch(throwErr)
+);
