@@ -441,28 +441,80 @@ describe("main", () => {
       assert.deepEqual(res, [], "result");
     });
 
+    it("should get empty array", async () => {
+      const res = await func();
+      mjs.sns.set("foo", {
+        enabled: false,
+      });
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should get empty array", async () => {
+      const res = await func();
+      mjs.sns.set("foo", {
+        enabled: true,
+      });
+      assert.deepEqual(res, [], "result");
+    });
+
     it("should get array", async () => {
       mjs.sns.set("foo", {
         enabled: true,
-        id: "bar",
+        id: "foo",
       });
-      browser.i18n.getMessage.withArgs(SHARE_PAGE, "bar").returns("baz");
-      browser.i18n.getMessage.withArgs(SHARE_TAB, "bar").returns("qux");
-      browser.i18n.getMessage.withArgs(SHARE_LINK, "bar").returns("quux");
+      browser.i18n.getMessage.withArgs(SHARE_PAGE, "foo").returns("baz");
+      browser.i18n.getMessage.withArgs(SHARE_TAB, "foo").returns("qux");
+      browser.i18n.getMessage.withArgs(SHARE_LINK, "foo").returns("quux");
       browser.menus.create.withArgs({
-        id: `${SHARE_PAGE}bar`,
+        id: `${SHARE_PAGE}foo`,
         contexts: ["page", "selection"],
         title: "baz",
         enabled: true,
       }).resolves(SHARE_PAGE);
       browser.menus.create.withArgs({
-        id: `${SHARE_TAB}bar`,
+        id: `${SHARE_TAB}foo`,
         contexts: ["tab"],
         title: "qux",
         enabled: true,
       }).resolves(SHARE_TAB);
       browser.menus.create.withArgs({
-        id: `${SHARE_LINK}bar`,
+        id: `${SHARE_LINK}foo`,
+        contexts: ["link"],
+        title: "quux",
+        enabled: true,
+      }).resolves(SHARE_LINK);
+      const i = browser.menus.create.callCount;
+      const res = await func();
+      assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
+      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+                       "result");
+      browser.i18n.getMessage.flush();
+      browser.menus.create.flush();
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("foo", {
+        enabled: true,
+        id: "foo",
+        menu: "bar",
+      });
+      browser.i18n.getMessage.withArgs(SHARE_PAGE, "bar").returns("baz");
+      browser.i18n.getMessage.withArgs(SHARE_TAB, "bar").returns("qux");
+      browser.i18n.getMessage.withArgs(SHARE_LINK, "bar").returns("quux");
+      browser.menus.create.withArgs({
+        id: `${SHARE_PAGE}foo`,
+        contexts: ["page", "selection"],
+        title: "baz",
+        enabled: true,
+      }).resolves(SHARE_PAGE);
+      browser.menus.create.withArgs({
+        id: `${SHARE_TAB}foo`,
+        contexts: ["tab"],
+        title: "qux",
+        enabled: true,
+      }).resolves(SHARE_TAB);
+      browser.menus.create.withArgs({
+        id: `${SHARE_LINK}foo`,
         contexts: ["link"],
         title: "quux",
         enabled: true,
