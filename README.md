@@ -2,6 +2,7 @@ EN | [JA](./README.ja.md)
 
 [![Build Status](https://travis-ci.org/asamuzaK/shareSNS.svg?branch=master)](https://travis-ci.org/asamuzaK/shareSNS)
 [![devDependency Status](https://david-dm.org/asamuzaK/shareSNS/dev-status.svg)](https://david-dm.org/asamuzaK/shareSNS?type=dev)
+[![Mozilla Add-on](https://img.shields.io/amo/v/shareSNS@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/share-with-sns/)
 
 # Share with SNS
 
