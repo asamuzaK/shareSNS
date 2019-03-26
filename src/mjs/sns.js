@@ -23,11 +23,6 @@ export default {
     menu: "&Hatena",
     url: "http://b.hatena.ne.jp/add?mode=confirm&amp;url=%url%&amp;title=%text%",
   },
-  "Google+": {
-    id: "Google+",
-    menu: "&Google+",
-    url: "https://plus.google.com/share?url=%url%",
-  },
   Mastodon: {
     id: "Mastodon",
     menu: "&Mastodon",

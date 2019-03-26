@@ -84,7 +84,7 @@ describe("popup-main", () => {
 
     it("should set map", async () => {
       await func();
-      assert.strictEqual(mjs.sns.size, 6, "size");
+      assert.strictEqual(mjs.sns.size, 5, "size");
     });
   });
 

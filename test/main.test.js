@@ -31,8 +31,7 @@ describe("main", () => {
 
     it("should set map", async () => {
       const itemKeys = [
-        "Twitter", "Facebook", "LINE", "Hatena", "Google+",
-        "Mastodon",
+        "Twitter", "Facebook", "LINE", "Hatena", "Mastodon",
       ];
       await func();
       assert.strictEqual(mjs.sns.size, itemKeys.length, "length");

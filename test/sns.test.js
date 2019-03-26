@@ -8,8 +8,7 @@ import sns from "../src/mjs/sns.js";
 
 describe("sns", () => {
   const itemKeys = [
-    "Twitter", "Facebook", "LINE", "Hatena", "Google+",
-    "Mastodon",
+    "Twitter", "Facebook", "LINE", "Hatena", "Mastodon",
   ];
   const items = Object.entries(sns);
 
