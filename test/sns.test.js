@@ -7,9 +7,7 @@ import {describe, it} from "mocha";
 import sns from "../src/mjs/sns.js";
 
 describe("sns", () => {
-  const itemKeys = [
-    "Twitter", "Facebook", "LINE", "Hatena", "Mastodon",
-  ];
+  const itemKeys = ["Twitter", "Facebook", "LINE", "Hatena", "Mastodon"];
   const items = Object.entries(sns);
 
   it("should get equal length", () => {
