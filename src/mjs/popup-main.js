@@ -314,9 +314,7 @@ export const handleStoredData = async data => {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
         const {newValue} = value;
-        if (sns.has(key)) {
-          func.push(toggleSnsItem(key, newValue || value));
-        }
+        sns.has(key) && func.push(toggleSnsItem(key, newValue || value));
       }
     }
   }
@@ -330,11 +328,9 @@ export const handleStoredData = async data => {
 export const prepareTab = async () => {
   const func = [];
   const tab = await getActiveTab();
-  if (tab) {
-    func.push(
-      requestContextInfo(tab),
-      setTabInfo(tab),
-    );
-  }
+  tab && func.push(
+    requestContextInfo(tab),
+    setTabInfo(tab),
+  );
   return Promise.all(func);
 };

@@ -231,34 +231,32 @@ export const createMenu = async () => {
     if (isObjectNotEmpty(value)) {
       const {enabled, id, menu} = value;
       const key = menu || id;
-      if (enabled && isString(id) && isString(key)) {
-        func.push(
-          createMenuItem(
-            `${SHARE_PAGE}${id}`,
-            i18n.getMessage(SHARE_PAGE, key),
-            {
-              enabled,
-              contexts: ["page", "selection"],
-            }
-          ),
-          createMenuItem(
-            `${SHARE_TAB}${id}`,
-            i18n.getMessage(SHARE_TAB, key),
-            {
-              enabled,
-              contexts: ["tab"],
-            }
-          ),
-          createMenuItem(
-            `${SHARE_LINK}${id}`,
-            i18n.getMessage(SHARE_LINK, key),
-            {
-              enabled,
-              contexts: ["link"],
-            }
-          ),
-        );
-      }
+      enabled && isString(id) && isString(key) && func.push(
+        createMenuItem(
+          `${SHARE_PAGE}${id}`,
+          i18n.getMessage(SHARE_PAGE, key),
+          {
+            enabled,
+            contexts: ["page", "selection"],
+          }
+        ),
+        createMenuItem(
+          `${SHARE_TAB}${id}`,
+          i18n.getMessage(SHARE_TAB, key),
+          {
+            enabled,
+            contexts: ["tab"],
+          }
+        ),
+        createMenuItem(
+          `${SHARE_LINK}${id}`,
+          i18n.getMessage(SHARE_LINK, key),
+          {
+            enabled,
+            contexts: ["link"],
+          }
+        ),
+      );
     }
   });
   return Promise.all(func);
