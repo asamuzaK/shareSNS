@@ -449,6 +449,16 @@ describe("popup-main", () => {
   describe("toggle warning message", () => {
     const func = mjs.toggleWarning;
 
+    it("should not set display", async () => {
+      const elm = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = SNS_NOT_SELECTED;
+      elm.style.display = "block";
+      body.appendChild(elm);
+      await func();
+      assert.strictEqual(elm.style.display, "block", "result");
+    });
+
     it("should set display", async () => {
       const elm = document.createElement("p");
       const elm2 = document.createElement("p");
