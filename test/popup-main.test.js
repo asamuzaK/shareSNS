@@ -1,9 +1,7 @@
 /**
  * popup-main.test.js
  */
-/*
- eslint-disable no-magic-numbers, max-nested-callbacks, array-bracket-newline
-*/
+/* eslint-disable no-magic-numbers */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";

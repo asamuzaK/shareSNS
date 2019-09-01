@@ -2,7 +2,7 @@
  * main.test.js
  */
 /*
- eslint-disable no-magic-numbers, max-nested-callbacks, array-bracket-newline
+  eslint-disable array-bracket-newline, no-magic-numbers, max-nested-callbacks
 */
 
 import {assert} from "chai";
