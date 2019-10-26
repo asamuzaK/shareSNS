@@ -20,10 +20,10 @@ const {storage, runtime} = browser;
 
 /* listeners */
 storage.onChanged.addListener(data =>
-  handleStoredData(data).then(toggleWarning).catch(throwErr)
+  handleStoredData(data).then(toggleWarning).catch(throwErr),
 );
 runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
+  handleMsg(msg, sender).catch(throwErr),
 );
 
 /* startup */

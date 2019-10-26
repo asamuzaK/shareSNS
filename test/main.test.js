@@ -182,7 +182,7 @@ describe("main", () => {
       };
       const res = await func("http://www.example.com", item);
       assert.strictEqual(
-        res, "https://example.com/?uri=http%3A%2F%2Fwww.example.com", "result"
+        res, "https://example.com/?uri=http%3A%2F%2Fwww.example.com", "result",
       );
     });
 

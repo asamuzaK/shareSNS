@@ -238,7 +238,7 @@ export const createMenu = async () => {
           {
             enabled,
             contexts: ["page", "selection"],
-          }
+          },
         ),
         createMenuItem(
           `${SHARE_TAB}${id}`,
@@ -246,7 +246,7 @@ export const createMenu = async () => {
           {
             enabled,
             contexts: ["tab"],
-          }
+          },
         ),
         createMenuItem(
           `${SHARE_LINK}${id}`,
@@ -254,7 +254,7 @@ export const createMenu = async () => {
           {
             enabled,
             contexts: ["link"],
-          }
+          },
         ),
       );
     }
