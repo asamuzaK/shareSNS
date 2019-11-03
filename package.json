@@ -35,5 +35,5 @@
     "sinon-chrome": "^3.0.1",
     "webext-schema": "^0.8.0"
   },
-  "version": "3.0.0"
+  "version": "3.0.1"
 }
