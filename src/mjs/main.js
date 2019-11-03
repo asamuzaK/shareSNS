@@ -40,15 +40,16 @@ export const setSnsItems = async () => {
  * @returns {Object} - sns item
  */
 export const getSnsItemFromId = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
   let item;
-  if (isString(id)) {
-    if (id.startsWith(SHARE_LINK)) {
-      item = sns.get(id.replace(SHARE_LINK, ""));
-    } else if (id.startsWith(SHARE_TAB)) {
-      item = sns.get(id.replace(SHARE_TAB, ""));
-    } else {
-      item = sns.get(id.replace(SHARE_PAGE, ""));
-    }
+  if (id.startsWith(SHARE_LINK)) {
+    item = sns.get(id.replace(SHARE_LINK, ""));
+  } else if (id.startsWith(SHARE_TAB)) {
+    item = sns.get(id.replace(SHARE_TAB, ""));
+  } else {
+    item = sns.get(id.replace(SHARE_PAGE, ""));
   }
   return item || null;
 };
@@ -60,21 +61,22 @@ export const getSnsItemFromId = async id => {
  * @returns {void}
  */
 export const toggleSnsItem = async (id, obj = {}) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
   const {checked, subItemOf, value} = obj;
   const item = subItemOf || id;
-  if (item) {
-    const data = sns.get(item);
-    if (data) {
-      if (subItemOf) {
-        const {subItem} = data;
-        if (isObjectNotEmpty(subItem) && subItem.hasOwnProperty(id)) {
-          data.subItem[id].value = value || null;
-          sns.set(item, data);
-        }
-      } else {
-        data.enabled = !!checked;
+  const data = sns.get(item);
+  if (data) {
+    if (subItemOf) {
+      const {subItem} = data;
+      if (isObjectNotEmpty(subItem) && subItem.hasOwnProperty(id)) {
+        data.subItem[id].value = value || null;
         sns.set(item, data);
       }
+    } else {
+      data.enabled = !!checked;
+      sns.set(item, data);
     }
   }
 };
@@ -209,9 +211,15 @@ export const removeMenu = async () => menus.removeAll();
  * @returns {?AsyncFunction} - menus.create()
  */
 export const createMenuItem = async (id, title, data = {}) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  if (!isString(title)) {
+    throw new TypeError(`Expected String but got ${getType(title)}.`);
+  }
   const {contexts, enabled} = data;
   let func;
-  if (isString(id) && isString(title) && Array.isArray(contexts)) {
+  if (Array.isArray(contexts)) {
     const opt = {
       id, contexts, title,
       enabled: !!enabled,

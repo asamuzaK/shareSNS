@@ -3,7 +3,7 @@
  */
 
 import {
-  isObjectNotEmpty, isString, logErr, throwErr,
+  getType, isObjectNotEmpty, isString, logErr, throwErr,
 } from "./common.js";
 import {
   getActiveTab, sendMessage,
@@ -197,14 +197,12 @@ export const updateMenu = async data => {
       contextInfo.selectionText = selectionText;
       contextInfo.title = title;
       contextInfo.url = url;
-      if (nodes && nodes.length) {
-        for (const node of nodes) {
-          const attr = "disabled";
-          if (isLink) {
-            node.removeAttribute(attr);
-          } else {
-            node.setAttribute(attr, attr);
-          }
+      for (const node of nodes) {
+        const attr = "disabled";
+        if (isLink) {
+          node.removeAttribute(attr);
+        } else {
+          node.setAttribute(attr, attr);
         }
       }
     }
@@ -292,12 +290,13 @@ export const toggleWarning = async () => {
  * @returns {void}
  */
 export const toggleSnsItem = async (id, obj = {}) => {
-  if (isString(id)) {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const elm = document.getElementById(id);
+  if (elm) {
     const {checked} = obj;
-    const elm = document.getElementById(id);
-    if (elm) {
-      elm.style.display = checked && "block" || "none";
-    }
+    elm.style.display = checked && "block" || "none";
   }
 };
 

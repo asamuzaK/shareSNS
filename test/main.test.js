@@ -51,14 +51,18 @@ describe("main", () => {
       mjs.sns.clear();
     });
 
-    it("should get null if no argument given", async () => {
-      const res = await func();
-      assert.isNull(res, "result");
+    it("should throw if no argument given", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
     });
 
-    it("should get null argument is not string", async () => {
-      const res = await func(1);
-      assert.isNull(res, "result");
+    it("should throw if argument is not string", async () => {
+      await func(1).catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Number.");
+      });
     });
 
     it("should get object", async () => {
@@ -109,6 +113,13 @@ describe("main", () => {
     });
     afterEach(() => {
       mjs.sns.clear();
+    });
+
+    it("should throw if first argument is not given", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
     });
 
     it("should set map", async () => {
@@ -386,19 +397,18 @@ describe("main", () => {
   describe("create context menu item", () => {
     const func = mjs.createMenuItem;
 
-    it("should get null if no argument given", async () => {
-      const res = await func();
-      assert.isNull(res, "result");
+    it("should throw if no argument given", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
     });
 
-    it("should get null if 1st arg is not string", async () => {
-      const res = await func(1, "foo", {contexts: []});
-      assert.isNull(res, "result");
-    });
-
-    it("should get null if 2nd arg is not string", async () => {
-      const res = await func("foo", 1, {contexts: []});
-      assert.isNull(res, "result");
+    it("should throw if 2nd arg is not string", async () => {
+      await func("foo").catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
     });
 
     it("should get null if 3rd arg does not contain contexts", async () => {

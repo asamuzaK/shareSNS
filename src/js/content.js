@@ -187,12 +187,11 @@
    * @returns {?AsyncFunction} - send context info
    */
   const handleKeyMouseEvt = evt => {
-    const {altKey, button, key, shiftKey, type} = evt;
+    const {button, key, shiftKey, type} = evt;
     let func;
     switch (type) {
       case "keydown":
-        if (altKey && shiftKey && key === "C" ||
-            shiftKey && key === "F10" || key === "ContextMenu") {
+        if (shiftKey && key === "F10" || key === "ContextMenu") {
           func = sendContextInfo().catch(throwErr);
         }
         break;

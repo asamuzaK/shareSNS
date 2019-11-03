@@ -491,14 +491,11 @@ describe("popup-main", () => {
   describe("toggle SNS item", () => {
     const func = mjs.toggleSnsItem;
 
-    it("should not set display if no argument given", async () => {
-      const elm = document.createElement("p");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.style.display = "none";
-      body.appendChild(elm);
-      await func();
-      assert.strictEqual(elm.style.display, "none", "display");
+    it("should throw if no argument given", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
     });
 
     it("should set display", async () => {
