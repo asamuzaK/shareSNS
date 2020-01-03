@@ -170,7 +170,6 @@ export const extractClickedData = async (info = {}, tab = {}) => {
         shareText = encodeURIComponent(selText || tabTitle);
         shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
       }
-      url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
       if (subItem) {
         const items = Object.values(subItem);
         let itemInfo;
@@ -181,10 +180,12 @@ export const extractClickedData = async (info = {}, tab = {}) => {
           }
         }
         if (itemInfo) {
-          url = await createSnsUrl(url, itemInfo);
+          url = await createSnsUrl(shareUrl, itemInfo);
         }
+      } else {
+        url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
       }
-      func.push(createTab({
+      url && func.push(createTab({
         url, windowId,
         active: true,
         index: tabIndex + 1,

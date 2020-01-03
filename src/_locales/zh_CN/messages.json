@@ -20,9 +20,6 @@
       }
     }
   },
-  "optionsMastodonInstanceUrlNote": {
-    "message": "如果浏览器已注册了 web+mastodon: 协议的处理程序，请将 Instance URL 框留空。要检查它是否已注册，在 about:preferences - “应用程序”中检查。"
-  },
   "optionsLabel": {
     "message": "选项"
   },
