@@ -26,7 +26,7 @@ export default {
   Mastodon: {
     id: "Mastodon",
     menu: "&Mastodon",
-    url: "web+mastodon://share?text=%text%+%url%",
+    url: null,
     subItem: {
       mastodonInstanceUrl: {
         url: "%origin%/intent?uri=%query%",

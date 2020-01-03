@@ -357,7 +357,7 @@ describe("main", () => {
 
     it("should get array", async () => {
       mjs.sns.set("foo", {
-        url: "https://example.com?u=%url%&amp;t=%text%",
+        url: null,
         subItem: {
           bar: {
             url: "%origin%/?q=%query%",
