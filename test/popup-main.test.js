@@ -35,6 +35,9 @@ describe("popup-main", () => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
     global.window = window;
     global.document = document;
@@ -45,6 +48,7 @@ describe("popup-main", () => {
     delete global.browser;
     delete global.window;
     delete global.document;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {
@@ -135,7 +139,6 @@ describe("popup-main", () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
                          "called");
       assert.isUndefined(res, "result");
-      browser.runtime.sendMessage.flush();
       mjs.tabInfo.tab = null;
     });
 
@@ -165,7 +168,6 @@ describe("popup-main", () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
                          "called");
       assert.isUndefined(res, "result");
-      browser.runtime.sendMessage.flush();
       mjs.tabInfo.tab = null;
       mjs.contextInfo.isLink = false;
       mjs.contextInfo.title = null;
@@ -201,7 +203,6 @@ describe("popup-main", () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
                          "called");
       assert.isUndefined(res, "result");
-      browser.runtime.sendMessage.flush();
       mjs.tabInfo.tab = null;
       mjs.contextInfo.canonicalUrl = null;
       mjs.contextInfo.content = null;
@@ -272,7 +273,6 @@ describe("popup-main", () => {
       browser.runtime.openOptionsPage.resolves(undefined);
       const res = await func();
       assert.isUndefined(res, "result");
-      browser.runtime.openOptionsPage.flush();
     });
   });
 
@@ -388,7 +388,6 @@ describe("popup-main", () => {
         id: 1,
       });
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -411,7 +410,6 @@ describe("popup-main", () => {
                          "called sendMessage");
       assert.isTrue(calledOnce, "called console");
       assert.strictEqual(elm.getAttribute("disabled"), "disabled", "disabled");
-      browser.tabs.sendMessage.flush();
     });
   });
 

@@ -16,10 +16,14 @@ import {
 
 describe("main", () => {
   beforeEach(() => {
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
   });
   afterEach(() => {
     delete global.browser;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {
@@ -310,7 +314,6 @@ describe("main", () => {
       };
       const res = await func(info, tab);
       assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
-      browser.tabs.create.flush();
     });
 
     it("should get array", async () => {
@@ -330,7 +333,6 @@ describe("main", () => {
       };
       const res = await func(info, tab);
       assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
-      browser.tabs.create.flush();
     });
 
     it("should get array", async () => {
@@ -352,7 +354,6 @@ describe("main", () => {
       };
       const res = await func(info, tab);
       assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
-      browser.tabs.create.flush();
     });
 
     it("should get array", async () => {
@@ -377,7 +378,6 @@ describe("main", () => {
       };
       const res = await func(info, tab);
       assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
-      browser.tabs.create.flush();
     });
   });
 
@@ -390,7 +390,6 @@ describe("main", () => {
       const res = await func();
       assert.strictEqual(browser.menus.removeAll.callCount, i + 1, "called");
       assert.isUndefined(res, "result");
-      browser.menus.removeAll.flush();
     });
   });
 
@@ -432,7 +431,6 @@ describe("main", () => {
       const res = await func("foo", "bar", {contexts: []});
       assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
       assert.strictEqual(res, "foo", "result");
-      browser.menus.create.flush();
     });
   });
 
@@ -497,8 +495,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
       assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
                        "result");
-      browser.i18n.getMessage.flush();
-      browser.menus.create.flush();
     });
 
     it("should get array", async () => {
@@ -533,8 +529,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
       assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
                        "result");
-      browser.i18n.getMessage.flush();
-      browser.menus.create.flush();
     });
   });
 
@@ -575,7 +569,6 @@ describe("main", () => {
         id: "treestyletab@piro.sakura.ne.jp",
       });
       assert.deepEqual(res, [], "result");
-      browser.runtime.getManifest.flush();
     });
 
     it("should get array", async () => {
@@ -586,7 +579,6 @@ describe("main", () => {
         id: "treestyletab@piro.sakura.ne.jp",
       });
       assert.deepEqual(res, [], "result");
-      browser.runtime.getManifest.flush();
     });
 
     it("should get array", async () => {
