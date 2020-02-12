@@ -65,14 +65,14 @@ describe("popup-main", () => {
     });
 
     it("should set null", async () => {
-      mjs.tabInfo.tab = {},
+      mjs.tabInfo.tab = {};
       await func();
       assert.isNull(mjs.tabInfo.tab, "result");
     });
 
     it("should set object", async () => {
       await func({
-        foo: "bar"
+        foo: "bar",
       });
       assert.deepEqual(mjs.tabInfo.tab, {foo: "bar"}, "result");
     });
