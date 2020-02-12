@@ -55,6 +55,29 @@ describe("popup-main", () => {
     assert.isObject(browser, "browser");
   });
 
+  describe("set tab info", () => {
+    const func = mjs.setTabInfo;
+    beforeEach(() => {
+      mjs.tabInfo.tab = null;
+    });
+    afterEach(() => {
+      mjs.tabInfo.tab = null;
+    });
+
+    it("should set null", async () => {
+      mjs.tabInfo.tab = {},
+      await func();
+      assert.isNull(mjs.tabInfo.tab, "result");
+    });
+
+    it("should set object", async () => {
+      await func({
+        foo: "bar"
+      });
+      assert.deepEqual(mjs.tabInfo.tab, {foo: "bar"}, "result");
+    });
+  });
+
   describe("init context info", () => {
     const func = mjs.initContextInfo;
 
@@ -222,6 +245,12 @@ describe("popup-main", () => {
       mjs.sns.clear();
     });
 
+    it("should not create html", async () => {
+      const body = document.querySelector("body");
+      await func();
+      assert.isFalse(body.hasChildNodes(), "result");
+    });
+
     it("should create html", async () => {
       mjs.sns.set("foo", {
         id: "bar",
@@ -264,6 +293,81 @@ describe("popup-main", () => {
       assert.strictEqual(item.lastElementChild.textContent,
                          "Share link with bar", "link text");
     });
+
+    it("should not create html", async () => {
+      mjs.sns.set("foo", {});
+      const cnt = document.createElement("main");
+      const tmpl = document.createElement("template");
+      const elm = document.createElement("section");
+      const h1 = document.createElement("h1");
+      const btn = document.createElement("button");
+      const btn2 = document.createElement("button");
+      const body = document.querySelector("body");
+      cnt.id = SNS_ITEMS;
+      tmpl.id = SNS_ITEM_TMPL;
+      elm.classList.add(SNS_ITEM);
+      btn.classList.add(SHARE_PAGE);
+      btn2.classList.add(SHARE_LINK);
+      elm.appendChild(h1);
+      elm.appendChild(btn);
+      elm.appendChild(btn2);
+      tmpl.content.appendChild(elm);
+      body.appendChild(cnt);
+      body.appendChild(tmpl);
+      await func();
+      const item = document.getElementById("bar");
+      assert.isNull(item, "result");
+    });
+
+    it("should not create html", async () => {
+      mjs.sns.set("foo", {
+        id: "bar",
+      });
+      const cnt = document.createElement("main");
+      const tmpl = document.createElement("template");
+      const elm = document.createElement("section");
+      const h1 = document.createElement("h1");
+      const btn = document.createElement("button");
+      const btn2 = document.createElement("button");
+      const body = document.querySelector("body");
+      cnt.id = SNS_ITEMS;
+      tmpl.id = SNS_ITEM_TMPL;
+      elm.classList.add(`${SNS_ITEM}2`);
+      btn.classList.add(SHARE_PAGE);
+      btn2.classList.add(SHARE_LINK);
+      elm.appendChild(h1);
+      elm.appendChild(btn);
+      elm.appendChild(btn2);
+      tmpl.content.appendChild(elm);
+      body.appendChild(cnt);
+      body.appendChild(tmpl);
+      await func();
+      const item = document.getElementById("bar");
+      assert.isNull(item, "result");
+    });
+
+    it("should create html", async () => {
+      mjs.sns.set("foo", {
+        id: "bar",
+      });
+      const cnt = document.createElement("main");
+      const tmpl = document.createElement("template");
+      const elm = document.createElement("section");
+      const body = document.querySelector("body");
+      cnt.id = SNS_ITEMS;
+      tmpl.id = SNS_ITEM_TMPL;
+      elm.classList.add(SNS_ITEM);
+      tmpl.content.appendChild(elm);
+      body.appendChild(cnt);
+      body.appendChild(tmpl);
+      await func();
+      const item = document.getElementById("bar");
+      assert.isOk(item, "result");
+      assert.isTrue(item.parentNode === cnt, "parentNode");
+      assert.isTrue(item.classList.contains(SNS_ITEM), "classList");
+      assert.isFalse(item.hasChildNodes(), "childNodes");
+    });
+
   });
 
   describe("handle open options on click", () => {
@@ -494,6 +598,18 @@ describe("popup-main", () => {
         assert.instanceOf(e, TypeError);
         assert.strictEqual(e.message, "Expected String but got Undefined.");
       });
+    });
+
+    it("should not set display", async () => {
+      const elm = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = "foo";
+      elm.style.display = "none";
+      body.appendChild(elm);
+      await func("bar", {
+        checked: true,
+      });
+      assert.strictEqual(elm.style.display, "none", "display");
     });
 
     it("should set display", async () => {

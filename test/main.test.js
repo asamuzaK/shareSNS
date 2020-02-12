@@ -126,6 +126,11 @@ describe("main", () => {
       });
     });
 
+    it("should not set map", async () => {
+      await func("foo");
+      assert.isUndefined(mjs.sns.get("foo"), "result");
+    });
+
     it("should set map", async () => {
       mjs.sns.set("foo", {});
       await func("foo");
@@ -144,6 +149,18 @@ describe("main", () => {
       assert.deepEqual(mjs.sns.get("foo"), {enabled: true}, "result");
     });
 
+    it("should not set map", async () => {
+      mjs.sns.set("foo", {
+        id: "foo",
+        subItem: {},
+      });
+      await func("bar", {subItemOf: "foo", value: "baz"});
+      assert.deepEqual(mjs.sns.get("foo"), {
+        id: "foo",
+        subItem: {},
+      }, "result");
+    });
+
     it("should set map", async () => {
       mjs.sns.set("foo", {
         id: "foo",
@@ -157,6 +174,24 @@ describe("main", () => {
         subItem: {
           bar: {
             value: "baz",
+          },
+        },
+      }, "result");
+    });
+
+    it("should set map", async () => {
+      mjs.sns.set("foo", {
+        id: "foo",
+        subItem: {
+          bar: {},
+        },
+      });
+      await func("bar", {subItemOf: "foo"});
+      assert.deepEqual(mjs.sns.get("foo"), {
+        id: "foo",
+        subItem: {
+          bar: {
+            value: null,
           },
         },
       }, "result");
@@ -201,6 +236,17 @@ describe("main", () => {
       );
     });
 
+    it("should get string", async () => {
+      const item = {
+        url: "%origin%/?uri=%query%",
+        value: "file:///foo/bar",
+      };
+      const res = await func("http://www.example.com", item);
+      assert.strictEqual(
+        res, "http://www.example.com", "result",
+      );
+    });
+
     it("should log error", async () => {
       const stub = sinon.stub(console, "error");
       const item = {
@@ -242,6 +288,14 @@ describe("main", () => {
         },
       });
       assert.deepEqual(res, {canonicalUrl: "https://example.com"}, "result");
+    });
+
+    it("should set context info", async () => {
+      mjs.contextInfo.canonicalUrl = null;
+      const res = await func({
+        contextInfo: {},
+      });
+      assert.deepEqual(res, {canonicalUrl: null}, "result");
     });
   });
 
@@ -344,6 +398,50 @@ describe("main", () => {
         menuItemId: `${SHARE_LINK}foo`,
         linkText: "baz",
         linkUrl: "http://www.example.com",
+        selectionText: "foo  bar",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        title: "bar",
+        url: "http://example.com",
+        windowId: 2,
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("foo", {
+        url: "https://example.com?u=%url%&amp;t=%text%",
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: `${SHARE_LINK}foo`,
+        linkText: "baz",
+        linkUrl: "http://www.example.com",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        title: "bar",
+        url: "http://example.com",
+        windowId: 2,
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("foo", {
+        url: "https://example.com?u=%url%&amp;t=%text%",
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: `${SHARE_PAGE}foo`,
+        linkText: "baz",
+        linkUrl: "http://www.example.com",
+        selectionText: "foo  bar",
       };
       const tab = {
         id: 1,
@@ -378,6 +476,48 @@ describe("main", () => {
       };
       const res = await func(info, tab);
       assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("foo", {
+        url: null,
+        subItem: {},
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: "foo",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        title: "bar",
+        url: "http://example.com",
+        windowId: 2,
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("foo", {
+        url: null,
+        subItem: {
+          foo: "bar",
+        },
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: "foo",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        title: "bar",
+        url: "http://example.com",
+        windowId: 2,
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
   });
 
@@ -450,17 +590,28 @@ describe("main", () => {
 
     it("should get empty array", async () => {
       const res = await func();
-      mjs.sns.set("foo", {
-        enabled: false,
-      });
       assert.deepEqual(res, [], "result");
     });
 
     it("should get empty array", async () => {
+      mjs.sns.set("foo", {});
       const res = await func();
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should get empty array", async () => {
+      mjs.sns.set("foo", {
+        enabled: false,
+      });
+      const res = await func();
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should get empty array", async () => {
       mjs.sns.set("foo", {
         enabled: true,
       });
+      const res = await func();
       assert.deepEqual(res, [], "result");
     });
 
