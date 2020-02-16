@@ -7,7 +7,6 @@ const {JSDOM} = require("jsdom");
 const {assert} = require("chai");
 const {afterEach, beforeEach, describe, it} = require("mocha");
 const {browser} = require("./mocha/setup.js");
-const sinon = require("sinon");
 const cjs = require("../src/js/content.js");
 
 describe("content", () => {
