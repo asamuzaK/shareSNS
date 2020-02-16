@@ -681,6 +681,79 @@ describe("main", () => {
       assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
                        "result");
     });
+
+    it("should get array", async () => {
+      mjs.sns.set("Mastodon", {
+        enabled: true,
+        id: "Mastodon",
+        menu: "&Mastodon",
+      });
+      browser.i18n.getMessage.withArgs(SHARE_PAGE, "&Mastodon").returns("baz");
+      browser.i18n.getMessage.withArgs(SHARE_TAB, "&Mastodon").returns("qux");
+      browser.i18n.getMessage.withArgs(SHARE_LINK, "&Mastodon").returns("quux");
+      browser.menus.create.withArgs({
+        id: `${SHARE_PAGE}Mastodon`,
+        contexts: ["page", "selection"],
+        title: "baz",
+        enabled: false,
+      }).resolves(SHARE_PAGE);
+      browser.menus.create.withArgs({
+        id: `${SHARE_TAB}Mastodon`,
+        contexts: ["tab"],
+        title: "qux",
+        enabled: false,
+      }).resolves(SHARE_TAB);
+      browser.menus.create.withArgs({
+        id: `${SHARE_LINK}Mastodon`,
+        contexts: ["link"],
+        title: "quux",
+        enabled: false,
+      }).resolves(SHARE_LINK);
+      const i = browser.menus.create.callCount;
+      const res = await func();
+      assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
+      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+                       "result");
+    });
+
+    it("should get array", async () => {
+      mjs.sns.set("Mastodon", {
+        enabled: true,
+        id: "Mastodon",
+        menu: "&Mastodon",
+      });
+      browser.storage.local.get.withArgs("mastodonInstanceUrl").resolves({
+        mastodonInstanceUrl: {
+          value: "https://example.com",
+        },
+      });
+      browser.i18n.getMessage.withArgs(SHARE_PAGE, "&Mastodon").returns("baz");
+      browser.i18n.getMessage.withArgs(SHARE_TAB, "&Mastodon").returns("qux");
+      browser.i18n.getMessage.withArgs(SHARE_LINK, "&Mastodon").returns("quux");
+      browser.menus.create.withArgs({
+        id: `${SHARE_PAGE}Mastodon`,
+        contexts: ["page", "selection"],
+        title: "baz",
+        enabled: true,
+      }).resolves(SHARE_PAGE);
+      browser.menus.create.withArgs({
+        id: `${SHARE_TAB}Mastodon`,
+        contexts: ["tab"],
+        title: "qux",
+        enabled: true,
+      }).resolves(SHARE_TAB);
+      browser.menus.create.withArgs({
+        id: `${SHARE_LINK}Mastodon`,
+        contexts: ["link"],
+        title: "quux",
+        enabled: true,
+      }).resolves(SHARE_LINK);
+      const i = browser.menus.create.callCount;
+      const res = await func();
+      assert.strictEqual(browser.menus.create.callCount, i + 3, "call count");
+      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+                       "result");
+    });
   });
 
   describe("handle runtime message", () => {
