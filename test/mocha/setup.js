@@ -14,6 +14,7 @@ const createJsdom = () => {
   const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
   const opt = {
     runScripts: "dangerously",
+    url: "https://localhost",
   };
   return new JSDOM(domstr, opt);
 };
