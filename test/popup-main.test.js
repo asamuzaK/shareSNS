@@ -419,52 +419,142 @@ describe("popup-main", () => {
 
     it("should not set attribute", async () => {
       const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
       const body = document.querySelector("body");
-      elm.classList.add(SHARE_LINK);
+      elm.classList.add(SHARE_PAGE);
       elm.removeAttribute("disabled");
+      elm2.classList.add(SHARE_LINK);
+      elm2.removeAttribute("disabled");
       body.appendChild(elm);
+      body.appendChild(elm2);
       await func();
       assert.isFalse(elm.hasAttribute("disabled"), "result");
+      assert.isFalse(elm2.hasAttribute("disabled"), "result");
     });
 
     it("should not set attribute", async () => {
       const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
       const body = document.querySelector("body");
-      elm.classList.add(SHARE_LINK);
+      elm.classList.add(SHARE_PAGE);
       elm.removeAttribute("disabled");
+      elm2.classList.add(SHARE_LINK);
+      elm2.removeAttribute("disabled");
       body.appendChild(elm);
+      body.appendChild(elm2);
       await func({
         foo: "bar",
       });
       assert.isFalse(elm.hasAttribute("disabled"), "result");
+      assert.isFalse(elm2.hasAttribute("disabled"), "result");
     });
 
     it("should set attribute", async () => {
       const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
       const body = document.querySelector("body");
-      elm.classList.add(SHARE_LINK);
-      elm.removeAttribute("disabled");
+      elm.classList.add(SHARE_PAGE);
+      elm.setAttribute("disabled", "disabled");
+      elm2.classList.add(SHARE_LINK);
+      elm2.removeAttribute("disabled");
       body.appendChild(elm);
+      body.appendChild(elm2);
       await func({
         contextInfo: {
           isLink: false,
         },
       });
-      assert.strictEqual(elm.getAttribute("disabled"), "disabled", "result");
+      assert.isFalse(elm.hasAttribute("disabled"), "result");
+      assert.strictEqual(elm2.getAttribute("disabled"), "disabled", "result");
     });
 
     it("should set attribute", async () => {
       const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
       const body = document.querySelector("body");
-      elm.classList.add(SHARE_LINK);
+      elm.classList.add(SHARE_PAGE);
       elm.setAttribute("disabled", "disabled");
+      elm2.classList.add(SHARE_LINK);
+      elm2.setAttribute("disabled", "disabled");
       body.appendChild(elm);
+      body.appendChild(elm2);
       await func({
         contextInfo: {
           isLink: true,
         },
       });
       assert.isFalse(elm.hasAttribute("disabled"), "result");
+      assert.isFalse(elm2.hasAttribute("disabled"), "result");
+    });
+
+    it("should set attribute", async () => {
+      const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Mastodon`;
+      elm.setAttribute("disabled", "disabled");
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Mastodon`;
+      elm2.setAttribute("disabled", "disabled");
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.withArgs("mastodonInstanceUrl").resolves({
+        mastodonInstanceUrl: {
+          value: "https://example.com",
+        },
+      });
+      await func({
+        contextInfo: {
+          isLink: true,
+        },
+      });
+      assert.isFalse(elm.hasAttribute("disabled"), "result");
+      assert.isFalse(elm2.hasAttribute("disabled"), "result");
+    });
+
+    it("should set attribute", async () => {
+      const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Mastodon`;
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Mastodon`;
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.withArgs("mastodonInstanceUrl").resolves({
+        mastodonInstanceUrl: {
+          value: "",
+        },
+      });
+      await func({
+        contextInfo: {
+          isLink: true,
+        },
+      });
+      assert.strictEqual(elm.getAttribute("disabled"), "disabled", "result");
+      assert.strictEqual(elm2.getAttribute("disabled"), "disabled", "result");
+    });
+
+    it("should set attribute", async () => {
+      const elm = document.createElement("p");
+      const elm2 = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Mastodon`;
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Mastodon`;
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.withArgs("mastodonInstanceUrl").resolves(null);
+      await func({
+        contextInfo: {
+          isLink: true,
+        },
+      });
+      assert.strictEqual(elm.getAttribute("disabled"), "disabled", "result");
+      assert.strictEqual(elm2.getAttribute("disabled"), "disabled", "result");
     });
   });
 

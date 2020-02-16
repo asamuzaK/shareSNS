@@ -6,7 +6,7 @@ import {
   getType, isObjectNotEmpty, isString, logErr, throwErr,
 } from "./common.js";
 import {
-  getActiveTab, sendMessage,
+  getActiveTab, getStorage, sendMessage,
 } from "./browser.js";
 import snsData from "./sns.js";
 
@@ -191,18 +191,41 @@ export const updateMenu = async data => {
     const {contextInfo: info} = data;
     if (info) {
       const {content, isLink, selectionText, title, url} = info;
-      const nodes = document.getElementsByClassName(SHARE_LINK);
+      const {mastodonInstanceUrl} =
+        await getStorage("mastodonInstanceUrl") || {};
+      const linkNodes = document.getElementsByClassName(SHARE_LINK);
+      const pageNodes = document.getElementsByClassName(SHARE_PAGE);
       contextInfo.isLink = isLink;
       contextInfo.content = content;
       contextInfo.selectionText = selectionText;
       contextInfo.title = title;
       contextInfo.url = url;
-      for (const node of nodes) {
+      for (const node of linkNodes) {
         const attr = "disabled";
         if (isLink) {
-          node.removeAttribute(attr);
+          if (node.id.endsWith("Mastodon")) {
+            if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
+              node.removeAttribute(attr);
+            } else {
+              node.setAttribute(attr, attr);
+            }
+          } else {
+            node.removeAttribute(attr);
+          }
         } else {
           node.setAttribute(attr, attr);
+        }
+      }
+      for (const node of pageNodes) {
+        const attr = "disabled";
+        if (node.id.endsWith("Mastodon")) {
+          if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
+            node.removeAttribute(attr);
+          } else {
+            node.setAttribute(attr, attr);
+          }
+        } else {
+          node.removeAttribute(attr);
         }
       }
     }
