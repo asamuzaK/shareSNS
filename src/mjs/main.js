@@ -6,7 +6,7 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  createTab,
+  createTab, getStorage,
 } from "./browser.js";
 import snsData from "./sns.js";
 
@@ -236,11 +236,18 @@ export const createMenuItem = async (id, title, data = {}) => {
  */
 export const createMenu = async () => {
   const func = [];
+  const {mastodonInstanceUrl} = await getStorage("mastodonInstanceUrl") || {};
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
-      const {enabled, id, menu} = value;
+      const {enabled: itemEnabled, id, menu} = value;
       const key = menu || id;
-      enabled && isString(id) && isString(key) && func.push(
+      let enabled;
+      if (id === "Mastodon" && itemEnabled) {
+        enabled = !!(mastodonInstanceUrl && mastodonInstanceUrl.value);
+      } else {
+        enabled = !!itemEnabled;
+      }
+      itemEnabled && isString(id) && isString(key) && func.push(
         createMenuItem(
           `${SHARE_PAGE}${id}`,
           i18n.getMessage(SHARE_PAGE, key),
