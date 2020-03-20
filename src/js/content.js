@@ -191,9 +191,15 @@ const handleUIEvt = evt => {
   return func || null;
 };
 
-/* listeners */
-runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
+/**
+ * runtime on message
+ * @param {*} msg - message
+ * @returns {AsyncFunction} - handleMsg()
+ */
+const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
+/* listeners */
+runtime.onMessage.addListener(runtimeOnMsg);
 window.addEventListener("keydown", handleUIEvt, true);
 window.addEventListener("mousedown", handleUIEvt, true);
 
@@ -207,6 +213,7 @@ if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
     handleMsg,
     handleUIEvt,
     initContextInfo,
+    runtimeOnMsg,
     sendContextInfo,
     sendMsg,
     throwErr,

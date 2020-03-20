@@ -621,4 +621,13 @@ describe("content", () => {
       }, "result");
     });
   });
+
+  describe("runtime on message", () => {
+    const func = cjs.runtimeOnMsg;
+
+    it("should get empty array", async () => {
+      const res = await func();
+      assert.deepEqual(res, [], "result");
+    });
+  });
 });
