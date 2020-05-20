@@ -24,6 +24,7 @@ export const sns = new Map();
 
 /**
  * set sns items
+ *
  * @returns {void}
  */
 export const setSnsItems = async () => {
@@ -36,8 +37,9 @@ export const setSnsItems = async () => {
 
 /**
  * get sns item from menu item ID
+ *
  * @param {string} id - menu item ID
- * @returns {Object} - sns item
+ * @returns {object} - sns item
  */
 export const getSnsItemFromId = async id => {
   if (!isString(id)) {
@@ -56,8 +58,9 @@ export const getSnsItemFromId = async id => {
 
 /**
  * toggle sns item
+ *
  * @param {string} id - item ID
- * @param {Object} obj - value object
+ * @param {object} obj - value object
  * @returns {void}
  */
 export const toggleSnsItem = async (id, obj = {}) => {
@@ -83,8 +86,9 @@ export const toggleSnsItem = async (id, obj = {}) => {
 
 /**
  * create sns item url
+ *
  * @param {string} url - url
- * @param {Object} info - sns item url info
+ * @param {object} info - sns item url info
  * @returns {string} - sns url
  */
 export const createSnsUrl = async (url, info) => {
@@ -117,7 +121,8 @@ export const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.canonicalUrl = null;
@@ -126,8 +131,9 @@ export const initContextInfo = async () => {
 
 /**
  * update context info
- * @param {Object} data - context info data
- * @returns {Object} - context info
+ *
+ * @param {object} data - context info data
+ * @returns {object} - context info
  */
 export const updateContextInfo = async (data = {}) => {
   const {contextInfo: info} = data;
@@ -142,8 +148,9 @@ export const updateContextInfo = async (data = {}) => {
 
 /**
  * extract clicked data
- * @param {Object} info - clicked menu info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} info - clicked menu info
+ * @param {object} tab - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
  */
 export const extractClickedData = async (info = {}, tab = {}) => {
@@ -200,16 +207,18 @@ export const extractClickedData = async (info = {}, tab = {}) => {
 /* context menu */
 /**
  * remove context menu
- * @returns {AsyncFunction} - results of each handler
+ *
+ * @returns {Function} - menus.removeAll()
  */
 export const removeMenu = async () => menus.removeAll();
 
 /**
  * create context menu item
+ *
  * @param {string} id - menu item ID
  * @param {string} title - menu item title
- * @param {Object} data - context data
- * @returns {?AsyncFunction} - menus.create()
+ * @param {object} data - context data
+ * @returns {?Function} - menus.create()
  */
 export const createMenuItem = async (id, title, data = {}) => {
   if (!isString(id)) {
@@ -232,6 +241,7 @@ export const createMenuItem = async (id, title, data = {}) => {
 
 /**
  * create context menu items
+ *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const createMenu = async () => {
@@ -281,7 +291,8 @@ export const createMenu = async () => {
 /* runtime */
 /**
  * handle runtime message
- * @param {Object} msg - message
+ *
+ * @param {object} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async msg => {
@@ -310,7 +321,8 @@ export const handleMsg = async msg => {
 /* storage */
 /**
  * handle stored data
- * @param {Object} data - stored data
+ *
+ * @param {object} data - stored data
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleStoredData = async data => {

@@ -31,7 +31,8 @@ export const tabInfo = {
 
 /**
  * set tab info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} tab - tabs.Tab
  * @returns {void}
  */
 export const setTabInfo = async tab => {
@@ -43,6 +44,7 @@ export const sns = new Map();
 
 /**
  * set sns items
+ *
  * @returns {void}
  */
 export const setSnsItems = async () => {
@@ -65,7 +67,8 @@ export const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -79,8 +82,9 @@ export const initContextInfo = async () => {
 
 /**
  * create share data
- * @param {Object} evt - Event
- * @returns {?AsyncFunction} - sendMessage()
+ *
+ * @param {object} evt - Event
+ * @returns {?Function} - sendMessage()
  */
 export const createShareData = async evt => {
   let func;
@@ -115,6 +119,7 @@ export const createShareData = async evt => {
 
 /**
  * create html from template
+ *
  * @returns {void}
  */
 export const createHtml = async () => {
@@ -153,19 +158,22 @@ export const createHtml = async () => {
 
 /**
  * handle open options on click
- * @returns {AsyncFunction} - runtime.openOptionsPage()
+ *
+ * @returns {Function} - runtime.openOptionsPage()
  */
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
 /**
  * handle menu on click
- * @param {!Object} evt - Event
- * @returns {AsyncFunction} - createShareData()
+ *
+ * @param {!object} evt - Event
+ * @returns {Function} - createShareData()
  */
 export const menuOnClick = evt => createShareData(evt).catch(throwErr);
 
 /**
  * add listener to menu
+ *
  * @returns {void}
  */
 export const addListenerToMenu = async () => {
@@ -182,7 +190,8 @@ export const addListenerToMenu = async () => {
 
 /**
  * update menu
- * @param {Object} data - context data;
+ *
+ * @param {object} data - context data;
  * @returns {void}
  */
 export const updateMenu = async data => {
@@ -234,7 +243,8 @@ export const updateMenu = async data => {
 
 /**
  * request context info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} tab - tabs.Tab
  * @returns {void}
  */
 export const requestContextInfo = async tab => {
@@ -264,6 +274,7 @@ export const requestContextInfo = async tab => {
 
 /**
  * handle message
+ *
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -288,6 +299,7 @@ export const handleMsg = async msg => {
 
 /**
  * toggle warning message
+ *
  * @returns {void}
  */
 export const toggleWarning = async () => {
@@ -307,9 +319,9 @@ export const toggleWarning = async () => {
 
 /**
  * toggle SNS item
+ *
  * @param {string} id - item ID
- * @param {Object} obj - value object
- * @param {boolean} changed - changed
+ * @param {object} obj - value object
  * @returns {void}
  */
 export const toggleSnsItem = async (id, obj = {}) => {
@@ -325,7 +337,8 @@ export const toggleSnsItem = async (id, obj = {}) => {
 
 /**
  * handle stored data
- * @param {Object} data - stored data
+ *
+ * @param {object} data - stored data
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleStoredData = async data => {
@@ -345,6 +358,7 @@ export const handleStoredData = async data => {
 
 /**
  * prepare tab
+ *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const prepareTab = async () => {

@@ -12,7 +12,8 @@ const MOUSE_BUTTON_RIGHT = 2;
 
 /**
  * throw error
- * @param {!Object} e - Error
+ *
+ * @param {!object} e - Error
  * @throws
  */
 const throwErr = e => {
@@ -21,8 +22,9 @@ const throwErr = e => {
 
 /**
  * send message
+ *
  * @param {*} msg - message
- * @returns {?AsyncFunction} - send message to runtime
+ * @returns {?Function} - runtime.sendMessage()
  */
 const sendMsg = async msg => {
   let func;
@@ -34,7 +36,8 @@ const sendMsg = async msg => {
 
 /**
  * get active element
- * @returns {Object} - active element
+ *
+ * @returns {object} - active element
  */
 const getActiveElm = async () => {
   const sel = window.getSelection();
@@ -56,8 +59,9 @@ const getActiveElm = async () => {
 
 /**
  * get anchor element
- * @param {Object} node - element
- * @returns {Object} - anchor element
+ *
+ * @param {object} node - element
+ * @returns {object} - anchor element
  */
 const getAnchorElm = async node => {
   let elm;
@@ -84,7 +88,8 @@ const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -98,8 +103,9 @@ const initContextInfo = async () => {
 
 /**
  * create context info
- * @param {Object} node - element
- * @returns {Object} - context info
+ *
+ * @param {object} node - element
+ * @returns {object} - context info
  */
 const createContextInfo = async node => {
   await initContextInfo();
@@ -133,7 +139,8 @@ const createContextInfo = async node => {
 
 /**
  * send context info
- * @returns {AsyncFunction} - send message
+ *
+ * @returns {Function} - sendMsg()
  */
 const sendContextInfo = async () => {
   const elm = await getActiveElm();
@@ -148,6 +155,7 @@ const sendContextInfo = async () => {
 
 /**
  * handle message
+ *
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -169,8 +177,9 @@ const handleMsg = async (msg = {}) => {
 
 /**
  * handle UI event
- * @param {!Object} evt - Event
- * @returns {?AsyncFunction} - send context info
+ *
+ * @param {!object} evt - Event
+ * @returns {?Function} - promise chain
  */
 const handleUIEvt = evt => {
   const {button, key, shiftKey, type} = evt;
@@ -193,8 +202,9 @@ const handleUIEvt = evt => {
 
 /**
  * runtime on message
+ *
  * @param {*} msg - message
- * @returns {AsyncFunction} - handleMsg()
+ * @returns {Function} - handleMsg()
  */
 const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
