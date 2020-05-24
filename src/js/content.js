@@ -179,7 +179,7 @@ const handleMsg = async (msg = {}) => {
  * handle UI event
  *
  * @param {!object} evt - Event
- * @returns {?Function} - promise chain
+ * @returns {?(Function|Error)} - promise chain
  */
 const handleUIEvt = evt => {
   const {button, key, shiftKey, type} = evt;
@@ -204,7 +204,7 @@ const handleUIEvt = evt => {
  * runtime on message
  *
  * @param {*} msg - message
- * @returns {Function} - handleMsg()
+ * @returns {(Function|Error)} - promise chain
  */
 const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
