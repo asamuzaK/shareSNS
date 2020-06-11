@@ -6,7 +6,7 @@ export default {
   Twitter: {
     id: "Twitter",
     menu: "&Twitter",
-    url: "https://twitter.com/share?text=%text%&amp;url=%url%",
+    url: "https://twitter.com/share?text=%text%&url=%url%",
   },
   Facebook: {
     id: "Facebook",
