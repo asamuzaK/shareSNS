@@ -5,6 +5,7 @@
 "use strict";
 const {JSDOM} = require("jsdom");
 const {Schema} = require("webext-schema");
+const sinon = require("sinon");
 
 /**
  * create jsdom
@@ -16,6 +17,9 @@ const createJsdom = () => {
   const opt = {
     runScripts: "dangerously",
     url: "https://localhost",
+    beforeParse(window) {
+      window.alert = sinon.stub().callsFake((...args) => args.toString());
+    },
   };
   return new JSDOM(domstr, opt);
 };
@@ -33,5 +37,5 @@ global.document = document;
 global.browser = browser;
 
 module.exports = {
-  browser,
+  browser, createJsdom,
 };

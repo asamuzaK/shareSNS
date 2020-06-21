@@ -7,8 +7,8 @@
 
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
-import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
+import sinon from "sinon";
 import * as mjs from "../src/mjs/main.js";
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB,

@@ -1,13 +1,12 @@
 /**
  * popup-main.test.js
  */
-/* eslint-disable no-magic-numbers */
+/* eslint-disable max-nested-callbacks, no-magic-numbers */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
+import {browser, createJsdom} from "./mocha/setup.js";
 import sinon from "sinon";
-import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/popup-main.js";
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
@@ -19,18 +18,6 @@ const SNS_ITEM_TMPL = "snsItemTemplate";
 const SNS_NOT_SELECTED = "warnSnsNotSelected";
 
 describe("popup-main", () => {
-  /**
-   * create jsdom
-   *
-   * @returns {object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-    };
-    return new JSDOM(domstr, opt);
-  };
   let window, document;
   beforeEach(() => {
     const dom = createJsdom();
