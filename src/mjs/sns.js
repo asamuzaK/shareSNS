@@ -17,12 +17,12 @@ export default {
   LINE: {
     id: "LINE",
     menu: "&LINE",
-    url: "http://line.me/R/msg/text/?%text%%20%url%",
+    url: "https://social-plugins.line.me/lineit/share?url=%url%",
   },
   Hatena: {
     id: "Hatena",
     menu: "&Hatena",
-    url: "http://b.hatena.ne.jp/add?mode=confirm&amp;url=%url%&amp;title=%text%",
+    url: "http://b.hatena.ne.jp/add?mode=confirm&url=%url%&title=%text%",
   },
   Mastodon: {
     id: "Mastodon",
