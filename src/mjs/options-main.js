@@ -16,12 +16,12 @@ import {
  * @returns {object} - pref data
  */
 export const createPref = async (elm = {}) => {
-  const {dataset, id} = elm;
+  const {checked, dataset, id, value} = elm;
   return id && {
     [id]: {
       id,
-      checked: !!elm.checked,
-      value: elm.value || "",
+      checked: !!checked,
+      value: value || "",
       subItemOf: dataset && dataset.subItemOf || null,
     },
   } || null;

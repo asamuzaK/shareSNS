@@ -5,6 +5,7 @@
 export default {
   Twitter: {
     id: "Twitter",
+    matchPattern: "https://twitter.com/*",
     menu: "&Twitter",
     url: "https://twitter.com/share?text=%text%&url=%url%",
   },
