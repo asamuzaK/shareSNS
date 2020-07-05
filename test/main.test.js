@@ -519,6 +519,64 @@ describe("main", () => {
       const res = await func(info, tab);
       assert.deepEqual(res, [{canonicalUrl: null}], "result");
     });
+
+    it("should get array", async () => {
+      const i = browser.tabs.update.callCount;
+      const j = browser.tabs.create.callCount;
+      mjs.sns.set("foo", {
+        matchPattern: "https://example.com/*",
+        url: "https://example.com?u=%url%&amp;t=%text%",
+      });
+      browser.tabs.query.withArgs({
+        cookieStoreId: "bar",
+        currentWindow: true,
+        url: "https://example.com/*",
+      }).resolves([{
+        id: 2,
+      }]);
+      browser.tabs.update.resolves({});
+      const info = {
+        menuItemId: "foo",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        cookieStoreId: "bar",
+        url: "http://example.com",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.update.callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.create.callCount, j, "not called");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
+    });
+
+    it("should get array", async () => {
+      const i = browser.tabs.update.callCount;
+      const j = browser.tabs.create.callCount;
+      mjs.sns.set("foo", {
+        matchPattern: "https://example.com/*",
+        url: "https://example.com?u=%url%&amp;t=%text%",
+      });
+      browser.tabs.query.withArgs({
+        cookieStoreId: "bar",
+        currentWindow: true,
+        url: "https://example.com/*",
+      }).resolves([]);
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: "foo",
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        cookieStoreId: "bar",
+        url: "http://example.com",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.update.callCount, i, "not called");
+      assert.strictEqual(browser.tabs.create.callCount, j + 1, "called");
+      assert.deepEqual(res, [{}, {canonicalUrl: null}], "result");
+    });
   });
 
   describe("remove context menu", () => {

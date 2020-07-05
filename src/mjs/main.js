@@ -6,7 +6,7 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  createTab, getStorage,
+  createTab, getStorage, queryTabs, updateTab,
 } from "./browser.js";
 import snsData from "./sns.js";
 
@@ -155,7 +155,8 @@ export const updateContextInfo = async (data = {}) => {
  */
 export const extractClickedData = async (info = {}, tab = {}) => {
   const {
-    id: tabId, index: tabIndex, title: tabTitle, url: tabUrl, windowId,
+    cookieStoreId, id: tabId, index: tabIndex, title: tabTitle, url: tabUrl,
+    windowId,
   } = tab;
   const func = [];
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
@@ -163,7 +164,7 @@ export const extractClickedData = async (info = {}, tab = {}) => {
     const {linkText, linkUrl, menuItemId, selectionText} = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
-      const {subItem, url: tmpl} = snsItem;
+      const {matchPattern, subItem, url: tmpl} = snsItem;
       const selText =
         isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
       const canonicalUrl =
@@ -192,12 +193,36 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       } else {
         url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
       }
-      url && func.push(createTab({
-        url, windowId,
-        active: true,
-        index: tabIndex + 1,
-        openerTabId: tabId,
-      }));
+      if (url) {
+        if (matchPattern) {
+          const [targetTab] = await queryTabs({
+            cookieStoreId,
+            currentWindow: true,
+            url: matchPattern,
+          });
+          if (isObjectNotEmpty(targetTab)) {
+            const {id: targetTabId} = targetTab;
+            func.push(updateTab(targetTabId, {
+              url,
+              active: true,
+            }));
+          } else {
+            func.push(createTab({
+              cookieStoreId, url, windowId,
+              active: true,
+              index: tabIndex + 1,
+              openerTabId: tabId,
+            }));
+          }
+        } else {
+          func.push(createTab({
+            cookieStoreId, url, windowId,
+            active: true,
+            index: tabIndex + 1,
+            openerTabId: tabId,
+          }));
+        }
+      }
     }
   }
   func.push(initContextInfo());
