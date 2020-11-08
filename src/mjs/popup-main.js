@@ -3,30 +3,30 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString, logErr, throwErr,
-} from "./common.js";
+  getType, isObjectNotEmpty, isString, logErr, throwErr
+} from './common.js';
 import {
-  getActiveTab, getStorage, sendMessage,
-} from "./browser.js";
-import snsData from "./sns.js";
-
-/* api */
-const {runtime, tabs} = browser;
+  getActiveTab, getStorage, sendMessage
+} from './browser.js';
+import snsData from './sns.js';
 
 /* constants */
 import {
-  CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
-} from "./constant.js";
-const {TAB_ID_NONE} = tabs;
-const OPTIONS_OPEN = "openOptions";
-const SNS_ITEMS = "snsItems";
-const SNS_ITEM = "snsItem";
-const SNS_ITEM_TMPL = "snsItemTemplate";
-const SNS_NOT_SELECTED = "warnSnsNotSelected";
+  CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS
+} from './constant.js';
+
+/* api */
+const { runtime, tabs } = browser;
+const { TAB_ID_NONE } = tabs;
+const OPTIONS_OPEN = 'openOptions';
+const SNS_ITEMS = 'snsItems';
+const SNS_ITEM = 'snsItem';
+const SNS_ITEM_TMPL = 'snsItemTemplate';
+const SNS_NOT_SELECTED = 'warnSnsNotSelected';
 
 /* tab info */
 export const tabInfo = {
-  tab: null,
+  tab: null
 };
 
 /**
@@ -36,7 +36,7 @@ export const tabInfo = {
  * @returns {void}
  */
 export const setTabInfo = async tab => {
-  tabInfo.tab = isObjectNotEmpty(tab) && tab || null;
+  tabInfo.tab = isObjectNotEmpty(tab) ? tab : null;
 };
 
 /* sns */
@@ -62,7 +62,7 @@ export const contextInfo = {
   selectionText: null,
   title: null,
   url: null,
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -89,27 +89,27 @@ export const initContextInfo = async () => {
 export const createShareData = async evt => {
   let func;
   if (evt) {
-    const {target} = evt;
+    const { target } = evt;
     if (target) {
-      const {id: menuItemId} = target;
-      const {tab} = tabInfo;
+      const { id: menuItemId } = target;
+      const { tab } = tabInfo;
       if (tab) {
         const info = {
-          menuItemId,
+          menuItemId
         };
         const {
-          canonicalUrl, content, isLink, selectionText, title, url,
+          canonicalUrl, content, isLink, selectionText, title, url
         } = contextInfo;
         if (isLink) {
           info.linkText = content || title;
           info.linkUrl = url;
         }
         info.canonicalUrl = canonicalUrl || null;
-        info.selectionText = selectionText || "";
+        info.selectionText = selectionText || '';
         func = sendMessage(runtime.id, {
           [SHARE_SNS]: {
-            info, tab,
-          },
+            info, tab
+          }
         });
       }
     }
@@ -128,11 +128,11 @@ export const createHtml = async () => {
   if (container && tmpl) {
     sns.forEach(value => {
       if (isObjectNotEmpty(value)) {
-        const {id} = value;
-        const {content} = tmpl;
+        const { id } = value;
+        const { content } = tmpl;
         const item = content.querySelector(`.${SNS_ITEM}`);
         if (item) {
-          const {firstElementChild} = item;
+          const { firstElementChild } = item;
           const page = item.querySelector(`.${SHARE_PAGE}`);
           const link = item.querySelector(`.${SHARE_LINK}`);
           item.id = id;
@@ -177,13 +177,13 @@ export const menuOnClick = evt => createShareData(evt).catch(throwErr);
  * @returns {void}
  */
 export const addListenerToMenu = async () => {
-  const nodes = document.querySelectorAll("button");
+  const nodes = document.querySelectorAll('button');
   for (const node of nodes) {
-    const {id} = node;
+    const { id } = node;
     if (id === OPTIONS_OPEN) {
-      node.addEventListener("click", openOptionsOnClick);
+      node.addEventListener('click', openOptionsOnClick);
     } else {
-      node.addEventListener("click", menuOnClick);
+      node.addEventListener('click', menuOnClick);
     }
   }
 };
@@ -197,11 +197,11 @@ export const addListenerToMenu = async () => {
 export const updateMenu = async data => {
   await initContextInfo();
   if (isObjectNotEmpty(data)) {
-    const {contextInfo: info} = data;
+    const { contextInfo: info } = data;
     if (info) {
-      const {content, isLink, selectionText, title, url} = info;
-      const {mastodonInstanceUrl} =
-        await getStorage("mastodonInstanceUrl") || {};
+      const { content, isLink, selectionText, title, url } = info;
+      const { mastodonInstanceUrl } =
+        await getStorage('mastodonInstanceUrl') || {};
       const linkNodes = document.getElementsByClassName(SHARE_LINK);
       const pageNodes = document.getElementsByClassName(SHARE_PAGE);
       contextInfo.isLink = isLink;
@@ -210,9 +210,9 @@ export const updateMenu = async data => {
       contextInfo.title = title;
       contextInfo.url = url;
       for (const node of linkNodes) {
-        const attr = "disabled";
+        const attr = 'disabled';
         if (isLink) {
-          if (node.id.endsWith("Mastodon")) {
+          if (node.id.endsWith('Mastodon')) {
             if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
               node.removeAttribute(attr);
             } else {
@@ -226,8 +226,8 @@ export const updateMenu = async data => {
         }
       }
       for (const node of pageNodes) {
-        const attr = "disabled";
-        if (node.id.endsWith("Mastodon")) {
+        const attr = 'disabled';
+        if (node.id.endsWith('Mastodon')) {
           if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
             node.removeAttribute(attr);
           } else {
@@ -250,11 +250,11 @@ export const updateMenu = async data => {
 export const requestContextInfo = async tab => {
   await initContextInfo();
   if (isObjectNotEmpty(tab)) {
-    const {id} = tab;
+    const { id } = tab;
     if (Number.isInteger(id) && id !== TAB_ID_NONE) {
       try {
         await sendMessage(id, {
-          [CONTEXT_INFO_GET]: true,
+          [CONTEXT_INFO_GET]: true
         });
       } catch (e) {
         logErr(e);
@@ -264,8 +264,8 @@ export const requestContextInfo = async tab => {
             content: null,
             selectionText: null,
             title: null,
-            url: null,
-          },
+            url: null
+          }
         });
       }
     }
@@ -286,8 +286,8 @@ export const handleMsg = async msg => {
       const [key, value] = item;
       switch (key) {
         case CONTEXT_INFO:
-        case "keydown":
-        case "mousedown":
+        case 'keydown':
+        case 'mousedown':
           func.push(updateMenu(value));
           break;
         default:
@@ -308,12 +308,12 @@ export const toggleWarning = async () => {
   if (elm && items && items.length) {
     let bool = false;
     for (const item of items) {
-      bool = window.getComputedStyle(item).display !== "none";
+      bool = window.getComputedStyle(item).display !== 'none';
       if (bool) {
         break;
       }
     }
-    elm.style.display = bool && "none" || "block";
+    elm.style.display = bool ? 'none' : 'block';
   }
 };
 
@@ -330,8 +330,8 @@ export const toggleSnsItem = async (id, obj = {}) => {
   }
   const elm = document.getElementById(id);
   if (elm) {
-    const {checked} = obj;
-    elm.style.display = checked && "block" || "none";
+    const { checked } = obj;
+    elm.style.display = checked ? 'block' : 'none';
   }
 };
 
@@ -348,7 +348,7 @@ export const handleStoredData = async data => {
     for (const item of items) {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
-        const {newValue} = value;
+        const { newValue } = value;
         sns.has(key) && func.push(toggleSnsItem(key, newValue || value));
       }
     }
@@ -366,7 +366,7 @@ export const prepareTab = async () => {
   const tab = await getActiveTab();
   tab && func.push(
     requestContextInfo(tab),
-    setTabInfo(tab),
+    setTabInfo(tab)
   );
   return Promise.all(func);
 };

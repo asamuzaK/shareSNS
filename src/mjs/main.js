@@ -3,21 +3,21 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString, logErr,
-} from "./common.js";
+  getType, isObjectNotEmpty, isString, logErr
+} from './common.js';
 import {
-  createTab, getStorage, queryTabs, updateTab,
-} from "./browser.js";
-import snsData from "./sns.js";
-
-/* api */
-const {i18n, menus, tabs} = browser;
+  createTab, getStorage, queryTabs, updateTab
+} from './browser.js';
+import snsData from './sns.js';
 
 /* constants */
 import {
-  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB,
-} from "./constant.js";
-const {TAB_ID_NONE} = tabs;
+  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
+} from './constant.js';
+
+/* api */
+const { i18n, menus, tabs } = browser;
+const { TAB_ID_NONE } = tabs;
 
 /* sns */
 export const sns = new Map();
@@ -47,11 +47,11 @@ export const getSnsItemFromId = async id => {
   }
   let item;
   if (id.startsWith(SHARE_LINK)) {
-    item = sns.get(id.replace(SHARE_LINK, ""));
+    item = sns.get(id.replace(SHARE_LINK, ''));
   } else if (id.startsWith(SHARE_TAB)) {
-    item = sns.get(id.replace(SHARE_TAB, ""));
+    item = sns.get(id.replace(SHARE_TAB, ''));
   } else {
-    item = sns.get(id.replace(SHARE_PAGE, ""));
+    item = sns.get(id.replace(SHARE_PAGE, ''));
   }
   return item || null;
 };
@@ -67,13 +67,14 @@ export const toggleSnsItem = async (id, obj = {}) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const {checked, subItemOf, value} = obj;
+  const { checked, subItemOf, value } = obj;
   const item = subItemOf || id;
   const data = sns.get(item);
   if (data) {
     if (subItemOf) {
-      const {subItem} = data;
-      if (isObjectNotEmpty(subItem) && subItem.hasOwnProperty(id)) {
+      const { subItem } = data;
+      if (isObjectNotEmpty(subItem) &&
+          Object.prototype.hasOwnProperty.call(subItem, id)) {
         data.subItem[id].value = value || null;
         sns.set(item, data);
       }
@@ -97,13 +98,13 @@ export const createSnsUrl = async (url, info) => {
   }
   let snsUrl;
   if (isObjectNotEmpty(info)) {
-    const {url: tmpl, value} = info;
+    const { url: tmpl, value } = info;
     if (isString(tmpl) && isString(value)) {
       try {
-        const {origin, protocol} = new URL(value.trim());
+        const { origin, protocol } = new URL(value.trim());
         if (/^https?:$/.test(protocol)) {
           const query = encodeURIComponent(url);
-          snsUrl = tmpl.replace("%origin%", origin).replace("%query%", query);
+          snsUrl = tmpl.replace('%origin%', origin).replace('%query%', query);
         }
       } catch (e) {
         logErr(e);
@@ -116,7 +117,7 @@ export const createSnsUrl = async (url, info) => {
 
 /* context info */
 export const contextInfo = {
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -136,9 +137,9 @@ export const initContextInfo = async () => {
  * @returns {object} - context info
  */
 export const updateContextInfo = async (data = {}) => {
-  const {contextInfo: info} = data;
+  const { contextInfo: info } = data;
   if (info) {
-    const {canonicalUrl} = info;
+    const { canonicalUrl } = info;
     contextInfo.canonicalUrl = canonicalUrl || null;
   } else {
     await initContextInfo();
@@ -156,33 +157,34 @@ export const updateContextInfo = async (data = {}) => {
 export const extractClickedData = async (info = {}, tab = {}) => {
   const {
     cookieStoreId, id: tabId, index: tabIndex, title: tabTitle, url: tabUrl,
-    windowId,
+    windowId
   } = tab;
   const func = [];
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
       Number.isInteger(tabIndex)) {
-    const {linkText, linkUrl, menuItemId, selectionText} = info;
+    const { linkText, linkUrl, menuItemId, selectionText } = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
-      const {matchPattern, subItem, url: tmpl} = snsItem;
+      const { matchPattern, subItem, url: tmpl } = snsItem;
       const selText =
-        isString(selectionText) && selectionText.replace(/\s+/g, " ") || "";
+        isString(selectionText) ? selectionText.replace(/\s+/g, ' ') : '';
       const canonicalUrl =
         info.canonicalUrl || contextInfo.canonicalUrl || null;
-      const {hash: tabUrlHash} = new URL(tabUrl);
+      const { hash: tabUrlHash } = new URL(tabUrl);
       let shareText, shareUrl, url;
       if (menuItemId.startsWith(SHARE_LINK)) {
         shareText = encodeURIComponent(selText || linkText);
         shareUrl = encodeURIComponent(linkUrl);
       } else {
         shareText = encodeURIComponent(selText || tabTitle);
-        shareUrl = encodeURIComponent(!tabUrlHash && canonicalUrl || tabUrl);
+        shareUrl = encodeURIComponent(!tabUrlHash ? canonicalUrl : tabUrl);
       }
       if (subItem) {
         const items = Object.values(subItem);
         let itemInfo;
         for (const item of items) {
-          if (isObjectNotEmpty(item) && item.hasOwnProperty("url")) {
+          if (isObjectNotEmpty(item) &&
+              Object.prototype.hasOwnProperty.call(item, 'url')) {
             itemInfo = item;
             break;
           }
@@ -191,35 +193,39 @@ export const extractClickedData = async (info = {}, tab = {}) => {
           url = await createSnsUrl(shareUrl, itemInfo);
         }
       } else {
-        url = tmpl.replace("%url%", shareUrl).replace("%text%", shareText);
+        url = tmpl.replace('%url%', shareUrl).replace('%text%', shareText);
       }
       if (url) {
         if (matchPattern) {
           const [targetTab] = await queryTabs({
             cookieStoreId,
             currentWindow: true,
-            url: matchPattern,
+            url: matchPattern
           });
           if (isObjectNotEmpty(targetTab)) {
-            const {id: targetTabId} = targetTab;
+            const { id: targetTabId } = targetTab;
             func.push(updateTab(targetTabId, {
               url,
-              active: true,
+              active: true
             }));
           } else {
             func.push(createTab({
-              cookieStoreId, url, windowId,
+              cookieStoreId,
+              url,
+              windowId,
               active: true,
               index: tabIndex + 1,
-              openerTabId: tabId,
+              openerTabId: tabId
             }));
           }
         } else {
           func.push(createTab({
-            cookieStoreId, url, windowId,
+            cookieStoreId,
+            url,
+            windowId,
             active: true,
             index: tabIndex + 1,
-            openerTabId: tabId,
+            openerTabId: tabId
           }));
         }
       }
@@ -252,12 +258,14 @@ export const createMenuItem = async (id, title, data = {}) => {
   if (!isString(title)) {
     throw new TypeError(`Expected String but got ${getType(title)}.`);
   }
-  const {contexts, enabled} = data;
+  const { contexts, enabled } = data;
   let func;
   if (Array.isArray(contexts)) {
     const opt = {
-      id, contexts, title,
-      enabled: !!enabled,
+      id,
+      contexts,
+      title,
+      enabled: !!enabled
     };
     func = menus.create(opt);
   }
@@ -271,13 +279,13 @@ export const createMenuItem = async (id, title, data = {}) => {
  */
 export const createMenu = async () => {
   const func = [];
-  const {mastodonInstanceUrl} = await getStorage("mastodonInstanceUrl") || {};
+  const { mastodonInstanceUrl } = await getStorage('mastodonInstanceUrl') || {};
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
-      const {enabled: itemEnabled, id, menu} = value;
+      const { enabled: itemEnabled, id, menu } = value;
       const key = menu || id;
       let enabled;
-      if (id === "Mastodon" && itemEnabled) {
+      if (id === 'Mastodon' && itemEnabled) {
         enabled = !!(mastodonInstanceUrl && mastodonInstanceUrl.value);
       } else {
         enabled = !!itemEnabled;
@@ -288,25 +296,25 @@ export const createMenu = async () => {
           i18n.getMessage(SHARE_PAGE, key),
           {
             enabled,
-            contexts: ["page", "selection"],
-          },
+            contexts: ['page', 'selection']
+          }
         ),
         createMenuItem(
           `${SHARE_TAB}${id}`,
           i18n.getMessage(SHARE_TAB, key),
           {
             enabled,
-            contexts: ["tab"],
-          },
+            contexts: ['tab']
+          }
         ),
         createMenuItem(
           `${SHARE_LINK}${id}`,
           i18n.getMessage(SHARE_LINK, key),
           {
             enabled,
-            contexts: ["link"],
-          },
-        ),
+            contexts: ['link']
+          }
+        )
       );
     }
   });
@@ -332,7 +340,7 @@ export const handleMsg = async msg => {
           break;
         }
         case SHARE_SNS: {
-          const {info, tab} = value;
+          const { info, tab } = value;
           func.push(extractClickedData(info, tab));
           break;
         }
@@ -357,7 +365,7 @@ export const handleStoredData = async data => {
     for (const item of items) {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
-        const {newValue} = value;
+        const { newValue } = value;
         func.push(toggleSnsItem(key, newValue || value));
       }
     }

@@ -1,16 +1,15 @@
 /**
  * content.test.js
  */
-/* eslint-disable max-nested-callbacks, no-magic-numbers */
 
-const {assert} = require("chai");
-const {afterEach, beforeEach, describe, it} = require("mocha");
-const {browser, createJsdom} = require("./mocha/setup.js");
-const cjs = require("../src/js/content.js");
+const { assert } = require('chai');
+const { afterEach, beforeEach, describe, it } = require('mocha');
+const { browser, createJsdom } = require('./mocha/setup.js');
+const cjs = require('../src/js/content.js');
 
-describe("content", () => {
+describe('content', () => {
   let window, document;
-  const globalKeys = ["Node"];
+  const globalKeys = ['Node'];
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
@@ -33,81 +32,81 @@ describe("content", () => {
     }
   });
 
-  it("should get browser object", () => {
-    assert.isObject(browser, "browser");
+  it('should get browser object', () => {
+    assert.isObject(browser, 'browser');
   });
 
-  describe("throw error", () => {
+  describe('throw error', () => {
     const func = cjs.throwErr;
 
-    it("should throw", () => {
-      const e = new Error("error");
-      assert.throws(() => func(e), "error");
+    it('should throw', () => {
+      const e = new Error('error');
+      assert.throws(() => func(e), 'error');
     });
   });
 
-  describe("send message", () => {
+  describe('send message', () => {
     const func = cjs.sendMsg;
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       const i = browser.runtime.sendMessage.callCount;
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.callsFake(msg => msg);
-      const res = await func("foo");
+      const res = await func('foo');
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-      assert.strictEqual(res, "foo", "result");
+        'called');
+      assert.strictEqual(res, 'foo', 'result');
     });
   });
 
-  describe("get active element", () => {
+  describe('get active element', () => {
     const func = cjs.getActiveElm;
 
-    it("should get element", async () => {
-      const btn = document.createElement("button");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+    it('should get element', async () => {
+      const btn = document.createElement('button');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(btn);
       body.appendChild(p);
       btn.focus();
       const res = await func();
-      assert.deepEqual(res, btn, "result");
+      assert.deepEqual(res, btn, 'result');
     });
 
-    it("should get element", async () => {
+    it('should get element', async () => {
       const range = document.createRange();
-      const text = document.createTextNode("foo");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const text = document.createTextNode('foo');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(text);
       body.appendChild(p);
       range.selectNode(text);
       const res = await func();
-      assert.deepEqual(res, body, "result");
+      assert.deepEqual(res, body, 'result');
     });
 
-    it("should get element", async () => {
+    it('should get element', async () => {
       const range = document.createRange();
       const range2 = document.createRange();
       const sel = window.getSelection();
-      const text = document.createTextNode("foo");
-      const text2 = document.createTextNode("bar");
-      const text3 = document.createTextNode("baz");
-      const span = document.createElement("span");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const text = document.createTextNode('foo');
+      const text2 = document.createTextNode('bar');
+      const text3 = document.createTextNode('baz');
+      const span = document.createElement('span');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(text);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       span.appendChild(text2);
       p.appendChild(span);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       p.appendChild(text3);
       body.appendChild(p);
       range.setStart(p, 0);
@@ -116,46 +115,46 @@ describe("content", () => {
       sel.addRange(range);
       sel.addRange(range2);
       const res = await func();
-      assert.deepEqual(res, p, "result");
+      assert.deepEqual(res, p, 'result');
     });
 
-    it("should get element", async () => {
+    it('should get element', async () => {
       const range = document.createRange();
       const sel = window.getSelection();
-      const text = document.createTextNode("foo");
-      const text2 = document.createTextNode("bar");
-      const text3 = document.createTextNode("baz");
-      const span = document.createElement("span");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const text = document.createTextNode('foo');
+      const text2 = document.createTextNode('bar');
+      const text3 = document.createTextNode('baz');
+      const span = document.createElement('span');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(text);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       span.appendChild(text2);
       p.appendChild(span);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       p.appendChild(text3);
       body.appendChild(p);
       range.setStart(p, 0);
       range.setEnd(span, 0);
       sel.addRange(range);
       const res = await func();
-      assert.deepEqual(res, p, "result");
+      assert.deepEqual(res, p, 'result');
     });
 
-    it("should get element", async () => {
+    it('should get element', async () => {
       const range = document.createRange();
       const sel = window.getSelection();
-      const text = document.createTextNode("foo");
-      const text2 = document.createTextNode("bar");
-      const text3 = document.createTextNode("baz");
-      const span = document.createElement("span");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const text = document.createTextNode('foo');
+      const text2 = document.createTextNode('bar');
+      const text3 = document.createTextNode('baz');
+      const span = document.createElement('span');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(text);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       span.appendChild(text2);
       p.appendChild(span);
-      p.appendChild(document.createElement("br"));
+      p.appendChild(document.createElement('br'));
       p.appendChild(text3);
       body.appendChild(p);
       range.setStart(p, 0);
@@ -163,16 +162,16 @@ describe("content", () => {
       range.collapse(true);
       sel.addRange(range);
       const res = await func();
-      assert.deepEqual(res, body, "result");
+      assert.deepEqual(res, body, 'result');
     });
 
-    it("should get element", async () => {
+    it('should get element', async () => {
       const range = document.createRange();
       const range2 = document.createRange();
       const sel = window.getSelection();
-      const text = document.createTextNode("foo bar baz");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const text = document.createTextNode('foo bar baz');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       p.appendChild(text);
       body.appendChild(p);
       range.setStart(text, 0);
@@ -182,280 +181,280 @@ describe("content", () => {
       sel.addRange(range);
       sel.addRange(range2);
       const res = await func();
-      assert.deepEqual(res, p, "result");
+      assert.deepEqual(res, p, 'result');
     });
   });
 
-  describe("get anchor element", () => {
+  describe('get anchor element', () => {
     const func = cjs.getAnchorElm;
 
-    it("should get null", async () => {
+    it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, "result");
+      assert.isNull(res, 'result');
     });
 
-    it("should get element", async () => {
-      const text = document.createTextNode("foo");
-      const a = document.createElement("a");
-      const span = document.createElement("span");
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+    it('should get element', async () => {
+      const text = document.createTextNode('foo');
+      const a = document.createElement('a');
+      const span = document.createElement('span');
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       span.appendChild(text);
       a.appendChild(span);
       p.appendChild(a);
       body.appendChild(p);
       const res = await func(text);
-      assert.deepEqual(res, a, "result");
+      assert.deepEqual(res, a, 'result');
     });
   });
 
-  describe("init context info", () => {
+  describe('init context info', () => {
     const func = cjs.initContextInfo;
     beforeEach(() => {
-      const {contextInfo} = cjs;
+      const { contextInfo } = cjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
-      contextInfo.selectionText = "";
+      contextInfo.selectionText = '';
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
     });
     afterEach(() => {
-      const {contextInfo} = cjs;
+      const { contextInfo } = cjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
-      contextInfo.selectionText = "";
+      contextInfo.selectionText = '';
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
     });
 
-    it("should get result", async () => {
-      const {contextInfo} = cjs;
+    it('should get result', async () => {
+      const { contextInfo } = cjs;
       contextInfo.isLink = true;
-      contextInfo.content = "foo";
-      contextInfo.title = "bar";
-      contextInfo.selectionText = "baz";
-      contextInfo.url = "https://example.com";
-      contextInfo.canonicalUrl = "https://example.com";
+      contextInfo.content = 'foo';
+      contextInfo.title = 'bar';
+      contextInfo.selectionText = 'baz';
+      contextInfo.url = 'https://example.com';
+      contextInfo.canonicalUrl = 'https://example.com';
       const res = await func();
       assert.deepEqual(res, {
         isLink: false,
         content: null,
-        selectionText: "",
+        selectionText: '',
         title: null,
         url: null,
-        canonicalUrl: null,
-      }, "result");
+        canonicalUrl: null
+      }, 'result');
     });
   });
 
-  describe("create context info", () => {
+  describe('create context info', () => {
     const func = cjs.createContextInfo;
     beforeEach(() => {
-      const {contextInfo} = cjs;
+      const { contextInfo } = cjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
-      contextInfo.selectionText = "";
+      contextInfo.selectionText = '';
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
     });
     afterEach(() => {
-      const {contextInfo} = cjs;
+      const { contextInfo } = cjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
-      contextInfo.selectionText = "";
+      contextInfo.selectionText = '';
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
     });
 
-    it("should get result", async () => {
+    it('should get result', async () => {
       const res = await func();
       assert.deepEqual(res, {
         isLink: false,
         content: null,
-        selectionText: "",
+        selectionText: '',
         title: null,
         url: null,
-        canonicalUrl: null,
-      }, "result");
+        canonicalUrl: null
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+    it('should get result', async () => {
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       body.appendChild(p);
       const res = await func(p);
       assert.deepEqual(res, {
         isLink: false,
         content: null,
-        selectionText: "",
+        selectionText: '',
         title: null,
         url: null,
-        canonicalUrl: null,
-      }, "result");
+        canonicalUrl: null
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const a = document.createElement("a");
-      const body = document.querySelector("body");
+    it('should get result', async () => {
+      const a = document.createElement('a');
+      const body = document.querySelector('body');
       body.appendChild(a);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: false,
         content: null,
-        selectionText: "",
+        selectionText: '',
         title: null,
         url: null,
-        canonicalUrl: null,
-      }, "result");
+        canonicalUrl: null
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const text = document.createTextNode("foo  bar");
-      const a = document.createElement("a");
-      const body = document.querySelector("body");
+    it('should get result', async () => {
+      const text = document.createTextNode('foo  bar');
+      const a = document.createElement('a');
+      const body = document.querySelector('body');
       a.appendChild(text);
-      a.href = "https://example.com";
+      a.href = 'https://example.com';
       body.appendChild(a);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        content: "foo bar",
-        selectionText: "",
-        title: "foo bar",
-        url: "https://example.com/",
-        canonicalUrl: null,
-      }, "result");
+        content: 'foo bar',
+        selectionText: '',
+        title: 'foo bar',
+        url: 'https://example.com/',
+        canonicalUrl: null
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const text = document.createTextNode("foo  bar");
-      const a = document.createElement("a");
-      const link = document.createElement("link");
-      const head = document.querySelector("head");
-      const body = document.querySelector("body");
-      link.href = "https://example.com/foo";
-      link.rel = "canonical";
+    it('should get result', async () => {
+      const text = document.createTextNode('foo  bar');
+      const a = document.createElement('a');
+      const link = document.createElement('link');
+      const head = document.querySelector('head');
+      const body = document.querySelector('body');
+      link.href = 'https://example.com/foo';
+      link.rel = 'canonical';
       head.appendChild(link);
       a.appendChild(text);
-      a.href = "https://www.example.com/bar";
-      a.title = "baz qux";
+      a.href = 'https://www.example.com/bar';
+      a.title = 'baz qux';
       body.appendChild(a);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        content: "foo bar",
-        selectionText: "",
-        title: "baz qux",
-        url: "https://www.example.com/bar",
-        canonicalUrl: "https://example.com/foo",
-      }, "result");
+        content: 'foo bar',
+        selectionText: '',
+        title: 'baz qux',
+        url: 'https://www.example.com/bar',
+        canonicalUrl: 'https://example.com/foo'
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const text = document.createTextNode("foo  bar");
-      const a = document.createElement("a");
-      const link = document.createElement("link");
-      const head = document.querySelector("head");
-      const body = document.querySelector("body");
-      link.href = "/foo";
-      link.rel = "canonical";
+    it('should get result', async () => {
+      const text = document.createTextNode('foo  bar');
+      const a = document.createElement('a');
+      const link = document.createElement('link');
+      const head = document.querySelector('head');
+      const body = document.querySelector('body');
+      link.href = '/foo';
+      link.rel = 'canonical';
       head.appendChild(link);
       a.appendChild(text);
-      a.href = "https://www.example.com/bar";
-      a.title = "baz qux";
+      a.href = 'https://www.example.com/bar';
+      a.title = 'baz qux';
       body.appendChild(a);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        content: "foo bar",
-        selectionText: "",
-        title: "baz qux",
-        url: "https://www.example.com/bar",
-        canonicalUrl: "https://localhost/foo",
-      }, "result");
+        content: 'foo bar',
+        selectionText: '',
+        title: 'baz qux',
+        url: 'https://www.example.com/bar',
+        canonicalUrl: 'https://localhost/foo'
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
-      const body = document.querySelector("body");
-      a.href = "foo.svg#bar";
+    it('should get result', async () => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      const body = document.querySelector('body');
+      a.href = 'foo.svg#bar';
       svg.appendChild(a);
       body.appendChild(svg);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        content: "",
-        selectionText: "",
-        title: "",
-        url: "foo.svg#bar",
-        canonicalUrl: null,
-      }, "result");
+        content: '',
+        selectionText: '',
+        title: '',
+        url: 'foo.svg#bar',
+        canonicalUrl: null
+      }, 'result');
     });
 
-    it("should get result", async () => {
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
-      const body = document.querySelector("body");
+    it('should get result', async () => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      const body = document.querySelector('body');
       a.href = {
-        baseVal: "foo.svg#bar",
+        baseVal: 'foo.svg#bar'
       };
       svg.appendChild(a);
       body.appendChild(svg);
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        content: "",
-        selectionText: "",
-        title: "",
-        url: "foo.svg#bar",
-        canonicalUrl: null,
-      }, "result");
+        content: '',
+        selectionText: '',
+        title: '',
+        url: 'foo.svg#bar',
+        canonicalUrl: null
+      }, 'result');
     });
   });
 
-  describe("send context info", () => {
+  describe('send context info', () => {
     const func = cjs.sendContextInfo;
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
-      const p = document.createElement("p");
-      const body = document.querySelector("body");
+      const p = document.createElement('p');
+      const body = document.querySelector('body');
       body.appendChild(p);
-      const res = await func("foo");
+      const res = await func('foo');
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
+        'called');
       assert.deepEqual(res, {
         contextInfo: {
-          contextInfo: cjs.contextInfo,
-        },
-      }, "result");
+          contextInfo: cjs.contextInfo
+        }
+      }, 'result');
     });
   });
 
-  describe("handle message", () => {
+  describe('handle message', () => {
     const func = cjs.handleMsg;
 
-    it("should get empty array", async () => {
+    it('should get empty array', async () => {
       const res = await func();
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [], 'result');
     });
 
-    it("should get empty array", async () => {
+    it('should get empty array', async () => {
       const res = await func({
-        foo: "bar",
+        foo: 'bar'
       });
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [], 'result');
     });
 
-    it("should get array", async () => {
+    it('should get array', async () => {
       const res = await func({
-        getContextInfo: {},
+        getContextInfo: {}
       });
       assert.deepEqual(res, [
         {
@@ -464,159 +463,159 @@ describe("content", () => {
               canonicalUrl: null,
               content: null,
               isLink: false,
-              selectionText: "",
+              selectionText: '',
               title: null,
-              url: null,
-            },
-          },
-        },
-      ], "result");
+              url: null
+            }
+          }
+        }
+      ], 'result');
     });
   });
 
-  describe("handle UI event", () => {
+  describe('handle UI event', () => {
     const func = cjs.handleUIEvt;
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({});
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
-        type: "foo",
+        type: 'foo'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
-        key: "foo",
-        type: "keydown",
+        key: 'foo',
+        type: 'keydown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
-        key: "foo",
+        key: 'foo',
         shiftKey: true,
-        type: "keydown",
+        type: 'keydown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
-      const target = document.querySelector("body");
+      const target = document.querySelector('body');
       const res = await func({
         target,
-        key: "F10",
+        key: 'F10',
         shiftKey: true,
-        type: "keydown",
+        type: 'keydown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
+        'called');
       assert.deepEqual(res, {
         contextInfo: {
           contextInfo: {
             canonicalUrl: null,
             content: null,
             isLink: false,
-            selectionText: "",
+            selectionText: '',
             title: null,
-            url: null,
-          },
-        },
-      }, "result");
+            url: null
+          }
+        }
+      }, 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
-      const target = document.querySelector("body");
+      const target = document.querySelector('body');
       const res = await func({
         target,
-        key: "ContextMenu",
-        type: "keydown",
+        key: 'ContextMenu',
+        type: 'keydown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
+        'called');
       assert.deepEqual(res, {
         contextInfo: {
           contextInfo: {
             canonicalUrl: null,
             content: null,
             isLink: false,
-            selectionText: "",
+            selectionText: '',
             title: null,
-            url: null,
-          },
-        },
-      }, "result");
+            url: null
+          }
+        }
+      }, 'result');
     });
 
-    it("should not call function", async () => {
+    it('should not call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         button: 1,
-        type: "mousedown",
+        type: 'mousedown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-      assert.isNull(res, "result");
+        'not called');
+      assert.isNull(res, 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.runtime.sendMessage.callCount;
-      const target = document.querySelector("body");
+      const target = document.querySelector('body');
       const res = await func({
         target,
         button: 2,
-        type: "mousedown",
+        type: 'mousedown'
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
+        'called');
       assert.deepEqual(res, {
         contextInfo: {
           contextInfo: {
             canonicalUrl: null,
             content: null,
             isLink: false,
-            selectionText: "",
+            selectionText: '',
             title: null,
-            url: null,
-          },
-        },
-      }, "result");
+            url: null
+          }
+        }
+      }, 'result');
     });
   });
 
-  describe("runtime on message", () => {
+  describe('runtime on message', () => {
     const func = cjs.runtimeOnMsg;
 
-    it("should get empty array", async () => {
+    it('should get empty array', async () => {
       const res = await func();
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [], 'result');
     });
   });
 });

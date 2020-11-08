@@ -3,19 +3,19 @@
  */
 
 import {
-  throwErr,
-} from "./common.js";
+  throwErr
+} from './common.js';
 import {
-  localizeHtml,
-} from "./localize.js";
+  localizeHtml
+} from './localize.js';
 import {
   addInputChangeListener,
-  setValuesFromStorage,
-} from "./options-main.js";
+  setValuesFromStorage
+} from './options-main.js';
 
 /* startup */
-document.addEventListener("DOMContentLoaded", () => Promise.all([
+document.addEventListener('DOMContentLoaded', () => Promise.all([
   localizeHtml(),
   setValuesFromStorage(),
-  addInputChangeListener(),
+  addInputChangeListener()
 ]).catch(throwErr));

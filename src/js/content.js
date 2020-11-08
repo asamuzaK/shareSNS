@@ -1,13 +1,13 @@
 /**
  * content.js
  */
-"use strict";
+'use strict';
 /* api */
-const {runtime} = browser;
+const { runtime } = browser;
 
 /* constants */
-const CONTEXT_INFO = "contextInfo";
-const CONTEXT_INFO_GET = "getContextInfo";
+const CONTEXT_INFO = 'contextInfo';
+const CONTEXT_INFO_GET = 'getContextInfo';
 const MOUSE_BUTTON_RIGHT = 2;
 
 /**
@@ -41,7 +41,7 @@ const sendMsg = async msg => {
  */
 const getActiveElm = async () => {
   const sel = window.getSelection();
-  const {anchorNode, focusNode, isCollapsed, rangeCount} = sel;
+  const { anchorNode, focusNode, isCollapsed, rangeCount } = sel;
   let elm;
   if (!isCollapsed) {
     if (anchorNode === focusNode) {
@@ -67,7 +67,7 @@ const getAnchorElm = async node => {
   let elm;
   const root = document.documentElement;
   while (node && node.parentNode && node.parentNode !== root) {
-    if (node.localName === "a") {
+    if (node.localName === 'a') {
       elm = node;
       break;
     }
@@ -80,10 +80,10 @@ const getAnchorElm = async node => {
 const contextInfo = {
   isLink: false,
   content: null,
-  selectionText: "",
+  selectionText: '',
   title: null,
   url: null,
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -95,7 +95,7 @@ const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
   contextInfo.title = null;
-  contextInfo.selectionText = "";
+  contextInfo.selectionText = '';
   contextInfo.url = null;
   contextInfo.canonicalUrl = null;
   return contextInfo;
@@ -111,15 +111,15 @@ const createContextInfo = async node => {
   await initContextInfo();
   if (node && node.nodeType === Node.ELEMENT_NODE) {
     const anchor = await getAnchorElm(node);
-    const canonical = document.querySelector("link[rel=canonical][href]");
+    const canonical = document.querySelector('link[rel=canonical][href]');
     if (anchor) {
-      const {textContent, href, title} = anchor;
+      const { textContent, href, title } = anchor;
       if (href) {
-        const content = textContent.replace(/\s+/g, " ").trim();
+        const content = textContent.replace(/\s+/g, ' ').trim();
         contextInfo.isLink = true;
         contextInfo.content = content;
         contextInfo.title = title || content;
-        if (href.hasOwnProperty("baseVal")) {
+        if (Object.prototype.hasOwnProperty.call(href, 'baseVal')) {
           contextInfo.url = href.baseVal;
         } else {
           contextInfo.url = href;
@@ -127,9 +127,9 @@ const createContextInfo = async node => {
       }
     }
     if (canonical) {
-      const {origin: docOrigin} = new URL(document.URL);
-      const {href: canonicalHref} =
-        new URL(canonical.getAttribute("href"), docOrigin);
+      const { origin: docOrigin } = new URL(document.URL);
+      const { href: canonicalHref } =
+        new URL(canonical.getAttribute('href'), docOrigin);
       contextInfo.canonicalUrl = canonicalHref;
     }
     contextInfo.selectionText = window.getSelection().toString();
@@ -147,8 +147,8 @@ const sendContextInfo = async () => {
   const info = await createContextInfo(elm);
   const msg = {
     [CONTEXT_INFO]: {
-      contextInfo: info,
-    },
+      contextInfo: info
+    }
   };
   return sendMsg(msg);
 };
@@ -182,19 +182,22 @@ const handleMsg = async (msg = {}) => {
  * @returns {?(Function|Error)} - promise chain
  */
 const handleUIEvt = evt => {
-  const {button, key, shiftKey, type} = evt;
+  const { button, key, shiftKey, type } = evt;
   let func;
   switch (type) {
-    case "keydown":
-      if (shiftKey && key === "F10" || key === "ContextMenu") {
+    case 'keydown': {
+      const shiftF10 = shiftKey && key === 'F10';
+      if (shiftF10 || key === 'ContextMenu') {
         func = sendContextInfo().catch(throwErr);
       }
       break;
-    case "mousedown":
+    }
+    case 'mousedown': {
       if (button === MOUSE_BUTTON_RIGHT) {
         func = sendContextInfo().catch(throwErr);
       }
       break;
+    }
     default:
   }
   return func || null;
@@ -210,11 +213,12 @@ const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
 /* listeners */
 runtime.onMessage.addListener(runtimeOnMsg);
-window.addEventListener("keydown", handleUIEvt, true);
-window.addEventListener("mousedown", handleUIEvt, true);
+window.addEventListener('keydown', handleUIEvt, true);
+window.addEventListener('mousedown', handleUIEvt, true);
 
 /* export for tests */
-if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
+if (typeof module !== 'undefined' &&
+    Object.prototype.hasOwnProperty.call(module, 'exports')) {
   module.exports = {
     contextInfo,
     createContextInfo,
@@ -226,6 +230,6 @@ if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
     runtimeOnMsg,
     sendContextInfo,
     sendMsg,
-    throwErr,
+    throwErr
   };
 }
