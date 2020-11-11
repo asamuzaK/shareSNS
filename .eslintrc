@@ -7,7 +7,8 @@
   },
   "extends": [
     "plugin:jsdoc/recommended",
-    "plugin:no-unsanitized/DOM"
+    "plugin:no-unsanitized/DOM",
+    "standard"
   ],
   "parserOptions": {
     "ecmaVersion": 2019,
