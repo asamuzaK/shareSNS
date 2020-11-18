@@ -2,15 +2,11 @@
  * options.js
  */
 
+/* shared */
+import { throwErr } from './common.js';
+import { localizeHtml } from './localize.js';
 import {
-  throwErr
-} from './common.js';
-import {
-  localizeHtml
-} from './localize.js';
-import {
-  addInputChangeListener,
-  setValuesFromStorage
+  addInputChangeListener, setValuesFromStorage
 } from './options-main.js';
 
 /* startup */

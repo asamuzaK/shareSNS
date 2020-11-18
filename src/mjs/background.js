@@ -2,12 +2,9 @@
  * background.js
  */
 
-import {
-  throwErr
-} from './common.js';
-import {
-  getStorage
-} from './browser.js';
+/* shared */
+import { throwErr } from './common.js';
+import { getStorage } from './browser.js';
 import {
   createMenu, extractClickedData, handleMsg, handleStoredData, removeMenu,
   setSnsItems

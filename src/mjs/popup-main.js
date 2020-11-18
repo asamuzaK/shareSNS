@@ -2,21 +2,20 @@
  * popup.js
  */
 
+/* shared */
 import {
   getType, isObjectNotEmpty, isString, logErr, throwErr
 } from './common.js';
-import {
-  getActiveTab, getStorage, sendMessage
-} from './browser.js';
+import { getActiveTab, getStorage, sendMessage } from './browser.js';
 import snsData from './sns.js';
-
-/* constants */
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS
 } from './constant.js';
 
 /* api */
 const { runtime, tabs } = browser;
+
+/* constants */
 const { TAB_ID_NONE } = tabs;
 const OPTIONS_OPEN = 'openOptions';
 const SNS_ITEMS = 'snsItems';

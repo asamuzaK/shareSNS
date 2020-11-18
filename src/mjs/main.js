@@ -2,21 +2,18 @@
  * main.js
  */
 
-import {
-  getType, isObjectNotEmpty, isString, logErr
-} from './common.js';
-import {
-  createTab, getStorage, queryTabs, updateTab
-} from './browser.js';
+/* shared */
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
+import { createTab, getStorage, queryTabs, updateTab } from './browser.js';
 import snsData from './sns.js';
-
-/* constants */
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from './constant.js';
 
 /* api */
 const { i18n, menus, tabs } = browser;
+
+/* constant */
 const { TAB_ID_NONE } = tabs;
 
 /* sns */

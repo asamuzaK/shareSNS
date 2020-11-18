@@ -2,12 +2,14 @@
  * localize.js
  */
 
-/* api */
-/* constants */
+/* shared */
 import { EXT_LOCALE } from './constant.js';
 
-const { i18n } = browser;
+/* constant */
 const DATA_I18N = 'data-i18n';
+
+/* api */
+const { i18n } = browser;
 
 /**
  * localize attribute value

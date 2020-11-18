@@ -2,12 +2,9 @@
  * options.js
  */
 
-import {
-  isObjectNotEmpty, isString, throwErr
-} from './common.js';
-import {
-  getStorage, setStorage
-} from './browser.js';
+/* shared */
+import { isObjectNotEmpty, isString, throwErr } from './common.js';
+import { getStorage, setStorage } from './browser.js';
 
 /**
  * create pref
