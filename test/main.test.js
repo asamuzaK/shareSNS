@@ -356,7 +356,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -373,7 +373,24 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com/#bar'
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -392,7 +409,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -414,7 +431,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -435,7 +452,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -526,7 +543,7 @@ describe('main', () => {
       const j = browser.tabs.create.callCount;
       mjs.sns.set('foo', {
         matchPattern: 'https://example.com/*',
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.query.withArgs({
         cookieStoreId: 'bar',
@@ -556,7 +573,7 @@ describe('main', () => {
       const j = browser.tabs.create.callCount;
       mjs.sns.set('foo', {
         matchPattern: 'https://example.com/*',
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.query.withArgs({
         cookieStoreId: 'bar',

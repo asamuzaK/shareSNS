@@ -178,11 +178,15 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       const { hash: tabUrlHash } = new URL(tabUrl);
       let shareText, shareUrl, url;
       if (menuItemId.startsWith(SHARE_LINK)) {
-        shareText = encodeURIComponent(selText || linkText);
-        shareUrl = encodeURIComponent(linkUrl);
+        shareText = selText || linkText;
+        shareUrl = linkUrl;
       } else {
-        shareText = encodeURIComponent(selText || tabTitle);
-        shareUrl = encodeURIComponent(!tabUrlHash ? canonicalUrl : tabUrl);
+        if (tabUrlHash) {
+          shareUrl = tabUrl;
+        } else {
+          shareUrl = canonicalUrl || tabUrl;
+        }
+        shareText = selText || tabTitle;
       }
       if (subItem) {
         const items = Object.values(subItem);
@@ -198,7 +202,8 @@ export const extractClickedData = async (info = {}, tab = {}) => {
           url = await createSnsUrl(itemInfo, shareUrl, shareText);
         }
       } else {
-        url = tmpl.replace('%url%', shareUrl).replace('%text%', shareText);
+        url = tmpl.replace('%url%', encodeURIComponent(shareUrl))
+          .replace('%text%', encodeURIComponent(shareText));
       }
       if (url) {
         if (matchPattern) {
