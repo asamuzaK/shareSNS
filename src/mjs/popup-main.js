@@ -6,7 +6,7 @@
 import {
   getType, isObjectNotEmpty, isString, logErr, throwErr
 } from './common.js';
-import { getActiveTab, getStorage, sendMessage } from './browser.js';
+import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import snsData from './sns.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS
@@ -199,8 +199,9 @@ export const updateMenu = async data => {
     const { contextInfo: info } = data;
     if (info) {
       const { content, isLink, selectionText, title, url } = info;
-      const { mastodonInstanceUrl } =
-        await getStorage('mastodonInstanceUrl') || {};
+      const {
+        mastodonInstanceUrl, pleromaInstanceUrl
+      } = await getAllStorage() || {};
       const linkNodes = document.getElementsByClassName(SHARE_LINK);
       const pageNodes = document.getElementsByClassName(SHARE_PAGE);
       contextInfo.isLink = isLink;
@@ -217,6 +218,12 @@ export const updateMenu = async data => {
             } else {
               node.setAttribute(attr, attr);
             }
+          } else if (node.id.endsWith('Pleroma')) {
+            if (pleromaInstanceUrl && pleromaInstanceUrl.value) {
+              node.removeAttribute(attr);
+            } else {
+              node.setAttribute(attr, attr);
+            }
           } else {
             node.removeAttribute(attr);
           }
@@ -228,6 +235,12 @@ export const updateMenu = async data => {
         const attr = 'disabled';
         if (node.id.endsWith('Mastodon')) {
           if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
+            node.removeAttribute(attr);
+          } else {
+            node.setAttribute(attr, attr);
+          }
+        } else if (node.id.endsWith('Pleroma')) {
+          if (pleromaInstanceUrl && pleromaInstanceUrl.value) {
             node.removeAttribute(attr);
           } else {
             node.setAttribute(attr, attr);
