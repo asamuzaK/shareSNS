@@ -30,7 +30,17 @@ export default {
     url: null,
     subItem: {
       mastodonInstanceUrl: {
-        url: '%origin%/intent?uri=%query%'
+        url: '%origin%/intent?uri=%url%'
+      }
+    }
+  },
+  Pleroma: {
+    id: 'Pleroma',
+    menu: '&Pleroma',
+    url: null,
+    subItem: {
+      pleromaInstanceUrl: {
+        url: '%origin%/share?message=%text%%20%url%'
       }
     }
   }

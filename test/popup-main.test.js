@@ -96,7 +96,7 @@ describe('popup-main', () => {
 
     it('should set map', async () => {
       await func();
-      assert.strictEqual(mjs.sns.size, 5, 'size');
+      assert.strictEqual(mjs.sns.size, 6, 'size');
     });
   });
 
@@ -485,7 +485,7 @@ describe('popup-main', () => {
       elm2.setAttribute('disabled', 'disabled');
       body.appendChild(elm);
       body.appendChild(elm2);
-      browser.storage.local.get.withArgs('mastodonInstanceUrl').resolves({
+      browser.storage.local.get.resolves({
         mastodonInstanceUrl: {
           value: 'https://example.com'
         }
@@ -509,7 +509,7 @@ describe('popup-main', () => {
       elm2.id = `${SHARE_LINK}Mastodon`;
       body.appendChild(elm);
       body.appendChild(elm2);
-      browser.storage.local.get.withArgs('mastodonInstanceUrl').resolves({
+      browser.storage.local.get.resolves({
         mastodonInstanceUrl: {
           value: ''
         }
@@ -533,7 +533,77 @@ describe('popup-main', () => {
       elm2.id = `${SHARE_LINK}Mastodon`;
       body.appendChild(elm);
       body.appendChild(elm2);
-      browser.storage.local.get.withArgs('mastodonInstanceUrl').resolves(null);
+      browser.storage.local.get.resolves(null);
+      await func({
+        contextInfo: {
+          isLink: true
+        }
+      });
+      assert.strictEqual(elm.getAttribute('disabled'), 'disabled', 'result');
+      assert.strictEqual(elm2.getAttribute('disabled'), 'disabled', 'result');
+    });
+
+    it('should set attribute', async () => {
+      const elm = document.createElement('p');
+      const elm2 = document.createElement('p');
+      const body = document.querySelector('body');
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Pleroma`;
+      elm.setAttribute('disabled', 'disabled');
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Pleroma`;
+      elm2.setAttribute('disabled', 'disabled');
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.resolves({
+        pleromaInstanceUrl: {
+          value: 'https://example.com'
+        }
+      });
+      await func({
+        contextInfo: {
+          isLink: true
+        }
+      });
+      assert.isFalse(elm.hasAttribute('disabled'), 'result');
+      assert.isFalse(elm2.hasAttribute('disabled'), 'result');
+    });
+
+    it('should set attribute', async () => {
+      const elm = document.createElement('p');
+      const elm2 = document.createElement('p');
+      const body = document.querySelector('body');
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Pleroma`;
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Pleroma`;
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.resolves({
+        pleromaInstanceUrl: {
+          value: ''
+        }
+      });
+      await func({
+        contextInfo: {
+          isLink: true
+        }
+      });
+      assert.strictEqual(elm.getAttribute('disabled'), 'disabled', 'result');
+      assert.strictEqual(elm2.getAttribute('disabled'), 'disabled', 'result');
+    });
+
+    it('should set attribute', async () => {
+      const elm = document.createElement('p');
+      const elm2 = document.createElement('p');
+      const body = document.querySelector('body');
+      elm.classList.add(SHARE_PAGE);
+      elm.id = `${SHARE_PAGE}Pleroma`;
+      elm2.classList.add(SHARE_LINK);
+      elm2.id = `${SHARE_LINK}Pleroma`;
+      body.appendChild(elm);
+      body.appendChild(elm2);
+      browser.storage.local.get.resolves(null);
       await func({
         contextInfo: {
           isLink: true

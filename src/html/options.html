@@ -118,6 +118,35 @@
               </div>
             </details>
           </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Pleroma"
+                       data-sub-item="pleromaInstanceUrl" />
+                <label for="Pleroma" class="checkboxLabel"
+                       aria-details="enablePleromaDetail">
+                  Pleroma
+                </label>
+              </span>
+              <span class="subItem">
+                <label for="pleromaInstanceUrl" class="label"
+                       aria-details="enablePleromaDetail">
+                  Instance URL
+                </label>
+                <input type="url" id="pleromaInstanceUrl"
+                       data-sub-item-of="Pleroma"
+                       placeholder="https://"
+                       pattern="https?://(?:\[(?:(?:(?:(?:(?:[\da-f]{1,4}:){0,4}[\da-f]{1,4})?::|(?:(?:[\da-f]{1,4}:){0,3}[\da-f]{1,4})?::[\da-f]{1,4}:|(?:(?:[\da-f]{1,4}:){0,2}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){2}|(?:(?:[\da-f]{1,4}:){0,1}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){3}|[\da-f]{1,4}?::(?:[\da-f]{1,4}:){4}|::(?:[\da-f]{1,4}:){5}|(?:[\da-f]{1,4}:){6})(?:(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|[\da-f]{1,4}:[\da-f]{1,4})|(?:(?:[\da-f]{1,4}:){0,5}[\da-f]{1,4})?::[\da-f]{1,4}|(?:(?:[\da-f]{1,4}:){0,6}[\da-f]{1,4})?::)%25(?:[\w\-\.~]|%[\dA-F]{2})+|(?:(?:(?:[\da-f]{1,4}:){0,4}[\da-f]{1,4})?::|(?:(?:[\da-f]{1,4}:){0,3}[\da-f]{1,4})?::[\da-f]{1,4}:|(?:(?:[\da-f]{1,4}:){0,2}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){2}|(?:(?:[\da-f]{1,4}:){0,1}[\da-f]{1,4})?::(?:[\da-f]{1,4}:){3}|[\da-f]{1,4}?::(?:[\da-f]{1,4}:){4}|::(?:[\da-f]{1,4}:){5}|(?:[\da-f]{1,4}:){6})(?:(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|[\da-f]{1,4}:[\da-f]{1,4})|(?:(?:[\da-f]{1,4}:){0,5}[\da-f]{1,4})?::[\da-f]{1,4}|(?:(?:[\da-f]{1,4}:){0,6}[\da-f]{1,4})?::|v[\da-f]+\.[\w\-\.~!\$&'\(\)\*\+,;=:]+)\]|(?:(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))\.){3}(?:(?:1\d|[1-9])?\d|2(?:[0-4]\d|5[0-5]))|(?:[\w\-\.~!\$&'\(\)\*\+,;=]|%[\dA-F]{2})*)/?" />
+              </span>
+            </p>
+            <details id="enablePleromaDetail">
+              <div>
+                <p data-i18n="optionsEnableSnsDetail,Pleroma">
+                  Enable sharing with Pleroma.
+                </p>
+              </div>
+            </details>
+          </div>
         </fieldset>
       </form>
     </main>

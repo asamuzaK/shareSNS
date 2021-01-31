@@ -4,7 +4,7 @@
 
 /* shared */
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
-import { createTab, getStorage, queryTabs, updateTab } from './browser.js';
+import { createTab, getAllStorage, queryTabs, updateTab } from './browser.js';
 import snsData from './sns.js';
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
@@ -85,11 +85,12 @@ export const toggleSnsItem = async (id, obj = {}) => {
 /**
  * create sns item url
  *
- * @param {string} url - url
  * @param {object} info - sns item url info
+ * @param {string} url - url
+ * @param {string} text - text
  * @returns {string} - sns url
  */
-export const createSnsUrl = async (url, info) => {
+export const createSnsUrl = async (info, url, text = '') => {
   if (!isString(url)) {
     throw new TypeError(`Expected String but got ${getType(url)}.`);
   }
@@ -100,8 +101,15 @@ export const createSnsUrl = async (url, info) => {
       try {
         const { origin, protocol } = new URL(value.trim());
         if (/^https?:$/.test(protocol)) {
-          const query = encodeURIComponent(url);
-          snsUrl = tmpl.replace('%origin%', origin).replace('%query%', query);
+          const encUrl = encodeURIComponent(url);
+          if (isString(text) && tmpl.includes('%text%')) {
+            const encText = encodeURIComponent(text);
+            snsUrl = tmpl.replace('%origin%', origin).replace('%text%', encText)
+              .replace('%url%', encUrl);
+          } else {
+            snsUrl =
+              tmpl.replace('%origin%', origin).replace('%url%', encUrl);
+          }
         }
       } catch (e) {
         logErr(e);
@@ -170,11 +178,15 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       const { hash: tabUrlHash } = new URL(tabUrl);
       let shareText, shareUrl, url;
       if (menuItemId.startsWith(SHARE_LINK)) {
-        shareText = encodeURIComponent(selText || linkText);
-        shareUrl = encodeURIComponent(linkUrl);
+        shareText = selText || linkText;
+        shareUrl = linkUrl;
       } else {
-        shareText = encodeURIComponent(selText || tabTitle);
-        shareUrl = encodeURIComponent(!tabUrlHash ? canonicalUrl : tabUrl);
+        if (tabUrlHash) {
+          shareUrl = tabUrl;
+        } else {
+          shareUrl = canonicalUrl || tabUrl;
+        }
+        shareText = selText || tabTitle;
       }
       if (subItem) {
         const items = Object.values(subItem);
@@ -187,10 +199,11 @@ export const extractClickedData = async (info = {}, tab = {}) => {
           }
         }
         if (itemInfo) {
-          url = await createSnsUrl(shareUrl, itemInfo);
+          url = await createSnsUrl(itemInfo, shareUrl, shareText);
         }
       } else {
-        url = tmpl.replace('%url%', shareUrl).replace('%text%', shareText);
+        url = tmpl.replace('%url%', encodeURIComponent(shareUrl))
+          .replace('%text%', encodeURIComponent(shareText));
       }
       if (url) {
         if (matchPattern) {
@@ -276,7 +289,9 @@ export const createMenuItem = async (id, title, data = {}) => {
  */
 export const createMenu = async () => {
   const func = [];
-  const { mastodonInstanceUrl } = await getStorage('mastodonInstanceUrl') || {};
+  const {
+    mastodonInstanceUrl, pleromaInstanceUrl
+  } = await getAllStorage() || {};
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
       const { enabled: itemEnabled, id, menu } = value;
@@ -284,6 +299,8 @@ export const createMenu = async () => {
       let enabled;
       if (id === 'Mastodon' && itemEnabled) {
         enabled = !!(mastodonInstanceUrl && mastodonInstanceUrl.value);
+      } else if (id === 'Pleroma' && itemEnabled) {
+        enabled = !!(pleromaInstanceUrl && pleromaInstanceUrl.value);
       } else {
         enabled = !!itemEnabled;
       }

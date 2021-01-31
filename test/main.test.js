@@ -32,7 +32,7 @@ describe('main', () => {
 
     it('should set map', async () => {
       const itemKeys = [
-        'Twitter', 'Facebook', 'LINE', 'Hatena', 'Mastodon'
+        'Twitter', 'Facebook', 'LINE', 'Hatena', 'Mastodon', 'Pleroma'
       ];
       await func();
       assert.strictEqual(mjs.sns.size, itemKeys.length, 'length');
@@ -198,36 +198,29 @@ describe('main', () => {
   describe('create sns item url', () => {
     const func = mjs.createSnsUrl;
 
-    it('should throw if no argument given', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throws');
-      });
-    });
-
-    it('should throw if 1st argument is not string', async () => {
-      await func(1).catch(e => {
+    it('should throw if 2nd argument is not string', async () => {
+      await func({}, 1).catch(e => {
         assert.strictEqual(e.message, 'Expected String but got Number.',
           'throws');
       });
     });
 
     it('should get string', async () => {
-      const res = await func('foo');
+      const res = await func(null, 'foo');
       assert.strictEqual(res, 'foo', 'result');
     });
 
     it('should get string', async () => {
-      const res = await func('foo', {});
+      const res = await func({}, 'foo');
       assert.strictEqual(res, 'foo', 'result');
     });
 
     it('should get string', async () => {
       const item = {
-        url: '%origin%/?uri=%query%',
+        url: '%origin%/?uri=%url%',
         value: 'https://example.com'
       };
-      const res = await func('http://www.example.com', item);
+      const res = await func(item, 'http://www.example.com');
       assert.strictEqual(
         res, 'https://example.com/?uri=http%3A%2F%2Fwww.example.com', 'result'
       );
@@ -235,10 +228,21 @@ describe('main', () => {
 
     it('should get string', async () => {
       const item = {
-        url: '%origin%/?uri=%query%',
+        url: '%origin%/?message=%text%%20%url%',
+        value: 'https://example.com'
+      };
+      const res = await func(item, 'http://www.example.com', 'foo bar');
+      assert.strictEqual(
+        res, 'https://example.com/?message=foo%20bar%20http%3A%2F%2Fwww.example.com', 'result'
+      );
+    });
+
+    it('should get string', async () => {
+      const item = {
+        url: '%origin%/?message=%text%%20%url%',
         value: 'file:///foo/bar'
       };
-      const res = await func('http://www.example.com', item);
+      const res = await func(item, 'http://www.example.com');
       assert.strictEqual(
         res, 'http://www.example.com', 'result'
       );
@@ -247,10 +251,10 @@ describe('main', () => {
     it('should log error', async () => {
       const stub = sinon.stub(console, 'error');
       const item = {
-        url: '%origin%/?uri=%query%',
+        url: '%origin%/?uri=%url%',
         value: 'foo/bar'
       };
-      const res = await func('http://www.example.com', item);
+      const res = await func(item, 'http://www.example.com');
       const { calledOnce } = stub;
       stub.restore();
       assert.isTrue(calledOnce, 'called');
@@ -352,7 +356,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -369,7 +373,24 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com/#bar'
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -388,7 +409,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -410,7 +431,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -431,7 +452,7 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.create.resolves({});
       const info = {
@@ -456,7 +477,7 @@ describe('main', () => {
         url: null,
         subItem: {
           bar: {
-            url: '%origin%/?q=%query%'
+            url: '%origin%/?q=%url%'
           }
         }
       });
@@ -522,7 +543,7 @@ describe('main', () => {
       const j = browser.tabs.create.callCount;
       mjs.sns.set('foo', {
         matchPattern: 'https://example.com/*',
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.query.withArgs({
         cookieStoreId: 'bar',
@@ -552,7 +573,7 @@ describe('main', () => {
       const j = browser.tabs.create.callCount;
       mjs.sns.set('foo', {
         matchPattern: 'https://example.com/*',
-        url: 'https://example.com?u=%url%&amp;t=%text%'
+        url: 'https://example.com?u=%url%&t=%text%'
       });
       browser.tabs.query.withArgs({
         cookieStoreId: 'bar',
@@ -777,7 +798,7 @@ describe('main', () => {
         id: 'Mastodon',
         menu: '&Mastodon'
       });
-      browser.storage.local.get.withArgs('mastodonInstanceUrl').resolves({
+      browser.storage.local.get.resolves({
         mastodonInstanceUrl: {
           value: 'https://example.com'
         }
@@ -799,6 +820,45 @@ describe('main', () => {
       }).resolves(SHARE_TAB);
       browser.menus.create.withArgs({
         id: `${SHARE_LINK}Mastodon`,
+        contexts: ['link'],
+        title: 'quux',
+        enabled: true
+      }).resolves(SHARE_LINK);
+      const i = browser.menus.create.callCount;
+      const res = await func();
+      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
+      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+        'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('Pleroma', {
+        enabled: true,
+        id: 'Pleroma',
+        menu: '&Pleroma'
+      });
+      browser.storage.local.get.resolves({
+        pleromaInstanceUrl: {
+          value: 'https://example.com'
+        }
+      });
+      browser.i18n.getMessage.withArgs(SHARE_PAGE, '&Pleroma').returns('baz');
+      browser.i18n.getMessage.withArgs(SHARE_TAB, '&Pleroma').returns('qux');
+      browser.i18n.getMessage.withArgs(SHARE_LINK, '&Pleroma').returns('quux');
+      browser.menus.create.withArgs({
+        id: `${SHARE_PAGE}Pleroma`,
+        contexts: ['page', 'selection'],
+        title: 'baz',
+        enabled: true
+      }).resolves(SHARE_PAGE);
+      browser.menus.create.withArgs({
+        id: `${SHARE_TAB}Pleroma`,
+        contexts: ['tab'],
+        title: 'qux',
+        enabled: true
+      }).resolves(SHARE_TAB);
+      browser.menus.create.withArgs({
+        id: `${SHARE_LINK}Pleroma`,
         contexts: ['link'],
         title: 'quux',
         enabled: true
