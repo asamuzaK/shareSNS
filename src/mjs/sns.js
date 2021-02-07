@@ -30,7 +30,7 @@ export default {
     url: null,
     subItem: {
       mastodonInstanceUrl: {
-        url: '%origin%/intent?uri=%url%'
+        url: '%origin%/share?text=%text%&url=%url%'
       }
     }
   },
