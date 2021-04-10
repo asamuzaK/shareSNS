@@ -44,7 +44,9 @@
              L 34,64 l -3.210938,5.068359 60,38.000001
              L 97.210938,96.931641 45.212891,64 97.210938,31.068359 Z"/>
   </symbol>
-  <g id="current" fill="currentColor">
+  <g id="current"
+     fill="context-fill currentColor"
+     fill-opacity="context-fill-opacity 1.0">
     <use href="#outline"/>
   </g>
   <g id="dark"
