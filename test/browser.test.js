@@ -297,6 +297,31 @@ describe('browser', () => {
     });
   });
 
+  describe('get new tab position value', () => {
+    const func = mjs.getNewTabPositionValue;
+
+    it('should get null if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.browserSettings.newTabPosition.get.callCount;
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.newTabPosition.get.callCount, i, 'not called'
+      );
+      assert.isNull(res, 'result');
+    });
+
+    it('should get value', async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.newTabPosition.get.callCount;
+      browser.browserSettings.newTabPosition.get.resolves('foo');
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.newTabPosition.get.callCount, i + 1, 'called'
+      );
+      assert.strictEqual(res, 'foo', 'result');
+    });
+  });
+
   describe('is command customizable', () => {
     const func = mjs.isCommandCustomizable;
 
@@ -453,11 +478,7 @@ describe('browser', () => {
       let msg;
       const e = new Error('error');
       const stub = sinon.stub(console, 'error').callsFake(m => {
-        if (m && m.message) {
-          msg = m.message;
-        } else {
-          msg = m;
-        }
+        msg = (m && m.message) || m;
       });
       browser.contextualIdentities.query.rejects(e);
       const res = await func();
@@ -501,11 +522,7 @@ describe('browser', () => {
       let msg;
       const e = new Error('error');
       const stub = sinon.stub(console, 'error').callsFake(m => {
-        if (m && m.message) {
-          msg = m.message;
-        } else {
-          msg = m;
-        }
+        msg = (m && m.message) || m;
       });
       browser.contextualIdentities.get.withArgs('foo').rejects(e);
       const res = await func('foo');
