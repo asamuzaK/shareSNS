@@ -3,16 +3,16 @@
     "message": "en"
   },
   "extensionDescription": {
-    "message": "Share page or link with social networking services."
+    "message": "Share page or link on social networking services."
   },
   "extensionName": {
-    "message": "Share with SNS"
+    "message": "Share on SNS"
   },
   "extensionShortName": {
     "message": "Share"
   },
   "optionsEnableSnsDetail": {
-    "message": "Enable sharing with $SNS$.",
+    "message": "Enable sharing on $SNS$.",
     "placeholders": {
       "sns": {
         "content": "$1",
@@ -24,10 +24,10 @@
     "message": "Options"
   },
   "optionsTitle": {
-    "message": "Share with SNS - Options"
+    "message": "Share on SNS - Options"
   },
   "shareLink": {
-    "message": "Share Link with $SNS$",
+    "message": "Share Link on $SNS$",
     "placeholders": {
       "sns": {
         "content": "$1",
@@ -36,7 +36,7 @@
     }
   },
   "sharePage": {
-    "message": "Share Page with $SNS$",
+    "message": "Share Page on $SNS$",
         "placeholders": {
       "sns": {
         "content": "$1",
@@ -45,7 +45,7 @@
     }
   },
   "shareTab": {
-    "message": "Share Tab with $SNS$",
+    "message": "Share Tab on $SNS$",
         "placeholders": {
       "sns": {
         "content": "$1",
