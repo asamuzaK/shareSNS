@@ -3,10 +3,10 @@
     "message": "en"
   },
   "extensionDescription": {
-    "message": "Share page or link on social networking services."
+    "message": "Share page or link with social networking services."
   },
   "extensionName": {
-    "message": "Share on SNS"
+    "message": "Share with SNS"
   },
   "extensionShortName": {
     "message": "Share"
@@ -24,7 +24,7 @@
     "message": "Options"
   },
   "optionsTitle": {
-    "message": "Share on SNS - Options"
+    "message": "Share with SNS - Options"
   },
   "shareLink": {
     "message": "Share Link on $SNS$",
