@@ -28,17 +28,16 @@
   <symbol id="dot">
     <path d="m94 6a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm-60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20z"/>
   </symbol>
-  <g id="context" fill="context-fill rgb(91,91,102)"
-     fill-opacity="context-fill-opacity 1.0">
+  <g id="context" fill="context-fill rgb(91,91,102)">
     <use href="#outline"/>
   </g>
   <g id="current" fill="context-fill currentColor">
     <use href="#outline"/>
   </g>
-  <g id="dark" fill="rgb(91,91,102)">
+  <g id="dark" fill="context-fill rgb(91,91,102)">
     <use href="#outline"/>
   </g>
-  <g id="light" fill="rgb(251,251,254)">
+  <g id="light" fill="context-fill rgb(251,251,254)">
     <use href="#outline"/>
   </g>
   <g id="color">
