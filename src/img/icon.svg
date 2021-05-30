@@ -28,9 +28,6 @@
   <symbol id="dot">
     <path d="m94 6a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm-60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20z"/>
   </symbol>
-  <g id="context" fill="context-fill rgb(91,91,102)">
-    <use href="#outline"/>
-  </g>
   <g id="current" fill="context-fill currentColor">
     <use href="#outline"/>
   </g>
