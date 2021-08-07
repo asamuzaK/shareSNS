@@ -7,7 +7,7 @@ import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import { createTab, getAllStorage, queryTabs, updateTab } from './browser.js';
 import snsData from './sns.js';
 import {
-  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
+  CONTEXT_INFO, PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from './constant.js';
 
 /* api */
@@ -15,6 +15,11 @@ const { i18n, menus, tabs } = browser;
 
 /* constant */
 const { TAB_ID_NONE } = tabs;
+
+/* variables */
+export const vars = {
+  [PREFER_CANONICAL]: false
+};
 
 /* sns */
 export const sns = new Map();
@@ -176,12 +181,14 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       const canonicalUrl =
         info.canonicalUrl || contextInfo.canonicalUrl || null;
       const { hash: tabUrlHash } = new URL(tabUrl);
-      let shareText, shareUrl, url;
+      let shareText;
+      let shareUrl;
+      let url;
       if (menuItemId.startsWith(SHARE_LINK)) {
         shareText = selText || linkText;
         shareUrl = linkUrl;
       } else {
-        if (tabUrlHash) {
+        if (tabUrlHash || !vars[PREFER_CANONICAL]) {
           shareUrl = tabUrl;
         } else {
           shareUrl = canonicalUrl || tabUrl;
@@ -380,7 +387,17 @@ export const handleStoredData = async data => {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
         const { newValue } = value;
-        func.push(toggleSnsItem(key, newValue || value));
+        if (key === PREFER_CANONICAL) {
+          let bool;
+          if (newValue) {
+            bool = newValue.checked;
+          } else {
+            bool = value.checked;
+          }
+          vars[PREFER_CANONICAL] = !!bool;
+        } else {
+          func.push(toggleSnsItem(key, newValue || value));
+        }
       }
     }
   }
