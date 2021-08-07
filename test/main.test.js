@@ -8,7 +8,7 @@ import { browser } from './mocha/setup.js';
 import sinon from 'sinon';
 import * as mjs from '../src/mjs/main.js';
 import {
-  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
+  CONTEXT_INFO, PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from '../src/mjs/constant.js';
 
 describe('main', () => {
@@ -221,9 +221,8 @@ describe('main', () => {
         value: 'https://example.com'
       };
       const res = await func(item, 'http://www.example.com');
-      assert.strictEqual(
-        res, 'https://example.com/?uri=http%3A%2F%2Fwww.example.com', 'result'
-      );
+      assert.strictEqual(res,
+        'https://example.com/?uri=http%3A%2F%2Fwww.example.com', 'result');
     });
 
     it('should get string', async () => {
@@ -232,9 +231,9 @@ describe('main', () => {
         value: 'https://example.com'
       };
       const res = await func(item, 'http://www.example.com', 'foo bar');
-      assert.strictEqual(
-        res, 'https://example.com/?message=foo%20bar%20http%3A%2F%2Fwww.example.com', 'result'
-      );
+      assert.strictEqual(res,
+        'https://example.com/?message=foo%20bar%20http%3A%2F%2Fwww.example.com',
+        'result');
     });
 
     it('should get string', async () => {
@@ -243,9 +242,7 @@ describe('main', () => {
         value: 'file:///foo/bar'
       };
       const res = await func(item, 'http://www.example.com');
-      assert.strictEqual(
-        res, 'http://www.example.com', 'result'
-      );
+      assert.strictEqual(res, 'http://www.example.com', 'result');
     });
 
     it('should log error', async () => {
@@ -268,7 +265,9 @@ describe('main', () => {
     it('should init context info', async () => {
       mjs.contextInfo.canonicalUrl = 'https://example.com';
       const res = await func();
-      assert.deepEqual(res, { canonicalUrl: null }, 'result');
+      assert.deepEqual(res, {
+        canonicalUrl: null
+      }, 'result');
     });
   });
 
@@ -278,7 +277,9 @@ describe('main', () => {
     it('should init context info', async () => {
       mjs.contextInfo.canonicalUrl = 'https://example.com';
       const res = await func();
-      assert.deepEqual(res, { canonicalUrl: null }, 'result');
+      assert.deepEqual(res, {
+        canonicalUrl: null
+      }, 'result');
     });
 
     it('should set context info', async () => {
@@ -288,7 +289,9 @@ describe('main', () => {
           canonicalUrl: 'https://example.com'
         }
       });
-      assert.deepEqual(res, { canonicalUrl: 'https://example.com' }, 'result');
+      assert.deepEqual(res, {
+        canonicalUrl: 'https://example.com'
+      }, 'result');
     });
 
     it('should set context info', async () => {
@@ -296,7 +299,9 @@ describe('main', () => {
       const res = await func({
         contextInfo: {}
       });
-      assert.deepEqual(res, { canonicalUrl: null }, 'result');
+      assert.deepEqual(res, {
+        canonicalUrl: null
+      }, 'result');
     });
   });
 
@@ -304,14 +309,18 @@ describe('main', () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
       mjs.sns.clear();
+      mjs.vars[PREFER_CANONICAL] = false;
     });
     afterEach(() => {
       mjs.sns.clear();
+      mjs.vars[PREFER_CANONICAL] = false;
     });
 
     it('should get array', async () => {
       const res = await func();
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -320,7 +329,9 @@ describe('main', () => {
         id: TAB_ID_NONE
       };
       const res = await func({}, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -328,7 +339,9 @@ describe('main', () => {
         id: 1
       };
       const res = await func({}, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -339,7 +352,9 @@ describe('main', () => {
         id: 1
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -351,7 +366,9 @@ describe('main', () => {
         index: 0
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -368,7 +385,59 @@ describe('main', () => {
         url: 'http://example.com'
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.vars[PREFER_CANONICAL] = true;
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: 'foo',
+        canonicalUrl: 'https://www.example.com'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.vars[PREFER_CANONICAL] = true;
+      browser.tabs.create.resolves({});
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -385,7 +454,12 @@ describe('main', () => {
         url: 'http://example.com/#bar'
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -404,7 +478,12 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -426,7 +505,12 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -447,7 +531,12 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -469,7 +558,12 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -493,7 +587,12 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -513,7 +612,9 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -535,7 +636,9 @@ describe('main', () => {
         windowId: 2
       };
       const res = await func(info, tab);
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -565,7 +668,12 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.update.callCount, i + 1, 'called');
       assert.strictEqual(browser.tabs.create.callCount, j, 'not called');
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
 
     it('should get array', async () => {
@@ -593,7 +701,12 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.update.callCount, i, 'not called');
       assert.strictEqual(browser.tabs.create.callCount, j + 1, 'called');
-      assert.deepEqual(res, [{}, { canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [
+        {},
+        {
+          canonicalUrl: null
+        }
+      ], 'result');
     });
   });
 
@@ -900,7 +1013,7 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
-    it('should get array', async () => {
+    it('should get empty array', async () => {
       browser.runtime.getManifest.returns({ icons: {} });
       const res = await func({
         type: 'ready'
@@ -910,7 +1023,7 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
-    it('should get array', async () => {
+    it('should get empty array', async () => {
       browser.runtime.getManifest.returns({ icons: {} });
       const res = await func({
         type: 'fake-contextMenu-click'
@@ -924,14 +1037,18 @@ describe('main', () => {
       const res = await func({
         [SHARE_SNS]: {}
       });
-      assert.deepEqual(res, [[{ canonicalUrl: null }]], 'result');
+      assert.deepEqual(res, [[{
+        canonicalUrl: null
+      }]], 'result');
     });
 
     it('should get array', async () => {
       const res = await func({
         [CONTEXT_INFO]: {}
       });
-      assert.deepEqual(res, [{ canonicalUrl: null }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: null
+      }], 'result');
     });
 
     it('should get array', async () => {
@@ -942,7 +1059,9 @@ describe('main', () => {
           }
         }
       });
-      assert.deepEqual(res, [{ canonicalUrl: '//example.com' }], 'result');
+      assert.deepEqual(res, [{
+        canonicalUrl: '//example.com'
+      }], 'result');
     });
   });
 
@@ -950,9 +1069,11 @@ describe('main', () => {
     const func = mjs.handleStoredData;
     beforeEach(() => {
       mjs.sns.clear();
+      mjs.vars[PREFER_CANONICAL] = false;
     });
     afterEach(() => {
       mjs.sns.clear();
+      mjs.vars[PREFER_CANONICAL] = false;
     });
 
     it('should get empty array if no argument given', async () => {
@@ -998,6 +1119,41 @@ describe('main', () => {
       assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
       assert.deepEqual(res, [undefined], 'result');
       mjs.sns.set.restore();
+    });
+
+    it('should set vars', async () => {
+      const res = await func({
+        [PREFER_CANONICAL]: {
+          checked: true
+        }
+      });
+      assert.isTrue(mjs.vars[PREFER_CANONICAL]);
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should set vars', async () => {
+      const res = await func({
+        [PREFER_CANONICAL]: {
+          newValue: {
+            checked: true
+          }
+        }
+      });
+      assert.isTrue(mjs.vars[PREFER_CANONICAL]);
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should set vars', async () => {
+      mjs.vars[PREFER_CANONICAL] = true;
+      const res = await func({
+        [PREFER_CANONICAL]: {
+          newValue: {
+            checked: false
+          }
+        }
+      });
+      assert.isFalse(mjs.vars[PREFER_CANONICAL]);
+      assert.deepEqual(res, [], 'result');
     });
   });
 });

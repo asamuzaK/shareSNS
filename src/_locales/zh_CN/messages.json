@@ -11,6 +11,9 @@
   "extensionShortName": {
     "message": "分享"
   },
+  "optionalSettings": {
+    "message": "可选设置"
+  },
   "optionsEnableSnsDetail": {
     "message": "启用分享到 $SNS$。",
     "placeholders": {
@@ -22,6 +25,12 @@
   },
   "optionsLabel": {
     "message": "选项"
+  },
+  "optionsPreferCanonicalUrl": {
+    "message": "如果存在规范URL,则优先使用规范URL"
+  },
+  "optionsPreferCanonicalUrlDetail": {
+    "message": "如果网页上存在规范URL,请使用规范URL。"
   },
   "optionsTitle": {
     "message": "Share with SNS - 选项"

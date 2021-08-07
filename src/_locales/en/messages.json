@@ -11,6 +11,9 @@
   "extensionShortName": {
     "message": "Share"
   },
+  "optionalSettings": {
+    "message": "Optional Settings"
+  },
   "optionsEnableSnsDetail": {
     "message": "Enable sharing on $SNS$.",
     "placeholders": {
@@ -22,6 +25,12 @@
   },
   "optionsLabel": {
     "message": "Options"
+  },
+  "optionsPreferCanonicalUrl": {
+    "message": "Prefer canonical URL if present"
+  },
+  "optionsPreferCanonicalUrlDetail": {
+    "message": "Use the canonical URL if it exists on the web page."
   },
   "optionsTitle": {
     "message": "Share with SNS - Options"
