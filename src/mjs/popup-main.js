@@ -3,9 +3,7 @@
  */
 
 /* shared */
-import {
-  getType, isObjectNotEmpty, isString, logErr, throwErr
-} from './common.js';
+import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import snsData from './sns.js';
 import {
@@ -60,8 +58,7 @@ export const contextInfo = {
   content: null,
   selectionText: null,
   title: null,
-  url: null,
-  canonicalUrl: null
+  url: null
 };
 
 /**
@@ -75,7 +72,6 @@ export const initContextInfo = async () => {
   contextInfo.selectionText = null;
   contextInfo.title = null;
   contextInfo.url = null;
-  contextInfo.canonicalUrl = null;
   return contextInfo;
 };
 
@@ -96,14 +92,11 @@ export const createShareData = async evt => {
         const info = {
           menuItemId
         };
-        const {
-          canonicalUrl, content, isLink, selectionText, title, url
-        } = contextInfo;
+        const { content, isLink, selectionText, title, url } = contextInfo;
         if (isLink) {
           info.linkText = content || title;
           info.linkUrl = url;
         }
-        info.canonicalUrl = canonicalUrl || null;
         info.selectionText = selectionText || '';
         func = sendMessage(runtime.id, {
           [SHARE_SNS]: {
@@ -204,7 +197,7 @@ export const updateMenu = async data => {
       } = await getAllStorage() || {};
       const linkNodes = document.getElementsByClassName(SHARE_LINK);
       const pageNodes = document.getElementsByClassName(SHARE_PAGE);
-      contextInfo.isLink = isLink;
+      contextInfo.isLink = !!isLink;
       contextInfo.content = content;
       contextInfo.selectionText = selectionText;
       contextInfo.title = title;
@@ -254,37 +247,6 @@ export const updateMenu = async data => {
 };
 
 /**
- * request context info
- *
- * @param {object} tab - tabs.Tab
- * @returns {void}
- */
-export const requestContextInfo = async tab => {
-  await initContextInfo();
-  if (isObjectNotEmpty(tab)) {
-    const { id } = tab;
-    if (Number.isInteger(id) && id !== TAB_ID_NONE) {
-      try {
-        await sendMessage(id, {
-          [CONTEXT_INFO_GET]: true
-        });
-      } catch (e) {
-        logErr(e);
-        await updateMenu({
-          contextInfo: {
-            isLink: false,
-            content: null,
-            selectionText: null,
-            title: null,
-            url: null
-          }
-        });
-      }
-    }
-  }
-};
-
-/**
  * handle message
  *
  * @param {*} msg - message
@@ -298,8 +260,6 @@ export const handleMsg = async msg => {
       const [key, value] = item;
       switch (key) {
         case CONTEXT_INFO:
-        case 'keydown':
-        case 'mousedown':
           func.push(updateMenu(value));
           break;
         default:
@@ -376,9 +336,21 @@ export const handleStoredData = async data => {
 export const prepareTab = async () => {
   const func = [];
   const tab = await getActiveTab();
-  tab && func.push(
-    requestContextInfo(tab),
-    setTabInfo(tab)
-  );
+  const { id } = tab;
+  await updateMenu({
+    contextInfo: {
+      isLink: false,
+      content: null,
+      selectionText: null,
+      title: null,
+      url: null
+    }
+  });
+  await setTabInfo(tab);
+  if (Number.isInteger(id) && id !== TAB_ID_NONE) {
+    func.push(sendMessage(runtime.id, {
+      [CONTEXT_INFO_GET]: true
+    }));
+  }
   return Promise.all(func);
 };

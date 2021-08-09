@@ -74,14 +74,12 @@ describe('popup-main', () => {
       mjs.contextInfo.selectionText = 'bar';
       mjs.contextInfo.title = 'baz';
       mjs.contextInfo.url = 'https://example.com';
-      mjs.contextInfo.canonicalUrl = 'https://www.example.com';
       const res = await func();
       assert.isFalse(res.isLink, 'isLink');
       assert.isNull(res.content, 'content');
       assert.isNull(res.selectionText, 'selectionText');
       assert.isNull(res.title, 'title');
       assert.isNull(res.url, 'url');
-      assert.isNull(res.canonicalUrl, 'canonicalUrl');
     });
   });
 
@@ -133,7 +131,6 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs(browser.runtime.id, {
         [SHARE_SNS]: {
           info: {
-            canonicalUrl: null,
             menuItemId: 'foo',
             selectionText: ''
           },
@@ -160,7 +157,6 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs(browser.runtime.id, {
         [SHARE_SNS]: {
           info: {
-            canonicalUrl: null,
             linkText: 'bar',
             linkUrl: 'https://example.com',
             menuItemId: 'foo',
@@ -186,7 +182,6 @@ describe('popup-main', () => {
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      mjs.contextInfo.canonicalUrl = 'https://www.example.com';
       mjs.contextInfo.content = 'baz';
       mjs.contextInfo.isLink = true;
       mjs.contextInfo.selectionText = 'qux';
@@ -195,7 +190,6 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs(browser.runtime.id, {
         [SHARE_SNS]: {
           info: {
-            canonicalUrl: 'https://www.example.com',
             linkText: 'baz',
             linkUrl: 'https://example.com',
             menuItemId: 'foo',
@@ -214,7 +208,6 @@ describe('popup-main', () => {
         'called');
       assert.isUndefined(res, 'result');
       mjs.tabInfo.tab = null;
-      mjs.contextInfo.canonicalUrl = null;
       mjs.contextInfo.content = null;
       mjs.contextInfo.isLink = false;
       mjs.contextInfo.selectionText = null;
@@ -614,55 +607,6 @@ describe('popup-main', () => {
     });
   });
 
-  describe('request context info', () => {
-    const func = mjs.requestContextInfo;
-
-    it('should not call function', async () => {
-      const i = browser.tabs.sendMessage.callCount;
-      await func();
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
-    });
-
-    it('should not call function', async () => {
-      const i = browser.tabs.sendMessage.callCount;
-      await func({
-        id: browser.tabs.TAB_ID_NONE
-      });
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
-    });
-
-    it('should call function', async () => {
-      browser.tabs.sendMessage.resolves(undefined);
-      const i = browser.tabs.sendMessage.callCount;
-      await func({
-        id: 1
-      });
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, 'called');
-    });
-
-    it('should call function', async () => {
-      browser.tabs.sendMessage.rejects(new Error('error'));
-      const stub = sinon.stub(console, 'error');
-      const i = browser.tabs.sendMessage.callCount;
-      const elm = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.classList.add(SHARE_LINK);
-      elm.removeAttribute('disabled');
-      body.appendChild(elm);
-      await func({
-        id: 1
-      }).catch(e => {
-        assert.strictEqual(e.message, 'error', 'error');
-      });
-      const { calledOnce } = stub;
-      stub.restore();
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
-        'called sendMessage');
-      assert.isTrue(calledOnce, 'called console');
-      assert.strictEqual(elm.getAttribute('disabled'), 'disabled', 'disabled');
-    });
-  });
-
   describe('handle message', () => {
     const func = mjs.handleMsg;
 
@@ -681,14 +625,14 @@ describe('popup-main', () => {
       assert.deepEqual(res, [undefined], 'result');
     });
 
-    it('should get array', async () => {
+    it('should get empty array', async () => {
       const res = await func({ keydown: {} });
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [], 'result');
     });
 
-    it('should get array', async () => {
+    it('should get empty array', async () => {
       const res = await func({ mousedown: {} });
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [], 'result');
     });
   });
 
@@ -889,10 +833,28 @@ describe('popup-main', () => {
   describe('prepare tab', () => {
     const func = mjs.prepareTab;
 
-    it('should get array', async () => {
-      browser.tabs.query.resolves([{}]);
+    it('should get empty array', async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.tabs.query.resolves([{
+        id: browser.tabs.TAB_ID_NONE
+      }]);
       const res = await func();
-      assert.deepEqual(res, [undefined, undefined], 'result');
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+        'not called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
     });
   });
 });

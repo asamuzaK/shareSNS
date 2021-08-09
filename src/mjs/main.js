@@ -4,10 +4,13 @@
 
 /* shared */
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
-import { createTab, getAllStorage, queryTabs, updateTab } from './browser.js';
+import {
+  createTab, execScriptToTab, getAllStorage, queryTabs, sendMessage, updateTab
+} from './browser.js';
 import snsData from './sns.js';
 import {
-  CONTEXT_INFO, PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
+  CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO,
+  PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from './constant.js';
 
 /* api */
@@ -125,36 +128,27 @@ export const createSnsUrl = async (info, url, text = '') => {
   return snsUrl || url;
 };
 
-/* context info */
-export const contextInfo = {
-  canonicalUrl: null
-};
-
 /**
- * init context info
+ * send context info
  *
- * @returns {object} - context info
+ * @returns {?Function} - sendMessage();
  */
-export const initContextInfo = async () => {
-  contextInfo.canonicalUrl = null;
-  return contextInfo;
-};
-
-/**
- * update context info
- *
- * @param {object} data - context info data
- * @returns {object} - context info
- */
-export const updateContextInfo = async (data = {}) => {
-  const { contextInfo: info } = data;
-  if (info) {
-    const { canonicalUrl } = info;
-    contextInfo.canonicalUrl = canonicalUrl || null;
-  } else {
-    await initContextInfo();
+export const sendContextInfo = async () => {
+  const arr = await execScriptToTab({
+    file: JS_CONTEXT_INFO
+  });
+  let func;
+  if (Array.isArray(arr)) {
+    const [contextInfo] = arr;
+    if (contextInfo) {
+      func = sendMessage(null, {
+        [CONTEXT_INFO]: {
+          contextInfo
+        }
+      });
+    }
   }
-  return contextInfo;
+  return func || null;
 };
 
 /**
@@ -178,8 +172,6 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       const { matchPattern, subItem, url: tmpl } = snsItem;
       const selText =
         isString(selectionText) ? selectionText.replace(/\s+/g, ' ') : '';
-      const canonicalUrl =
-        info.canonicalUrl || contextInfo.canonicalUrl || null;
       const { hash: tabUrlHash } = new URL(tabUrl);
       let shareText;
       let shareUrl;
@@ -191,7 +183,15 @@ export const extractClickedData = async (info = {}, tab = {}) => {
         if (tabUrlHash || !vars[PREFER_CANONICAL]) {
           shareUrl = tabUrl;
         } else {
-          shareUrl = canonicalUrl || tabUrl;
+          const arr = await execScriptToTab({
+            file: JS_CANONICAL
+          });
+          if (Array.isArray(arr)) {
+            const [canonicalUrl] = arr;
+            shareUrl = canonicalUrl || tabUrl;
+          } else {
+            shareUrl = tabUrl;
+          }
         }
         shareText = selText || tabTitle;
       }
@@ -248,7 +248,6 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       }
     }
   }
-  func.push(initContextInfo());
   return Promise.all(func);
 };
 
@@ -356,10 +355,9 @@ export const handleMsg = async msg => {
     for (const item of items) {
       const [key, value] = item;
       switch (key) {
-        case CONTEXT_INFO: {
-          func.push(updateContextInfo(value));
+        case CONTEXT_INFO_GET:
+          value && func.push(sendContextInfo());
           break;
-        }
         case SHARE_SNS: {
           const { info, tab } = value;
           func.push(extractClickedData(info, tab));
