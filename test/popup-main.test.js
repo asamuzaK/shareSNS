@@ -100,6 +100,22 @@ describe('popup-main', () => {
 
   describe('create share data', () => {
     const func = mjs.createShareData;
+    beforeEach(() => {
+      mjs.contextInfo.content = null;
+      mjs.contextInfo.isLink = false;
+      mjs.contextInfo.selectionText = null;
+      mjs.contextInfo.title = null;
+      mjs.contextInfo.url = null;
+      mjs.tabInfo.tab = null;
+    });
+    afterEach(() => {
+      mjs.contextInfo.content = null;
+      mjs.contextInfo.isLink = false;
+      mjs.contextInfo.selectionText = null;
+      mjs.contextInfo.title = null;
+      mjs.contextInfo.url = null;
+      mjs.tabInfo.tab = null;
+    });
 
     it('should get null if no argument given', async () => {
       const res = await func();
@@ -146,7 +162,6 @@ describe('popup-main', () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
       assert.isUndefined(res, 'result');
-      mjs.tabInfo.tab = null;
     });
 
     it('should call function', async () => {
@@ -174,10 +189,6 @@ describe('popup-main', () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
       assert.isUndefined(res, 'result');
-      mjs.tabInfo.tab = null;
-      mjs.contextInfo.isLink = false;
-      mjs.contextInfo.title = null;
-      mjs.contextInfo.url = null;
     });
 
     it('should call function', async () => {
@@ -207,12 +218,6 @@ describe('popup-main', () => {
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
       assert.isUndefined(res, 'result');
-      mjs.tabInfo.tab = null;
-      mjs.contextInfo.content = null;
-      mjs.contextInfo.isLink = false;
-      mjs.contextInfo.selectionText = null;
-      mjs.contextInfo.title = null;
-      mjs.contextInfo.url = null;
     });
   });
 
