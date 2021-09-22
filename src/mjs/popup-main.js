@@ -15,11 +15,11 @@ const { runtime, tabs } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
-const OPTIONS_OPEN = 'openOptions';
-const SNS_ITEMS = 'snsItems';
-const SNS_ITEM = 'snsItem';
-const SNS_ITEM_TMPL = 'snsItemTemplate';
-const SNS_NOT_SELECTED = 'warnSnsNotSelected';
+export const OPTIONS_OPEN = 'openOptions';
+export const SNS_ITEMS = 'snsItems';
+export const SNS_ITEM = 'snsItem';
+export const SNS_ITEM_TMPL = 'snsItemTemplate';
+export const SNS_NOT_SELECTED = 'warnSnsNotSelected';
 
 /* tab info */
 export const tabInfo = {

@@ -2,8 +2,11 @@
  * sns.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
+
+/* test */
 import sns from '../src/mjs/sns.js';
 
 describe('sns', () => {

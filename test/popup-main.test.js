@@ -2,19 +2,22 @@
  * popup-main.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
-import * as mjs from '../src/mjs/popup-main.js';
 import {
   CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS
 } from '../src/mjs/constant.js';
-const OPTIONS_OPEN = 'openOptions';
-const SNS_ITEMS = 'snsItems';
-const SNS_ITEM = 'snsItem';
-const SNS_ITEM_TMPL = 'snsItemTemplate';
-const SNS_NOT_SELECTED = 'warnSnsNotSelected';
+
+/* test */
+import * as mjs from '../src/mjs/popup-main.js';
+
+/* constants */
+const {
+  OPTIONS_OPEN, SNS_ITEMS, SNS_ITEM, SNS_ITEM_TMPL, SNS_NOT_SELECTED
+} = mjs;
 
 describe('popup-main', () => {
   let window, document;
