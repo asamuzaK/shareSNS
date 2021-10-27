@@ -17,7 +17,7 @@ const { runtime, tabs } = browser;
 const { TAB_ID_NONE } = tabs;
 export const OPTIONS_OPEN = 'openOptions';
 export const SNS_ITEMS = 'snsItems';
-export const SNS_ITEM = 'snsItem';
+export const SNS_ITEM = 'sns-item';
 export const SNS_ITEM_TMPL = 'snsItemTemplate';
 export const SNS_NOT_SELECTED = 'warnSnsNotSelected';
 
