@@ -8,16 +8,12 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
 import {
-  CONTEXT_INFO, SHARE_LINK, SHARE_PAGE, SHARE_SNS
+  CONTEXT_INFO, OPTIONS_OPEN, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
+  SNS_ITEM, SNS_ITEMS, SNS_ITEM_TMPL, SNS_NOT_SELECTED
 } from '../src/mjs/constant.js';
 
 /* test */
 import * as mjs from '../src/mjs/popup-main.js';
-
-/* constants */
-const {
-  OPTIONS_OPEN, SNS_ITEMS, SNS_ITEM, SNS_ITEM_TMPL, SNS_NOT_SELECTED
-} = mjs;
 
 describe('popup-main', () => {
   let window, document;

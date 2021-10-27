@@ -7,7 +7,9 @@ import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import snsData from './sns.js';
 import {
-  CONTEXT_INFO, CONTEXT_INFO_GET, SHARE_LINK, SHARE_PAGE, SHARE_SNS
+  CONTEXT_INFO, CONTEXT_INFO_GET, OPTIONS_OPEN,
+  SHARE_LINK, SHARE_PAGE, SHARE_SNS,
+  SNS_ITEM, SNS_ITEMS, SNS_ITEM_TMPL, SNS_NOT_SELECTED
 } from './constant.js';
 
 /* api */
@@ -15,11 +17,6 @@ const { runtime, tabs } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
-export const OPTIONS_OPEN = 'openOptions';
-export const SNS_ITEMS = 'snsItems';
-export const SNS_ITEM = 'sns-item';
-export const SNS_ITEM_TMPL = 'snsItemTemplate';
-export const SNS_NOT_SELECTED = 'warnSnsNotSelected';
 
 /* tab info */
 export const tabInfo = {
