@@ -2,7 +2,9 @@ EN | [JA](./README.ja.md)
 
 [![build](https://github.com/asamuzaK/shareSNS/workflows/build/badge.svg)](https://github.com/asamuzaK/shareSNS/actions?query=workflow%3Abuild)
 [![CodeQL](https://github.com/asamuzaK/shareSNS/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/shareSNS/actions?query=workflow%3ACodeQL)
+<!--
 [![devDependency Status](https://david-dm.org/asamuzaK/shareSNS/dev-status.svg)](https://david-dm.org/asamuzaK/shareSNS?type=dev)
+-->
 [![Mozilla Add-on](https://img.shields.io/amo/v/shareSNS@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/share-with-sns/)
 
 # Share with SNS
