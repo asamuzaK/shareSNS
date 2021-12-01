@@ -18,6 +18,18 @@
     g:target ~ #color {
       display: none;
     }
+    #current,
+    #dark {
+      fill: context-fill rgb(91,91,102);
+    }
+    #light {
+      fill: context-fill rgb(251,251,254);
+    }
+    @media (prefers-color-scheme: dark) {
+      #current {
+        fill: context-fill rgb(251,251,254);
+      }
+    }
   </style>
   <symbol id="outline">
     <path d="m94 6a20 20 0 0 0-20 20 20 20 0 0 0 0.67188 5.1387l-27.764 17.584a20 20 0 0 0-12.908-4.7227 20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 12.906-4.7246l27.766 17.586a20 20 0 0 0-0.67188 5.1387 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20 20 20 0 0 0-12.906 4.7246l-27.766-17.586a20 20 0 0 0 0.67188-5.1387 20 20 0 0 0-0.67188-5.1387l27.764-17.584a20 20 0 0 0 12.908 4.7227 20 20 0 0 0 20-20 20 20 0 0 0-20-20z"/>
@@ -28,13 +40,13 @@
   <symbol id="dot">
     <path d="m94 6a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm-60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20z"/>
   </symbol>
-  <g id="current" fill="context-fill currentColor">
+  <g id="current">
     <use href="#outline"/>
   </g>
-  <g id="dark" fill="context-fill rgb(91,91,102)">
+  <g id="dark">
     <use href="#outline"/>
   </g>
-  <g id="light" fill="context-fill rgb(251,251,254)">
+  <g id="light">
     <use href="#outline"/>
   </g>
   <g id="color">
