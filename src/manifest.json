@@ -40,7 +40,7 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "options_ui": {
-    "browser_style": false,
+    "browser_style": true,
     "open_in_tab": true,
     "page": "html/options.html"
   },
