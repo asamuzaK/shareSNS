@@ -16,6 +16,7 @@
   --page-border-color: rgb(128 128 128);
   --warn-background-color: transparent;
   --warn-color: #d70022;
+  color-scheme: light;
 }
 
 body {
@@ -220,6 +221,7 @@ pre > code {
     --page-border-color: rgb(128 128 128);
     --warn-background-color: transparent;
     --warn-color: #ff4f5e;
+    color-scheme: dark;
   }
 
   header > h1::before {
