@@ -13,6 +13,7 @@
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
+    "include": "copyfiles -u 3 --verbose node_modules/webext-schema/modules/browser.js src/mjs",
     "lint": "npm-run-all -s lint:*",
     "lint:addons-linter": "addons-linter src",
     "lint:eslint": "eslint --fix .",
@@ -25,25 +26,28 @@
     "test:release": "c8 --reporter=text mocha test/*.test.js --require test/mocha/setup.js --channel=release --exit",
     "test_all": "npm-run-all -s test:*"
   },
+  "dependencies": {
+    "copyfiles": "^2.4.1",
+    "webext-schema": "^2.1.0"
+  },
   "devDependencies": {
-    "addons-linter": "^4.8.0",
+    "addons-linter": "^4.9.0",
     "c8": "^7.11.0",
     "chai": "^4.3.6",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^37.7.0",
+    "eslint-plugin-jsdoc": "^37.8.2",
     "eslint-plugin-no-unsanitized": "^4.0.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
-    "html-validate": "^6.3.0",
+    "html-validate": "^6.3.1",
     "jsdom": "^19.0.0",
     "mocha": "^9.2.0",
     "npm-run-all": "^4.1.5",
     "sinon": "^13.0.1",
-    "stylelint": "^14.3.0",
-    "stylelint-config-standard": "^24.0.0",
-    "webext-schema": "^2.0.8"
+    "stylelint": "^14.5.0",
+    "stylelint-config-standard": "^25.0.0"
   },
   "version": "4.0.3"
 }
