@@ -27,7 +27,7 @@
     "test_all": "npm-run-all -s test:*"
   },
   "dependencies": {
-    "webext-schema": "^2.1.0"
+    "webext-schema": "^2.1.2"
   },
   "devDependencies": {
     "addons-linter": "^4.12.0",
@@ -37,11 +37,11 @@
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^37.9.4",
+    "eslint-plugin-jsdoc": "^37.9.7",
     "eslint-plugin-no-unsanitized": "^4.0.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
-    "html-validate": "^6.4.0",
+    "html-validate": "^6.5.0",
     "jsdom": "^19.0.0",
     "mocha": "^9.2.1",
     "npm-run-all": "^4.1.5",
@@ -49,5 +49,5 @@
     "stylelint": "^14.5.3",
     "stylelint-config-standard": "^25.0.0"
   },
-  "version": "4.0.3"
+  "version": "4.0.4"
 }
