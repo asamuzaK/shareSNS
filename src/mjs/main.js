@@ -73,7 +73,7 @@ export const toggleSnsItem = async (id, obj = {}) => {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
   const { checked, subItemOf, value } = obj;
-  const item = subItemOf || id;
+  const item = subItemOf ?? id;
   const data = sns.get(item);
   if (data) {
     if (subItemOf) {
@@ -297,16 +297,16 @@ export const createMenu = async () => {
   const func = [];
   const {
     mastodonInstanceUrl, pleromaInstanceUrl
-  } = await getAllStorage() || {};
+  } = await getAllStorage() ?? {};
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
       const { enabled: itemEnabled, id, menu } = value;
       const key = menu || id;
       let enabled;
       if (id === 'Mastodon' && itemEnabled) {
-        enabled = !!(mastodonInstanceUrl && mastodonInstanceUrl.value);
+        enabled = !!(mastodonInstanceUrl?.value);
       } else if (id === 'Pleroma' && itemEnabled) {
-        enabled = !!(pleromaInstanceUrl && pleromaInstanceUrl.value);
+        enabled = !!(pleromaInstanceUrl?.value);
       } else {
         enabled = !!itemEnabled;
       }

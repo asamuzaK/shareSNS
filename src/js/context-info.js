@@ -36,7 +36,7 @@
   const getAnchorElm = node => {
     const root = document.documentElement;
     let elm;
-    while (node && node.parentNode && node.parentNode !== root) {
+    while (node && node?.parentNode !== root) {
       if (node.localName === 'a') {
         elm = node;
         break;
@@ -60,7 +60,7 @@
       title: null,
       url: null
     };
-    if (node && node.nodeType === Node.ELEMENT_NODE) {
+    if (node?.nodeType === Node.ELEMENT_NODE) {
       const anchor = getAnchorElm(node);
       if (anchor) {
         const { textContent, href, title } = anchor;

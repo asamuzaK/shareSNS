@@ -191,7 +191,7 @@ export const updateMenu = async data => {
       const { content, isLink, selectionText, title, url } = info;
       const {
         mastodonInstanceUrl, pleromaInstanceUrl
-      } = await getAllStorage() || {};
+      } = await getAllStorage() ?? {};
       const linkNodes = document.getElementsByClassName(SHARE_LINK);
       const pageNodes = document.getElementsByClassName(SHARE_PAGE);
       contextInfo.isLink = !!isLink;
@@ -203,13 +203,13 @@ export const updateMenu = async data => {
         const attr = 'disabled';
         if (isLink) {
           if (node.id.endsWith('Mastodon')) {
-            if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
+            if (mastodonInstanceUrl?.value) {
               node.removeAttribute(attr);
             } else {
               node.setAttribute(attr, attr);
             }
           } else if (node.id.endsWith('Pleroma')) {
-            if (pleromaInstanceUrl && pleromaInstanceUrl.value) {
+            if (pleromaInstanceUrl?.value) {
               node.removeAttribute(attr);
             } else {
               node.setAttribute(attr, attr);
@@ -224,13 +224,13 @@ export const updateMenu = async data => {
       for (const node of pageNodes) {
         const attr = 'disabled';
         if (node.id.endsWith('Mastodon')) {
-          if (mastodonInstanceUrl && mastodonInstanceUrl.value) {
+          if (mastodonInstanceUrl?.value) {
             node.removeAttribute(attr);
           } else {
             node.setAttribute(attr, attr);
           }
         } else if (node.id.endsWith('Pleroma')) {
-          if (pleromaInstanceUrl && pleromaInstanceUrl.value) {
+          if (pleromaInstanceUrl?.value) {
             node.removeAttribute(attr);
           } else {
             node.setAttribute(attr, attr);
@@ -274,7 +274,7 @@ export const handleMsg = async msg => {
 export const toggleWarning = async () => {
   const elm = document.getElementById(SNS_NOT_SELECTED);
   const items = document.getElementsByClassName(SNS_ITEM);
-  if (elm && items && items.length) {
+  if (elm && items?.length) {
     let bool = false;
     for (const item of items) {
       bool = window.getComputedStyle(item).display !== 'none';
