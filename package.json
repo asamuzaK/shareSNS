@@ -27,7 +27,7 @@
     "test_all": "npm-run-all -s test:*"
   },
   "dependencies": {
-    "webext-schema": "^3.0.0"
+    "webext-schema": "^3.0.1"
   },
   "devDependencies": {
     "addons-linter": "^5.2.0",
