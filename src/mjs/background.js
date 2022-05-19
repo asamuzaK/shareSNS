@@ -4,10 +4,9 @@
 
 /* shared */
 import { throwErr } from './common.js';
-import { getStorage } from './browser.js';
 import {
   createMenu, extractClickedData, handleMsg, handleStoredData, removeMenu,
-  setSnsItems
+  startup
 } from './main.js';
 
 /* api */
@@ -17,15 +16,11 @@ const { menus, runtime, storage } = browser;
 menus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
 );
-storage.onChanged.addListener(data =>
-  handleStoredData(data).then(removeMenu).then(createMenu).catch(throwErr)
-);
+runtime.onInstalled.addListener(() => startup().catch(throwErr));
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
-
-/* startup */
-document.addEventListener('DOMContentLoaded', () =>
-  setSnsItems().then(getStorage).then(handleStoredData).then(createMenu)
-    .catch(throwErr)
+runtime.onStartup.addListener(() => startup().catch(throwErr));
+storage.onChanged.addListener(data =>
+  handleStoredData(data).then(removeMenu).then(createMenu).catch(throwErr)
 );

@@ -1118,4 +1118,19 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
   });
+
+  describe('startup', () => {
+    const func = mjs.startup;
+    beforeEach(() => {
+      mjs.sns.clear();
+    });
+    afterEach(() => {
+      mjs.sns.clear();
+    });
+
+    it('should get empty array', async () => {
+      const res = await func();
+      assert.deepEqual(res, [], 'result');
+    });
+  });
 });
