@@ -311,32 +311,34 @@ export const createMenu = async () => {
       } else {
         enabled = !!itemEnabled;
       }
-      itemEnabled && isString(id) && isString(key) && func.push(
-        createMenuItem(
-          `${SHARE_PAGE}${id}`,
-          i18n.getMessage(SHARE_PAGE, key),
-          {
-            enabled,
-            contexts: ['page', 'selection']
-          }
-        ),
-        createMenuItem(
-          `${SHARE_TAB}${id}`,
-          i18n.getMessage(SHARE_TAB, key),
-          {
-            enabled,
-            contexts: ['tab']
-          }
-        ),
-        createMenuItem(
-          `${SHARE_LINK}${id}`,
-          i18n.getMessage(SHARE_LINK, key),
-          {
-            enabled,
-            contexts: ['link']
-          }
-        )
-      );
+      if (itemEnabled && isString(id) && isString(key)) {
+        func.push(
+          createMenuItem(
+            `${SHARE_PAGE}${id}`,
+            i18n.getMessage(SHARE_PAGE, key),
+            {
+              enabled,
+              contexts: ['page', 'selection']
+            }
+          ),
+          createMenuItem(
+            `${SHARE_TAB}${id}`,
+            i18n.getMessage(SHARE_TAB, key),
+            {
+              enabled,
+              contexts: ['tab']
+            }
+          ),
+          createMenuItem(
+            `${SHARE_LINK}${id}`,
+            i18n.getMessage(SHARE_LINK, key),
+            {
+              enabled,
+              contexts: ['link']
+            }
+          )
+        );
+      }
     }
   });
   return Promise.all(func);
@@ -357,7 +359,9 @@ export const handleMsg = async msg => {
       const [key, value] = item;
       switch (key) {
         case CONTEXT_INFO_GET:
-          value && func.push(sendContextInfo());
+          if (value) {
+            func.push(sendContextInfo());
+          }
           break;
         case SHARE_SNS: {
           const { info, tab } = value;
