@@ -143,7 +143,7 @@ describe('popup-main', () => {
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [SHARE_SNS]: {
           info: {
             menuItemId: 'foo',
@@ -168,7 +168,7 @@ describe('popup-main', () => {
       mjs.contextInfo.isLink = true;
       mjs.contextInfo.title = 'bar';
       mjs.contextInfo.url = 'https://example.com';
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [SHARE_SNS]: {
           info: {
             linkText: 'bar',
@@ -197,7 +197,7 @@ describe('popup-main', () => {
       mjs.contextInfo.selectionText = 'qux';
       mjs.contextInfo.title = 'bar';
       mjs.contextInfo.url = 'https://example.com';
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [SHARE_SNS]: {
           info: {
             linkText: 'baz',
