@@ -413,6 +413,16 @@ export const getManifestIcons = () => {
 };
 
 /**
+ * get manifest version
+ *
+ * @returns {number} - version
+ */
+export const getManifestVersion = () => {
+  const { manifest_version: version } = runtime.getManifest();
+  return version;
+};
+
+/**
  * get OS
  *
  * @returns {string} - OS
@@ -474,7 +484,7 @@ export const sendMessage = async (id, msg, opt) => {
     } else if (id && isString(id)) {
       func = runtime.sendMessage(id, msg, opt);
     } else {
-      func = runtime.sendMessage(runtime.id, msg, opt);
+      func = runtime.sendMessage(msg, opt);
     }
   }
   return func || null;
