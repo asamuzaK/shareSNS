@@ -5,8 +5,7 @@
 /* shared */
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
-  createTab, execScriptToTab, getAllStorage, getStorage, queryTabs,
-  sendMessage, updateTab
+  createTab, execScriptToTab, getAllStorage, queryTabs, sendMessage, updateTab
 } from './browser.js';
 import snsData from './sns.js';
 import {
@@ -412,5 +411,7 @@ export const handleStoredData = async data => {
  *
  * @returns {Function} - promise chain
  */
-export const startup = async () =>
-  setSnsItems().then(getStorage).then(handleStoredData).then(createMenu);
+export const startup = async () => {
+  await setSnsItems();
+  return getAllStorage().then(handleStoredData).then(createMenu);
+};
