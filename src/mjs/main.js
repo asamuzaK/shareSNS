@@ -379,11 +379,12 @@ export const handleMsg = async msg => {
  * handle stored data
  *
  * @param {object} data - stored data
+ * @param {string} area - storage area
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleStoredData = async data => {
+export const handleStoredData = async (data, area = 'local') => {
   const func = [];
-  if (isObjectNotEmpty(data)) {
+  if (isObjectNotEmpty(data) && area === 'local') {
     const items = Object.entries(data);
     for (const item of items) {
       const [key, value] = item;

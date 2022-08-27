@@ -1055,6 +1055,16 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
+    it('should get empty array', async () => {
+      mjs.sns.set('foo', {});
+      const res = await func({
+        foo: {
+          checked: true
+        }
+      }, 'bar');
+      assert.deepEqual(res, [], 'result');
+    });
+
     it('should get array', async () => {
       mjs.sns.set('foo', {});
       const spy = sinon.spy(mjs.sns, 'set');
@@ -1063,6 +1073,19 @@ describe('main', () => {
           checked: true
         }
       });
+      assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
+      assert.deepEqual(res, [undefined], 'result');
+      mjs.sns.set.restore();
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {});
+      const spy = sinon.spy(mjs.sns, 'set');
+      const res = await func({
+        foo: {
+          checked: true
+        }
+      }, 'local');
       assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
       assert.deepEqual(res, [undefined], 'result');
       mjs.sns.set.restore();
