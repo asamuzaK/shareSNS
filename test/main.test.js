@@ -20,6 +20,7 @@ describe('main', () => {
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
     browser.permissions.contains.resolves(true);
+    browser.storage.local.get.resolves({});
     global.browser = browser;
   });
   afterEach(() => {
@@ -31,19 +32,169 @@ describe('main', () => {
     assert.isObject(browser, 'browser');
   });
 
+  describe('set user options', () => {
+    const func = mjs.setUserOpts;
+    beforeEach(() => {
+      mjs.userOpts.clear();
+    });
+    afterEach(() => {
+      mjs.userOpts.clear();
+    });
+
+    it('should set user option', async () => {
+      const res = await func({
+        foo: {
+          checked: true
+        }
+      });
+      assert.strictEqual(res.size, 1, 'size');
+      assert.isTrue(res.has('foo'), 'key');
+      assert.isTrue(res.get('foo'), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should call function', async () => {
+      const res = await func();
+      assert.strictEqual(res.size, 0, 'size');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({
+        [PREFER_CANONICAL]: {
+          checked: true
+        }
+      });
+      const res = await func();
+      assert.strictEqual(res.size, 1, 'size');
+      assert.isTrue(res.has(PREFER_CANONICAL), 'key');
+      assert.isTrue(res.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+  });
+
   describe('set sns item', () => {
     const func = mjs.setSnsItems;
+    beforeEach(() => {
+      mjs.sns.clear();
+    });
+    afterEach(() => {
+      mjs.sns.clear();
+    });
 
     it('should set map', async () => {
       const itemKeys = [
         'Twitter', 'Facebook', 'LINE', 'Hatena', 'Mastodon', 'Pleroma'
       ];
-      await func();
+      const res = await func();
       assert.strictEqual(mjs.sns.size, itemKeys.length, 'length');
       for (const key of itemKeys) {
-        assert.isObject(mjs.sns.get(key), `result ${key}`);
+        assert.isObject(mjs.sns.get(key), `sns ${key}`);
       }
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+  });
+
+  describe('set user enabled sns items', () => {
+    const func = mjs.setUserEnabledSns;
+    beforeEach(() => {
       mjs.sns.clear();
+    });
+    afterEach(() => {
+      mjs.sns.clear();
+    });
+
+    it('should not set map', async () => {
+      const res = await func('foo');
+      assert.isUndefined(mjs.sns.get('foo'), 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      mjs.sns.set('foo', {});
+      const res = await func('foo');
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: false }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      mjs.sns.set('foo', {});
+      const res = await func('foo', { checked: false });
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: false }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      mjs.sns.set('foo', {});
+      const res = await func('foo', { checked: true });
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should not set map', async () => {
+      mjs.sns.set('foo', {
+        id: 'foo',
+        subItem: {}
+      });
+      const res = await func('bar', { subItemOf: 'foo', value: 'baz' });
+      assert.deepEqual(mjs.sns.get('foo'), {
+        id: 'foo',
+        subItem: {}
+      }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      mjs.sns.set('foo', {
+        id: 'foo',
+        subItem: {
+          bar: {}
+        }
+      });
+      const res = await func('bar', { subItemOf: 'foo', value: 'baz' });
+      assert.deepEqual(mjs.sns.get('foo'), {
+        id: 'foo',
+        subItem: {
+          bar: {
+            value: 'baz'
+          }
+        }
+      }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      mjs.sns.set('foo', {
+        id: 'foo',
+        subItem: {
+          bar: {}
+        }
+      });
+      const res = await func('bar', { subItemOf: 'foo' });
+      assert.deepEqual(mjs.sns.get('foo'), {
+        id: 'foo',
+        subItem: {
+          bar: {
+            value: null
+          }
+        }
+      }, 'sns');
+      assert.deepEqual(res, mjs.sns, 'result');
+    });
+
+    it('should set map', async () => {
+      browser.storage.local.get.resolves({
+        foo: {
+          id: 'foo',
+          checked: true
+        },
+        [PREFER_CANONICAL]: {}
+      });
+      mjs.sns.set('foo', {});
+      const res = await func();
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.strictEqual(res.size, 1, 'size');
+      assert.deepEqual(res, mjs.sns, 'result');
     });
   });
 
@@ -108,94 +259,6 @@ describe('main', () => {
       });
       const res = await func(`${SHARE_LINK}qux`);
       assert.isNull(res, 'result');
-    });
-  });
-
-  describe('toggle sns item', () => {
-    const func = mjs.toggleSnsItem;
-    beforeEach(() => {
-      mjs.sns.clear();
-    });
-    afterEach(() => {
-      mjs.sns.clear();
-    });
-
-    it('should throw if first argument is not given', async () => {
-      await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
-    });
-
-    it('should not set map', async () => {
-      await func('foo');
-      assert.isUndefined(mjs.sns.get('foo'), 'result');
-    });
-
-    it('should set map', async () => {
-      mjs.sns.set('foo', {});
-      await func('foo');
-      assert.deepEqual(mjs.sns.get('foo'), { enabled: false }, 'result');
-    });
-
-    it('should set map', async () => {
-      mjs.sns.set('foo', {});
-      await func('foo', { checked: false });
-      assert.deepEqual(mjs.sns.get('foo'), { enabled: false }, 'result');
-    });
-
-    it('should set map', async () => {
-      mjs.sns.set('foo', {});
-      await func('foo', { checked: true });
-      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'result');
-    });
-
-    it('should not set map', async () => {
-      mjs.sns.set('foo', {
-        id: 'foo',
-        subItem: {}
-      });
-      await func('bar', { subItemOf: 'foo', value: 'baz' });
-      assert.deepEqual(mjs.sns.get('foo'), {
-        id: 'foo',
-        subItem: {}
-      }, 'result');
-    });
-
-    it('should set map', async () => {
-      mjs.sns.set('foo', {
-        id: 'foo',
-        subItem: {
-          bar: {}
-        }
-      });
-      await func('bar', { subItemOf: 'foo', value: 'baz' });
-      assert.deepEqual(mjs.sns.get('foo'), {
-        id: 'foo',
-        subItem: {
-          bar: {
-            value: 'baz'
-          }
-        }
-      }, 'result');
-    });
-
-    it('should set map', async () => {
-      mjs.sns.set('foo', {
-        id: 'foo',
-        subItem: {
-          bar: {}
-        }
-      });
-      await func('bar', { subItemOf: 'foo' });
-      assert.deepEqual(mjs.sns.get('foo'), {
-        id: 'foo',
-        subItem: {
-          bar: {
-            value: null
-          }
-        }
-      }, 'result');
     });
   });
 
@@ -301,11 +364,11 @@ describe('main', () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
       mjs.sns.clear();
-      mjs.vars[PREFER_CANONICAL] = false;
+      mjs.userOpts.clear();
     });
     afterEach(() => {
       mjs.sns.clear();
-      mjs.vars[PREFER_CANONICAL] = false;
+      mjs.userOpts.clear();
     });
 
     it('should get empty array', async () => {
@@ -374,7 +437,7 @@ describe('main', () => {
       mjs.sns.set('foo', {
         url: 'https://example.com?u=%url%&t=%text%'
       });
-      mjs.vars[PREFER_CANONICAL] = true;
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
       browser.tabs.executeScript.resolves(['https://www.example.com/']);
       const info = {
@@ -393,7 +456,7 @@ describe('main', () => {
       mjs.sns.set('foo', {
         url: 'https://example.com?u=%url%&t=%text%'
       });
-      mjs.vars[PREFER_CANONICAL] = true;
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
       browser.tabs.executeScript.resolves([null]);
       const info = {
@@ -413,7 +476,7 @@ describe('main', () => {
       mjs.sns.set('foo', {
         url: 'https://example.com?u=%url%&t=%text%'
       });
-      mjs.vars[PREFER_CANONICAL] = true;
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
       browser.tabs.executeScript.rejects(new Error('error'));
       const info = {
@@ -435,7 +498,7 @@ describe('main', () => {
       mjs.sns.set('foo', {
         url: 'https://example.com?u=%url%&t=%text%'
       });
-      mjs.vars[PREFER_CANONICAL] = true;
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.executeScript.resolves([null]);
       browser.tabs.create.resolves({});
       const info = {
@@ -1027,15 +1090,15 @@ describe('main', () => {
     });
   });
 
-  describe('handle stored data', () => {
-    const func = mjs.handleStoredData;
+  describe('handle storage', () => {
+    const func = mjs.handleStorage;
     beforeEach(() => {
       mjs.sns.clear();
-      mjs.vars[PREFER_CANONICAL] = false;
+      mjs.userOpts.clear();
     });
     afterEach(() => {
       mjs.sns.clear();
-      mjs.vars[PREFER_CANONICAL] = false;
+      mjs.userOpts.clear();
     });
 
     it('should get empty array if no argument given', async () => {
@@ -1067,33 +1130,28 @@ describe('main', () => {
 
     it('should get array', async () => {
       mjs.sns.set('foo', {});
-      const spy = sinon.spy(mjs.sns, 'set');
       const res = await func({
         foo: {
           checked: true
         }
       });
-      assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
-      assert.deepEqual(res, [undefined], 'result');
-      mjs.sns.set.restore();
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.deepEqual(res, [mjs.sns], 'result');
     });
 
     it('should get array', async () => {
       mjs.sns.set('foo', {});
-      const spy = sinon.spy(mjs.sns, 'set');
       const res = await func({
         foo: {
           checked: true
         }
       }, 'local');
-      assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
-      assert.deepEqual(res, [undefined], 'result');
-      mjs.sns.set.restore();
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.deepEqual(res, [mjs.sns], 'result');
     });
 
     it('should get array', async () => {
       mjs.sns.set('foo', {});
-      const spy = sinon.spy(mjs.sns, 'set');
       const res = await func({
         foo: {
           newValue: {
@@ -1101,22 +1159,21 @@ describe('main', () => {
           }
         }
       });
-      assert.deepEqual(spy.args, [['foo', { enabled: true }]], 'spy');
-      assert.deepEqual(res, [undefined], 'result');
-      mjs.sns.set.restore();
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.deepEqual(res, [mjs.sns], 'result');
     });
 
-    it('should set vars', async () => {
+    it('should set value', async () => {
       const res = await func({
         [PREFER_CANONICAL]: {
           checked: true
         }
       });
-      assert.isTrue(mjs.vars[PREFER_CANONICAL]);
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
-    it('should set vars', async () => {
+    it('should set value', async () => {
       const res = await func({
         [PREFER_CANONICAL]: {
           newValue: {
@@ -1124,12 +1181,12 @@ describe('main', () => {
           }
         }
       });
-      assert.isTrue(mjs.vars[PREFER_CANONICAL]);
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
-    it('should set vars', async () => {
-      mjs.vars[PREFER_CANONICAL] = true;
+    it('should set value', async () => {
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func({
         [PREFER_CANONICAL]: {
           newValue: {
@@ -1137,8 +1194,8 @@ describe('main', () => {
           }
         }
       });
-      assert.isFalse(mjs.vars[PREFER_CANONICAL]);
-      assert.deepEqual(res, [], 'result');
+      assert.isFalse(mjs.userOpts.get(PREFER_CANONICAL));
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
   });
 

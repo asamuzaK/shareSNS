@@ -5,8 +5,7 @@
 /* shared */
 import { throwErr } from './common.js';
 import {
-  createMenu, extractClickedData, handleMsg, handleStoredData, removeMenu,
-  startup
+  createMenu, extractClickedData, handleMsg, handleStorage, removeMenu, startup
 } from './main.js';
 
 /* api */
@@ -22,5 +21,5 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 runtime.onStartup.addListener(() => startup().catch(throwErr));
 storage.onChanged.addListener((data, area) =>
-  handleStoredData(data, area).then(removeMenu).then(createMenu).catch(throwErr)
+  handleStorage(data, area).then(removeMenu).then(createMenu).catch(throwErr)
 );

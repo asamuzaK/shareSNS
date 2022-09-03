@@ -5,7 +5,8 @@
 /* shared */
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
-  createTab, execScriptToTab, getAllStorage, queryTabs, sendMessage, updateTab
+  createTab, execScriptToTab, getAllStorage, getStorage, queryTabs,
+  sendMessage, updateTab
 } from './browser.js';
 import snsData from './sns.js';
 import {
@@ -19,9 +20,28 @@ const { i18n, menus, tabs } = browser;
 /* constant */
 const { TAB_ID_NONE } = tabs;
 
-/* variables */
-export const vars = {
-  [PREFER_CANONICAL]: false
+/* user options */
+export const userOpts = new Map();
+
+/**
+ * set user options
+ *
+ * @param {object} opt - user option
+ * @returns {object} - userOpts
+ */
+export const setUserOpts = async (opt = {}) => {
+  let opts;
+  if (isObjectNotEmpty(opt)) {
+    opts = opt;
+  } else {
+    opts = await getStorage([PREFER_CANONICAL]);
+  }
+  const items = Object.entries(opts);
+  for (const [key, value] of items) {
+    const { checked } = value;
+    userOpts.set(key, !!checked);
+  }
+  return userOpts;
 };
 
 /* sns */
@@ -30,7 +50,7 @@ export const sns = new Map();
 /**
  * set sns items
  *
- * @returns {void}
+ * @returns {object} - sns
  */
 export const setSnsItems = async () => {
   const items = Object.entries(snsData);
@@ -38,6 +58,54 @@ export const setSnsItems = async () => {
     const [key, value] = item;
     sns.set(key, value);
   }
+  return sns;
+};
+
+/**
+ * set user enabled sns items
+ *
+ * @param {string} id - item ID
+ * @param {object} obj - value object
+ * @returns {object} - sns
+ */
+export const setUserEnabledSns = async (id, obj = {}) => {
+  const items = [];
+  if (isString(id)) {
+    items.push({
+      [id]: obj
+    });
+  } else {
+    const storedData = await getAllStorage();
+    const storedItems = Object.entries(storedData);
+    const excludeKeys = [PREFER_CANONICAL];
+    for (const [key, value] of storedItems) {
+      if (!excludeKeys.includes(key)) {
+        items.push({
+          [key]: value
+        });
+      }
+    }
+  }
+  for (const item of items) {
+    const [[itemId, itemValue]] = Object.entries(item);
+    const { checked, subItemOf, value } = itemValue;
+    const snsId = subItemOf ?? itemId;
+    const data = sns.get(snsId);
+    if (data) {
+      if (subItemOf) {
+        const { subItem } = data;
+        if (isObjectNotEmpty(subItem) &&
+            Object.prototype.hasOwnProperty.call(subItem, itemId)) {
+          data.subItem[itemId].value = value || null;
+          sns.set(snsId, data);
+        }
+      } else {
+        data.enabled = !!checked;
+        sns.set(snsId, data);
+      }
+    }
+  }
+  return sns;
 };
 
 /**
@@ -59,35 +127,6 @@ export const getSnsItemFromId = async id => {
     item = sns.get(id.replace(SHARE_PAGE, ''));
   }
   return item || null;
-};
-
-/**
- * toggle sns item
- *
- * @param {string} id - item ID
- * @param {object} obj - value object
- * @returns {void}
- */
-export const toggleSnsItem = async (id, obj = {}) => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const { checked, subItemOf, value } = obj;
-  const item = subItemOf ?? id;
-  const data = sns.get(item);
-  if (data) {
-    if (subItemOf) {
-      const { subItem } = data;
-      if (isObjectNotEmpty(subItem) &&
-          Object.prototype.hasOwnProperty.call(subItem, id)) {
-        data.subItem[id].value = value || null;
-        sns.set(item, data);
-      }
-    } else {
-      data.enabled = !!checked;
-      sns.set(item, data);
-    }
-  }
 };
 
 /**
@@ -166,6 +205,13 @@ export const extractClickedData = async (info = {}, tab = {}) => {
   const func = [];
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
       Number.isInteger(tabIndex)) {
+    if (!userOpts.size) {
+      await setUserOpts();
+    }
+    if (!sns.size) {
+      await setSnsItems();
+      await setUserEnabledSns();
+    }
     const { linkText, linkUrl, menuItemId, selectionText } = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
@@ -180,7 +226,7 @@ export const extractClickedData = async (info = {}, tab = {}) => {
         shareText = selText || linkText;
         shareUrl = linkUrl;
       } else {
-        if (tabUrlHash || !vars[PREFER_CANONICAL]) {
+        if (tabUrlHash || !userOpts.get(PREFER_CANONICAL)) {
           shareUrl = tabUrl;
         } else {
           const arr = await execScriptToTab({
@@ -295,9 +341,10 @@ export const createMenuItem = async (id, title, data = {}) => {
  */
 export const createMenu = async () => {
   const func = [];
-  const {
-    mastodonInstanceUrl, pleromaInstanceUrl
-  } = await getAllStorage() ?? {};
+  const { mastodonInstanceUrl, pleromaInstanceUrl } = await getStorage([
+    'mastodonInstanceUrl',
+    'pleromaInstanceUrl'
+  ]);
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
       const { enabled: itemEnabled, id, menu } = value;
@@ -376,30 +423,26 @@ export const handleMsg = async msg => {
 
 /* storage */
 /**
- * handle stored data
+ * handle storage
  *
  * @param {object} data - stored data
  * @param {string} area - storage area
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleStoredData = async (data, area = 'local') => {
+export const handleStorage = async (data = {}, area = 'local') => {
+  const items = Object.entries(data);
   const func = [];
-  if (isObjectNotEmpty(data) && area === 'local') {
-    const items = Object.entries(data);
+  if (items.length && area === 'local') {
     for (const item of items) {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
         const { newValue } = value;
         if (key === PREFER_CANONICAL) {
-          let bool;
-          if (newValue) {
-            bool = newValue.checked;
-          } else {
-            bool = value.checked;
-          }
-          vars[PREFER_CANONICAL] = !!bool;
+          func.push(setUserOpts({
+            [key]: newValue || value
+          }));
         } else {
-          func.push(toggleSnsItem(key, newValue || value));
+          func.push(setUserEnabledSns(key, newValue || value));
         }
       }
     }
@@ -414,5 +457,5 @@ export const handleStoredData = async (data, area = 'local') => {
  */
 export const startup = async () => {
   await setSnsItems();
-  return getAllStorage().then(handleStoredData).then(createMenu);
+  return getAllStorage().then(handleStorage).then(createMenu);
 };
