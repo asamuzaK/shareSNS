@@ -15,17 +15,19 @@ import {
 const { storage, runtime } = browser;
 
 /* listeners */
-storage.onChanged.addListener(data =>
-  handleStoredData(data).then(toggleWarning).catch(throwErr)
+storage.onChanged.addListener((data, area) =>
+  handleStoredData(data, area).then(toggleWarning).catch(throwErr)
 );
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
 
 /* startup */
-setSnsItems().then(createHtml).then(() => Promise.all([
-  localizeHtml(),
-  addListenerToMenu(),
-  getStorage().then(handleStoredData).then(toggleWarning),
-  prepareTab()
-])).catch(throwErr);
+document.addEventListener('DOMContentLoaded', () =>
+  setSnsItems().then(createHtml).then(() => Promise.all([
+    localizeHtml(),
+    addListenerToMenu(),
+    getStorage().then(handleStoredData).then(toggleWarning),
+    prepareTab()
+  ])).catch(throwErr)
+);

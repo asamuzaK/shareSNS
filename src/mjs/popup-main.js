@@ -308,12 +308,13 @@ export const toggleSnsItem = async (id, obj = {}) => {
  * handle stored data
  *
  * @param {object} data - stored data
+ * @param {string} area - storage area
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleStoredData = async data => {
+export const handleStoredData = async (data = {}, area = 'local') => {
+  const items = Object.entries(data);
   const func = [];
-  if (isObjectNotEmpty(data)) {
-    const items = Object.entries(data);
+  if (items.length && area === 'local') {
     for (const item of items) {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
