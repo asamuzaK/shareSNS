@@ -5,8 +5,8 @@
 /* shared */
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
-  createTab, execScriptToTab, getAllStorage, getStorage, queryTabs,
-  sendMessage, updateTab
+  createTab, executeScriptToTab, getActiveTabId, getAllStorage, getStorage,
+  queryTabs, sendMessage, updateTab
 } from './browser.js';
 import snsData from './sns.js';
 import {
@@ -168,24 +168,49 @@ export const createSnsUrl = async (info, url, text = '') => {
 };
 
 /**
+ * get context info
+ *
+ * @param {number} tabId - tab ID
+ * @returns {object} - context info
+ */
+export const getContextInfo = async tabId => {
+  let info;
+  if (!Number.isInteger(tabId)) {
+    tabId = await getActiveTabId();
+  }
+  const arr = await executeScriptToTab({
+    files: [JS_CONTEXT_INFO],
+    target: {
+      tabId
+    }
+  }).catch(logErr);
+  if (Array.isArray(arr)) {
+    const [res] = arr;
+    if (isObjectNotEmpty(res)) {
+      const { error, result } = res;
+      if (error) {
+        throw new Error(error.message);
+      }
+      info = result;
+    }
+  }
+  return info ?? null;
+};
+
+/**
  * send context info
  *
  * @returns {?Function} - sendMessage();
  */
 export const sendContextInfo = async () => {
-  const arr = await execScriptToTab({
-    file: JS_CONTEXT_INFO
-  });
+  const contextInfo = await getContextInfo();
   let func;
-  if (Array.isArray(arr)) {
-    const [contextInfo] = arr;
-    if (contextInfo) {
-      func = sendMessage(null, {
-        [CONTEXT_INFO]: {
-          contextInfo
-        }
-      });
-    }
+  if (isObjectNotEmpty(contextInfo)) {
+    func = sendMessage(null, {
+      [CONTEXT_INFO]: {
+        contextInfo
+      }
+    });
   }
   return func || null;
 };
@@ -229,12 +254,23 @@ export const extractClickedData = async (info = {}, tab = {}) => {
         if (tabUrlHash || !userOpts.get(PREFER_CANONICAL)) {
           shareUrl = tabUrl;
         } else {
-          const arr = await execScriptToTab({
-            file: JS_CANONICAL
-          });
+          const arr = await executeScriptToTab({
+            files: [JS_CANONICAL],
+            target: {
+              tabId
+            }
+          }).catch(logErr);
           if (Array.isArray(arr)) {
-            const [canonicalUrl] = arr;
-            shareUrl = canonicalUrl || tabUrl;
+            const [res] = arr;
+            if (isObjectNotEmpty(res)) {
+              const { error, result } = res;
+              if (error) {
+                throw new Error(error.message);
+              }
+              shareUrl = result || tabUrl;
+            } else {
+              shareUrl = tabUrl;
+            }
           } else {
             shareUrl = tabUrl;
           }

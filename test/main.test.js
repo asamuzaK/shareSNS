@@ -326,13 +326,96 @@ describe('main', () => {
     });
   });
 
+  describe('get context info', () => {
+    const func = mjs.getContextInfo;
+
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves(null);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves([]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves([undefined]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should log error', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      browser.scripting.executeScript.rejects(new Error('error'));
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      const { called: errCalled } = stubErr;
+      stubErr.restore();
+      assert.isTrue(errCalled, 'error called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: new Error('error')
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
+    });
+
+    it('should get result', async () => {
+      browser.scripting.executeScript.resolves([{
+        result: {
+          foo: 'bar'
+        }
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.deepEqual(res, {
+        foo: 'bar'
+      }, 'result');
+    });
+  });
+
   describe('send context info', () => {
     const func = mjs.sendContextInfo;
 
     it('should get null', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.executeScript.resolves(null);
+      browser.scripting.executeScript.resolves(null);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
@@ -342,21 +425,69 @@ describe('main', () => {
     it('should get null', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.executeScript.resolves([]);
+      browser.scripting.executeScript.resolves([]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
       assert.isNull(res, 'result');
     });
 
-    it('should call function', async () => {
+    it('should get null', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.executeScript.resolves(['foo']);
+      browser.scripting.executeScript.resolves(['foo']);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.scripting.executeScript.resolves([{}]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.scripting.executeScript.resolves([{
+        result: {
+          foo: 'bar'
+        }
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
       assert.deepEqual(res, {}, 'result');
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: new Error('error')
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
     });
   });
 
@@ -439,7 +570,9 @@ describe('main', () => {
       });
       mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
-      browser.tabs.executeScript.resolves(['https://www.example.com/']);
+      browser.scripting.executeScript.resolves([{
+        result: 'https://www.example.com/'
+      }]);
       const info = {
         menuItemId: 'foo'
       };
@@ -458,7 +591,28 @@ describe('main', () => {
       });
       mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
-      browser.tabs.executeScript.resolves([null]);
+      browser.scripting.executeScript.resolves([undefined]);
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      const res = await func(info, tab);
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      browser.tabs.create.resolves({});
+      browser.scripting.executeScript.resolves([{
+        result: null
+      }]);
       const info = {
         menuItemId: 'foo'
       };
@@ -478,7 +632,7 @@ describe('main', () => {
       });
       mjs.userOpts.set(PREFER_CANONICAL, true);
       browser.tabs.create.resolves({});
-      browser.tabs.executeScript.rejects(new Error('error'));
+      browser.scripting.executeScript.rejects(new Error('error'));
       const info = {
         menuItemId: 'foo'
       };
@@ -499,7 +653,32 @@ describe('main', () => {
         url: 'https://example.com?u=%url%&t=%text%'
       });
       mjs.userOpts.set(PREFER_CANONICAL, true);
-      browser.tabs.executeScript.resolves([null]);
+      browser.tabs.create.resolves({});
+      browser.scripting.executeScript.resolves([{
+        error: new Error('error')
+      }]);
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      await func(info, tab).catch(e => {
+        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e.message, 'error', 'message');
+      });
+    });
+
+    it('should get array', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      browser.scripting.executeScript.resolves([{
+        result: null
+      }]);
       browser.tabs.create.resolves({});
       const info = {
         menuItemId: 'foo'
@@ -1063,23 +1242,38 @@ describe('main', () => {
     });
 
     it('should get empty array', async () => {
-      browser.tabs.executeScript.resolves([]);
-      const i = browser.tabs.executeScript.callCount;
+      browser.scripting.executeScript.resolves([{
+        result: 'foo'
+      }]);
+      const i = browser.scripting.executeScript.callCount;
       const res = await func({
         [CONTEXT_INFO_GET]: false
       });
-      assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
+      assert.strictEqual(browser.scripting.executeScript.callCount, i,
+        'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should get array', async () => {
-      browser.tabs.executeScript.resolves([]);
-      const i = browser.tabs.executeScript.callCount;
+      const i = browser.runtime.sendMessage.callCount;
+      const j = browser.scripting.executeScript.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.scripting.executeScript.resolves([{
+        result: {
+          foo: 'bar'
+        }
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
       const res = await func({
         [CONTEXT_INFO_GET]: true
       });
-      assert.strictEqual(browser.tabs.executeScript.callCount, i + 1, 'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
     });
 
     it('should get array', async () => {
