@@ -469,6 +469,13 @@ export const handleStorage = async (data = {}, area = 'local') => {
   const items = Object.entries(data);
   const func = [];
   if (items.length && area === 'local') {
+    if (!userOpts.size) {
+      await setUserOpts();
+    }
+    if (!sns.size) {
+      await setSnsItems();
+      await setUserEnabledSns();
+    }
     for (const item of items) {
       const [key, value] = item;
       if (isObjectNotEmpty(value)) {
