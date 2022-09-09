@@ -1357,6 +1357,39 @@ describe('main', () => {
       assert.deepEqual(res, [mjs.sns], 'result');
     });
 
+    it('should get array', async () => {
+      mjs.sns.set('foo', {});
+      const res = await func({
+        foo: {
+          newValue: {
+            checked: true
+          }
+        }
+      }, 'local', true);
+      assert.deepEqual(mjs.sns.get('foo'), { enabled: true }, 'sns');
+      assert.deepEqual(res, [mjs.sns], 'result');
+    });
+
+    it('should get array', async () => {
+      browser.storage.local.get.resolves({
+        Twitter: {
+          checked: false
+        }
+      });
+      const res = await func({
+        Twitter: {
+          newValue: {
+            checked: true
+          }
+        }
+      }, 'local', true);
+      const value = mjs.sns.get('Twitter');
+      assert.isTrue(value.enabled, 'sns');
+      assert.deepEqual(res, [mjs.sns], 'result');
+      delete value.enabled;
+      mjs.sns.set('Twitter', value);
+    });
+
     it('should set value', async () => {
       const res = await func({
         [PREFER_CANONICAL]: {
@@ -1370,11 +1403,21 @@ describe('main', () => {
     it('should set value', async () => {
       const res = await func({
         [PREFER_CANONICAL]: {
+          checked: true
+        }
+      }, 'local');
+      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set value', async () => {
+      const res = await func({
+        [PREFER_CANONICAL]: {
           newValue: {
             checked: true
           }
         }
-      });
+      }, 'local');
       assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
       assert.deepEqual(res, [mjs.userOpts], 'result');
     });
@@ -1387,8 +1430,25 @@ describe('main', () => {
             checked: false
           }
         }
-      });
+      }, 'local');
       assert.isFalse(mjs.userOpts.get(PREFER_CANONICAL));
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set value', async () => {
+      browser.storage.local.get.resolves({
+        [PREFER_CANONICAL]: {
+          checked: false
+        }
+      });
+      const res = await func({
+        [PREFER_CANONICAL]: {
+          newValue: {
+            checked: true
+          }
+        }
+      }, 'local', true);
+      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL));
       assert.deepEqual(res, [mjs.userOpts], 'result');
     });
   });

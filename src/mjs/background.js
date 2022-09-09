@@ -21,5 +21,6 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 runtime.onStartup.addListener(() => startup().catch(throwErr));
 storage.onChanged.addListener((data, area) =>
-  handleStorage(data, area).then(removeMenu).then(createMenu).catch(throwErr)
+  handleStorage(data, area, true).then(removeMenu).then(createMenu)
+    .catch(throwErr)
 );

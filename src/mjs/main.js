@@ -463,29 +463,34 @@ export const handleMsg = async msg => {
  *
  * @param {object} data - stored data
  * @param {string} area - storage area
+ * @param {boolean} changed - storage changed
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleStorage = async (data = {}, area = 'local') => {
-  const items = Object.entries(data);
+export const handleStorage = async (data, area = 'local', changed = false) => {
   const func = [];
-  if (items.length && area === 'local') {
-    if (!userOpts.size) {
-      await setUserOpts();
-    }
-    if (!sns.size) {
-      await setSnsItems();
-      await setUserEnabledSns();
-    }
-    for (const item of items) {
-      const [key, value] = item;
-      if (isObjectNotEmpty(value)) {
-        const { newValue } = value;
-        if (key === PREFER_CANONICAL) {
-          func.push(setUserOpts({
-            [key]: newValue || value
-          }));
-        } else {
-          func.push(setUserEnabledSns(key, newValue || value));
+  if (isObjectNotEmpty(data) && area === 'local') {
+    const items = Object.entries(data);
+    if (items.length) {
+      if (changed) {
+        if (!userOpts.size) {
+          await setUserOpts();
+        }
+        if (!sns.size) {
+          await setSnsItems();
+          await setUserEnabledSns();
+        }
+      }
+      for (const item of items) {
+        const [key, value] = item;
+        if (isObjectNotEmpty(value)) {
+          const { newValue } = value;
+          if (key === PREFER_CANONICAL) {
+            func.push(setUserOpts({
+              [key]: newValue || value
+            }));
+          } else {
+            func.push(setUserEnabledSns(key, newValue || value));
+          }
         }
       }
     }
