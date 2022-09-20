@@ -1,6 +1,7 @@
 {
   "background": {
-    "page": "html/background.html"
+    "page": "html/background.html",
+    "persistent": false
   },
   "browser_action": {
     "browser_style": true,
@@ -23,7 +24,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "shareSNS@asamuzak.jp",
-      "strict_min_version": "74.0"
+      "strict_min_version": "102.0"
     }
   },
   "commands": {
@@ -48,9 +49,10 @@
     "activeTab",
     "cookies",
     "menus",
+    "scripting",
     "storage",
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "5.0.0"
+  "version": "6.0.0"
 }
