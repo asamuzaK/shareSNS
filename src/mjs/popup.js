@@ -12,12 +12,9 @@ import {
 } from './popup-main.js';
 
 /* api */
-const { storage, runtime } = browser;
+const { runtime } = browser;
 
 /* listeners */
-storage.onChanged.addListener((data, area) =>
-  handleStoredData(data, area).then(toggleWarning).catch(throwErr)
-);
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
