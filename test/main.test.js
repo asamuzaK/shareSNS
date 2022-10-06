@@ -390,6 +390,30 @@ describe('main', () => {
       });
     });
 
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: null
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.isNull(e, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: false
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.isFalse(e, 'error');
+      });
+    });
+
     it('should get result', async () => {
       browser.scripting.executeScript.resolves([{
         result: {
@@ -648,7 +672,7 @@ describe('main', () => {
       assert.deepEqual(res, [{}], 'result');
     });
 
-    it('should get array', async () => {
+    it('should throw', async () => {
       mjs.sns.set('foo', {
         url: 'https://example.com?u=%url%&t=%text%'
       });
@@ -668,6 +692,50 @@ describe('main', () => {
       await func(info, tab).catch(e => {
         assert.instanceOf(e, Error, 'error');
         assert.strictEqual(e.message, 'error', 'message');
+      });
+    });
+
+    it('should throw', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      browser.tabs.create.resolves({});
+      browser.scripting.executeScript.resolves([{
+        error: null
+      }]);
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      await func(info, tab).catch(e => {
+        assert.isNull(e, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      mjs.sns.set('foo', {
+        url: 'https://example.com?u=%url%&t=%text%'
+      });
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      browser.tabs.create.resolves({});
+      browser.scripting.executeScript.resolves([{
+        error: false
+      }]);
+      const info = {
+        menuItemId: 'foo'
+      };
+      const tab = {
+        id: 1,
+        index: 0,
+        url: 'http://example.com'
+      };
+      await func(info, tab).catch(e => {
+        assert.isFalse(e, 'error');
       });
     });
 
