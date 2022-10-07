@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
 import sinon from 'sinon';
 import {
-  CONTEXT_INFO_GET, PREFER_CANONICAL,
+  CONTEXT_INFO_GET, OPTIONS_OPEN, PREFER_CANONICAL,
   SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from '../src/mjs/constant.js';
 
@@ -531,6 +531,16 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
+    it('should call function', async () => {
+      const i = browser.runtime.openOptionsPage.callCount;
+      const res = await func({
+        menuItemId: OPTIONS_OPEN
+      });
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
     it('should get empty array', async () => {
       const { TAB_ID_NONE } = browser.tabs;
       const tab = {
@@ -1048,36 +1058,71 @@ describe('main', () => {
       mjs.sns.clear();
     });
 
-    it('should get empty array', async () => {
+    it('should get array', async () => {
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
+      const i = browser.menus.create.callCount;
       const res = await func();
-      assert.deepEqual(res, [], 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
+      assert.deepEqual(res, [OPTIONS_OPEN], 'result');
     });
 
-    it('should get empty array', async () => {
-      const res = await func();
-      assert.deepEqual(res, [], 'result');
-    });
-
-    it('should get empty array', async () => {
+    it('should get array', async () => {
       mjs.sns.set('foo', {});
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
+      const i = browser.menus.create.callCount;
       const res = await func();
-      assert.deepEqual(res, [], 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
+      assert.deepEqual(res, [OPTIONS_OPEN], 'result');
     });
 
-    it('should get empty array', async () => {
+    it('should get array', async () => {
       mjs.sns.set('foo', {
         enabled: false
       });
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
+      const i = browser.menus.create.callCount;
       const res = await func();
-      assert.deepEqual(res, [], 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
+      assert.deepEqual(res, [OPTIONS_OPEN], 'result');
     });
 
     it('should get empty array', async () => {
       mjs.sns.set('foo', {
         enabled: true
       });
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
+      const i = browser.menus.create.callCount;
       const res = await func();
-      assert.deepEqual(res, [], 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
+      assert.deepEqual(res, [OPTIONS_OPEN], 'result');
     });
 
     it('should get array', async () => {
@@ -1088,6 +1133,14 @@ describe('main', () => {
       browser.i18n.getMessage.withArgs(SHARE_PAGE, 'foo').returns('baz');
       browser.i18n.getMessage.withArgs(SHARE_TAB, 'foo').returns('qux');
       browser.i18n.getMessage.withArgs(SHARE_LINK, 'foo').returns('quux');
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
       browser.menus.create.withArgs({
         id: `${SHARE_PAGE}foo`,
         contexts: ['page', 'selection'],
@@ -1108,8 +1161,8 @@ describe('main', () => {
       }).resolves(SHARE_LINK);
       const i = browser.menus.create.callCount;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+      assert.strictEqual(browser.menus.create.callCount, i + 4, 'call count');
+      assert.deepEqual(res, [OPTIONS_OPEN, SHARE_PAGE, SHARE_TAB, SHARE_LINK],
         'result');
     });
 
@@ -1122,6 +1175,14 @@ describe('main', () => {
       browser.i18n.getMessage.withArgs(SHARE_PAGE, 'bar').returns('baz');
       browser.i18n.getMessage.withArgs(SHARE_TAB, 'bar').returns('qux');
       browser.i18n.getMessage.withArgs(SHARE_LINK, 'bar').returns('quux');
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
       browser.menus.create.withArgs({
         id: `${SHARE_PAGE}foo`,
         contexts: ['page', 'selection'],
@@ -1142,8 +1203,8 @@ describe('main', () => {
       }).resolves(SHARE_LINK);
       const i = browser.menus.create.callCount;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+      assert.strictEqual(browser.menus.create.callCount, i + 4, 'call count');
+      assert.deepEqual(res, [OPTIONS_OPEN, SHARE_PAGE, SHARE_TAB, SHARE_LINK],
         'result');
     });
 
@@ -1156,6 +1217,14 @@ describe('main', () => {
       browser.i18n.getMessage.withArgs(SHARE_PAGE, '&Mastodon').returns('baz');
       browser.i18n.getMessage.withArgs(SHARE_TAB, '&Mastodon').returns('qux');
       browser.i18n.getMessage.withArgs(SHARE_LINK, '&Mastodon').returns('quux');
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
       browser.menus.create.withArgs({
         id: `${SHARE_PAGE}Mastodon`,
         contexts: ['page', 'selection'],
@@ -1176,8 +1245,8 @@ describe('main', () => {
       }).resolves(SHARE_LINK);
       const i = browser.menus.create.callCount;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+      assert.strictEqual(browser.menus.create.callCount, i + 4, 'call count');
+      assert.deepEqual(res, [OPTIONS_OPEN, SHARE_PAGE, SHARE_TAB, SHARE_LINK],
         'result');
     });
 
@@ -1195,6 +1264,14 @@ describe('main', () => {
       browser.i18n.getMessage.withArgs(SHARE_PAGE, '&Mastodon').returns('baz');
       browser.i18n.getMessage.withArgs(SHARE_TAB, '&Mastodon').returns('qux');
       browser.i18n.getMessage.withArgs(SHARE_LINK, '&Mastodon').returns('quux');
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
       browser.menus.create.withArgs({
         id: `${SHARE_PAGE}Mastodon`,
         contexts: ['page', 'selection'],
@@ -1215,8 +1292,8 @@ describe('main', () => {
       }).resolves(SHARE_LINK);
       const i = browser.menus.create.callCount;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+      assert.strictEqual(browser.menus.create.callCount, i + 4, 'call count');
+      assert.deepEqual(res, [OPTIONS_OPEN, SHARE_PAGE, SHARE_TAB, SHARE_LINK],
         'result');
     });
 
@@ -1234,6 +1311,14 @@ describe('main', () => {
       browser.i18n.getMessage.withArgs(SHARE_PAGE, '&Pleroma').returns('baz');
       browser.i18n.getMessage.withArgs(SHARE_TAB, '&Pleroma').returns('qux');
       browser.i18n.getMessage.withArgs(SHARE_LINK, '&Pleroma').returns('quux');
+      browser.i18n.getMessage.withArgs(`${OPTIONS_OPEN}_menu`, '(&T)')
+        .returns('corge');
+      browser.menus.create.withArgs({
+        id: OPTIONS_OPEN,
+        contexts: ['browser_action'],
+        title: 'corge',
+        enabled: true
+      }).resolves(OPTIONS_OPEN);
       browser.menus.create.withArgs({
         id: `${SHARE_PAGE}Pleroma`,
         contexts: ['page', 'selection'],
@@ -1254,8 +1339,8 @@ describe('main', () => {
       }).resolves(SHARE_LINK);
       const i = browser.menus.create.callCount;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 3, 'call count');
-      assert.deepEqual(res, [`${SHARE_PAGE}`, `${SHARE_TAB}`, `${SHARE_LINK}`],
+      assert.strictEqual(browser.menus.create.callCount, i + 4, 'call count');
+      assert.deepEqual(res, [OPTIONS_OPEN, SHARE_PAGE, SHARE_TAB, SHARE_LINK],
         'result');
     });
   });
@@ -1530,9 +1615,9 @@ describe('main', () => {
       mjs.sns.clear();
     });
 
-    it('should get empty array', async () => {
+    it('should get array', async () => {
       const res = await func();
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
   });
 });

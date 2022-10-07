@@ -10,12 +10,12 @@ import {
 } from './browser.js';
 import snsData from './sns.js';
 import {
-  CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO,
+  CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO, OPTIONS_OPEN,
   PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
 } from './constant.js';
 
 /* api */
-const { i18n, menus, tabs } = browser;
+const { i18n, menus, runtime, tabs } = browser;
 
 /* constant */
 const { TAB_ID_NONE } = tabs;
@@ -223,13 +223,16 @@ export const sendContextInfo = async () => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const extractClickedData = async (info = {}, tab = {}) => {
+  const { linkText, linkUrl, menuItemId, selectionText } = info;
   const {
     cookieStoreId, id: tabId, index: tabIndex, title: tabTitle, url: tabUrl,
     windowId
   } = tab;
   const func = [];
-  if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
-      Number.isInteger(tabIndex)) {
+  if (menuItemId === OPTIONS_OPEN) {
+    func.push(runtime.openOptionsPage());
+  } else if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
+             Number.isInteger(tabIndex)) {
     if (!userOpts.size) {
       await setUserOpts();
     }
@@ -237,7 +240,6 @@ export const extractClickedData = async (info = {}, tab = {}) => {
       await setSnsItems();
       await setUserEnabledSns();
     }
-    const { linkText, linkUrl, menuItemId, selectionText } = info;
     const snsItem = await getSnsItemFromId(menuItemId);
     if (snsItem) {
       const { matchPattern, subItem, url: tmpl } = snsItem;
@@ -376,11 +378,18 @@ export const createMenuItem = async (id, title, data = {}) => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const createMenu = async () => {
-  const func = [];
   const { mastodonInstanceUrl, pleromaInstanceUrl } = await getStorage([
     'mastodonInstanceUrl',
     'pleromaInstanceUrl'
   ]);
+  const func = [createMenuItem(
+    `${OPTIONS_OPEN}`,
+    i18n.getMessage(`${OPTIONS_OPEN}_menu`, '(&T)'),
+    {
+      enabled: true,
+      contexts: ['browser_action']
+    }
+  )];
   sns.forEach(value => {
     if (isObjectNotEmpty(value)) {
       const { enabled: itemEnabled, id, menu } = value;

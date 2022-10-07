@@ -11,6 +11,15 @@
   "extensionShortName": {
     "message": "分享"
   },
+  "openOptions_menu": {
+    "message": "选项 $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&T)"
+      }
+    }
+  },
   "optionalSettings": {
     "message": "可选设置"
   },

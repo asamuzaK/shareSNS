@@ -11,6 +11,15 @@
   "extensionShortName": {
     "message": "Share"
   },
+  "openOptions_menu": {
+    "message": "Op&tions",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&T)"
+      }
+    }
+  },
   "optionalSettings": {
     "message": "Optional Settings"
   },
