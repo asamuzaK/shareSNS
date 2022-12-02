@@ -27,10 +27,7 @@
     }
     @media (prefers-color-scheme: dark) {
       #color > use[href="#line"],
-      #color > use[href="#dot"] {
-        stroke: rgb(251,251,254);
-        stroke-width: 1px;
-      }
+      #color > use[href="#dot"],
       #current {
         fill: context-fill rgb(251,251,254);
       }
