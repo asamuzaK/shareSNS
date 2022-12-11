@@ -18,12 +18,8 @@
     g:target ~ #color {
       display: none;
     }
-    #current,
-    #dark {
+    #current {
       fill: context-fill rgb(91,91,102);
-    }
-    #light {
-      fill: context-fill rgb(251,251,254);
     }
     @media (prefers-color-scheme: dark) {
       #color > use[href="#line"],
@@ -43,12 +39,6 @@
     <path d="m94 6a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm-60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20zm60 38a20 20 0 0 0-20 20 20 20 0 0 0 20 20 20 20 0 0 0 20-20 20 20 0 0 0-20-20z"/>
   </symbol>
   <g id="current">
-    <use href="#outline"/>
-  </g>
-  <g id="dark">
-    <use href="#outline"/>
-  </g>
-  <g id="light">
     <use href="#outline"/>
   </g>
   <g id="color">
