@@ -159,8 +159,8 @@ export const createSnsUrl = async (info, url, text = '') => {
           }
         }
       } catch (e) {
-        logErr(e);
         snsUrl = null;
+        logErr(e);
       }
     }
   }
