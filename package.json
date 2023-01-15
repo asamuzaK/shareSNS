@@ -13,7 +13,9 @@
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
-    "include": "copyfiles --up=3 --verbose node_modules/webext-schema/modules/browser.js src/mjs",
+    "include": "npm-run-all -s include-*",
+    "include-browser": "copyfiles --up=3 --verbose node_modules/webext-schema/modules/browser.js src/mjs",
+    "include-iana": "node index include --dir=iana -i",
     "lint": "npm-run-all -s lint-*",
     "lint-addons-linter": "addons-linter src",
     "lint-eslint": "eslint --fix .",
@@ -27,6 +29,8 @@
     "test_all": "npm-run-all -s test-*"
   },
   "dependencies": {
+    "commander": "^10.0.0",
+    "csvtojson": "^2.0.10",
     "webext-schema": "^5.0.10"
   },
   "devDependencies": {
@@ -47,7 +51,8 @@
     "npm-run-all": "^4.1.5",
     "sinon": "^15.0.0",
     "stylelint": "^14.16.0",
-    "stylelint-config-standard": "^29.0.0"
+    "stylelint-config-standard": "^29.0.0",
+    "undici": "^5.15.0"
   },
   "version": "6.2.0"
 }

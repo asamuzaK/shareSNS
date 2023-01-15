@@ -8,6 +8,7 @@ import {
   createTab, executeScriptToTab, getActiveTabId, getAllStorage, getStorage,
   queryTabs, sendMessage, updateTab
 } from './browser.js';
+import { sanitizeUrl } from './uri-scheme.js';
 import snsData from './sns.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO, OPTIONS_OPEN,
@@ -146,17 +147,15 @@ export const createSnsUrl = async (info, url, text = '') => {
     const { url: tmpl, value } = info;
     if (isString(tmpl) && isString(value)) {
       try {
-        const { origin, protocol } = new URL(value.trim());
-        if (/^https?:$/.test(protocol)) {
-          const encUrl = encodeURIComponent(url);
-          if (isString(text) && tmpl.includes('%text%')) {
-            const encText = encodeURIComponent(text);
-            snsUrl = tmpl.replace('%origin%', origin).replace('%text%', encText)
-              .replace('%url%', encUrl);
-          } else {
-            snsUrl =
-              tmpl.replace('%origin%', origin).replace('%url%', encUrl);
-          }
+        const originUrl = sanitizeUrl(value.trim());
+        const { origin } = new URL(originUrl);
+        const encUrl = encodeURIComponent(url);
+        if (isString(text) && tmpl.includes('%text%')) {
+          const encText = encodeURIComponent(text);
+          snsUrl = tmpl.replace('%origin%', origin).replace('%text%', encText)
+            .replace('%url%', encUrl);
+        } else {
+          snsUrl = tmpl.replace('%origin%', origin).replace('%url%', encUrl);
         }
       } catch (e) {
         snsUrl = null;
