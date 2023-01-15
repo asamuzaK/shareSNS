@@ -285,7 +285,7 @@ describe('main', () => {
     it('should get string', async () => {
       const item = {
         url: '%origin%/?uri=%url%',
-        value: 'https://example.com'
+        value: 'https://example.com/'
       };
       const res = await func(item, 'http://www.example.com');
       assert.strictEqual(res,
@@ -303,12 +303,16 @@ describe('main', () => {
         'result');
     });
 
-    it('should get string', async () => {
+    it('should log error', async () => {
+      const stub = sinon.stub(console, 'error');
       const item = {
         url: '%origin%/?message=%text%%20%url%',
         value: 'file:///foo/bar'
       };
       const res = await func(item, 'http://www.example.com');
+      const { calledOnce } = stub;
+      stub.restore();
+      assert.isTrue(calledOnce, 'called');
       assert.strictEqual(res, 'http://www.example.com', 'result');
     });
 

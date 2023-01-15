@@ -230,7 +230,7 @@ describe('options-main', () => {
       assert.strictEqual(elm.value, 'bar', 'value');
     });
 
-    it('should set text value', async () => {
+    it('should set empty string', async () => {
       const elm = document.createElement('input');
       const body = document.querySelector('body');
       elm.id = 'foo';
@@ -250,9 +250,22 @@ describe('options-main', () => {
       body.appendChild(elm);
       await func({
         id: 'foo',
-        value: 'bar/baz'
+        value: 'https://example.com'
       });
-      assert.strictEqual(elm.value, 'bar/baz', 'value');
+      assert.strictEqual(elm.value, 'https://example.com/', 'value');
+    });
+
+    it('should set empty string', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'url';
+      body.appendChild(elm);
+      await func({
+        id: 'foo',
+        value: 'example.com'
+      });
+      assert.strictEqual(elm.value, '', 'value');
     });
   });
 
