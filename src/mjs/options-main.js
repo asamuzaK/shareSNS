@@ -5,7 +5,7 @@
 /* shared */
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getStorage, setStorage } from './browser.js';
-import { sanitizeUrl } from './uri-scheme.js';
+import { sanitizeUrl } from './uri-util.js';
 
 /**
  * create pref
