@@ -8,7 +8,7 @@ import {
   createTab, executeScriptToTab, getActiveTabId, getAllStorage, getStorage,
   queryTabs, sendMessage, updateTab
 } from './browser.js';
-import { sanitizeUrl } from './uri-scheme.js';
+import { sanitizeUrl } from './uri-util.js';
 import snsData from './sns.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO, OPTIONS_OPEN,
