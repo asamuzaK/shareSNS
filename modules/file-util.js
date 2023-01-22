@@ -3,12 +3,49 @@
  */
 
 import { getType, isString } from './common.js';
-import { promises as fsPromise } from 'node:fs';
+import fs, { promises as fsPromise } from 'node:fs';
 import path from 'node:path';
 
 /* constants */
 const CHAR = 'utf8';
 const PERM_FILE = 0o644;
+
+/**
+ * get stat
+ *
+ * @param {string} file - file path
+ * @returns {object} - file stat
+ */
+export const getStat = file =>
+  isString(file) && fs.existsSync(file) ? fs.statSync(file) : null;
+
+/**
+ * the file is a file
+ *
+ * @param {string} file - file path
+ * @returns {boolean} - result
+ */
+export const isFile = file => {
+  const stat = getStat(file);
+  return stat ? stat.isFile() : false;
+};
+
+/**
+ * read a file
+ *
+ * @param {string} file - file path
+ * @param {object} [opt] - options
+ * @param {string} [opt.encoding] - encoding
+ * @param {string} [opt.flag] - flag
+ * @returns {string|Buffer} - file content
+ */
+export const readFile = async (file, opt = { encoding: null, flag: 'r' }) => {
+  if (!isFile(file)) {
+    throw new Error(`${file} is not a file.`);
+  }
+  const value = await fsPromise.readFile(file, opt);
+  return value;
+};
 
 /**
  * create a file
