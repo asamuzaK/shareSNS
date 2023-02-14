@@ -54,7 +54,7 @@ describe('save library package info', () => {
       'url',
       {
         name: 'url-sanitizer',
-        origin: 'https://unpkg.com/url-sanitizer',
+        cdn: 'https://unpkg.com/url-sanitizer',
         type: 'module',
         files: [
           {
@@ -76,7 +76,7 @@ describe('save library package info', () => {
       'url',
       {
         name: 'url-sanitizer',
-        origin: 'https://unpkg.com/url-sanitizer',
+        cdn: 'https://unpkg.com/url-sanitizer',
         repository: {
           type: 'git',
           url: 'https://github.com/asamuzaK/urlSanitizer.git'
@@ -99,51 +99,106 @@ describe('save library package info', () => {
   it('should call function', async () => {
     const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
-    const filePath = path.resolve(DIR_CWD, PATH_LIB, 'url', 'package.json');
+    const spyMap = sinon.spy(Map.prototype, 'set');
+    const i = spyMap.callCount;
+    const filePath =
+      path.resolve(DIR_CWD, 'src', 'lib', 'purify', 'package.json');
     const res = await saveLibraryPackage([
-      'url',
+      'purify',
       {
-        name: 'url-sanitizer',
-        origin: 'https://unpkg.com/url-sanitizer',
+        name: 'dompurify',
+        raw: 'https://raw.githubusercontent.com/cure53/DOMPurify/',
+        cdn: 'https://unpkg.com/dompurify',
         repository: {
           type: 'git',
-          url: 'https://github.com/asamuzaK/urlSanitizer.git'
+          url: 'git://github.com/cure53/DOMPurify.git'
         },
-        type: 'module',
         files: [
           {
             file: 'LICENSE',
             path: 'LICENSE'
           },
           {
-            file: 'url-sanitizer.min.js',
-            path: 'dist/url-sanitizer.min.js'
+            file: 'purify.min.js',
+            path: 'dist/purify.min.js'
           },
           {
-            file: 'url-sanitizer.min.js.map',
-            path: 'dist/url-sanitizer.min.js.map'
+            file: 'purify.min.js.map',
+            path: 'dist/purify.min.js.map'
           }
         ]
       }
     ]);
     const { called: infoCalled } = stubInfo;
     const { calledOnce: writeCalled } = stubWrite;
+    const { callCount: setCallCount } = spyMap;
     stubInfo.restore();
     stubWrite.restore();
+    spyMap.restore();
     assert.isTrue(writeCalled, 'called');
     assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
 
   it('should call function', async () => {
     const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
-    const filePath = path.resolve(DIR_CWD, PATH_LIB, 'url', 'package.json');
+    const spyMap = sinon.spy(Map.prototype, 'set');
+    const i = spyMap.callCount;
+    const filePath =
+      path.resolve(DIR_CWD, 'src', 'lib', 'purify', 'package.json');
+    const res = await saveLibraryPackage([
+      'purify',
+      {
+        name: 'dompurify',
+        raw: 'https://raw.githubusercontent.com/cure53/DOMPurify/',
+        cdn: 'https://unpkg.com/dompurify',
+        repository: {
+          type: 'git',
+          url: 'git://github.com/cure53/DOMPurify.git'
+        },
+        files: [
+          {
+            file: 'LICENSE',
+            path: 'LICENSE'
+          },
+          {
+            file: 'purify.min.js',
+            path: 'dist/purify.min.js'
+          },
+          {
+            file: 'purify.min.js.map',
+            path: 'dist/purify.min.js.map'
+          }
+        ]
+      }
+    ], true);
+    const { calledOnce: writeCalled } = stubWrite;
+    const { calledOnce: infoCalled } = stubInfo;
+    const { callCount: setCallCount } = spyMap;
+    stubWrite.restore();
+    stubInfo.restore();
+    spyMap.restore();
+    assert.isTrue(writeCalled, 'called');
+    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(setCallCount, i + 9, 'called');
+    assert.strictEqual(res, filePath, 'result');
+  });
+
+  it('should call function', async () => {
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
+    const spyMap = sinon.spy(Map.prototype, 'set');
+    const i = spyMap.callCount;
+    const filePath = path.resolve(DIR_CWD, 'src', 'lib', 'url', 'package.json');
     const res = await saveLibraryPackage([
       'url',
       {
         name: 'url-sanitizer',
-        origin: 'https://unpkg.com/url-sanitizer',
+        raw: 'https://raw.githubusercontent.com/asamuzaK/urlSanitizer/',
+        vPrefix: 'v',
+        cdn: 'https://unpkg.com/url-sanitizer',
         repository: {
           type: 'git',
           url: 'https://github.com/asamuzaK/urlSanitizer.git'
@@ -155,22 +210,71 @@ describe('save library package info', () => {
             path: 'LICENSE'
           },
           {
-            file: 'url-sanitizer.min.js',
-            path: 'dist/url-sanitizer.min.js'
+            file: 'url-sanitizer-wo-dompurify.min.js',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js'
           },
           {
-            file: 'url-sanitizer.min.js.map',
-            path: 'dist/url-sanitizer.min.js.map'
+            file: 'url-sanitizer-wo-dompurify.min.js.map',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js.map'
+          }
+        ]
+      }
+    ]);
+    const { called: infoCalled } = stubInfo;
+    const { calledOnce: writeCalled } = stubWrite;
+    const { callCount: setCallCount } = spyMap;
+    stubInfo.restore();
+    stubWrite.restore();
+    spyMap.restore();
+    assert.isTrue(writeCalled, 'called');
+    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(setCallCount, i + 9, 'called');
+    assert.strictEqual(res, filePath, 'result');
+  });
+
+  it('should call function', async () => {
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
+    const spyMap = sinon.spy(Map.prototype, 'set');
+    const i = spyMap.callCount;
+    const filePath = path.resolve(DIR_CWD, 'src', 'lib', 'url', 'package.json');
+    const res = await saveLibraryPackage([
+      'url',
+      {
+        name: 'url-sanitizer',
+        raw: 'https://raw.githubusercontent.com/asamuzaK/urlSanitizer/',
+        vPrefix: 'v',
+        cdn: 'https://unpkg.com/url-sanitizer',
+        repository: {
+          type: 'git',
+          url: 'https://github.com/asamuzaK/urlSanitizer.git'
+        },
+        type: 'module',
+        files: [
+          {
+            file: 'LICENSE',
+            path: 'LICENSE'
+          },
+          {
+            file: 'url-sanitizer-wo-dompurify.min.js',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js'
+          },
+          {
+            file: 'url-sanitizer-wo-dompurify.min.js.map',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js.map'
           }
         ]
       }
     ], true);
     const { calledOnce: writeCalled } = stubWrite;
     const { calledOnce: infoCalled } = stubInfo;
+    const { callCount: setCallCount } = spyMap;
     stubWrite.restore();
     stubInfo.restore();
+    spyMap.restore();
     assert.isTrue(writeCalled, 'called');
     assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
 });
