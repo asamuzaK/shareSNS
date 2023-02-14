@@ -8,8 +8,8 @@ import {
   createTab, executeScriptToTab, getActiveTabId, getAllStorage, getStorage,
   queryTabs, sendMessage, updateTab
 } from './browser.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import snsData from './sns.js';
-import { sanitizeURLSync } from '../lib/url/url-sanitizer.min.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO, OPTIONS_OPEN,
   PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB
@@ -147,7 +147,7 @@ export const createSnsUrl = async (info, url, text = '') => {
     const { url: tmpl, value } = info;
     if (isString(tmpl) && isString(value)) {
       try {
-        const originUrl = sanitizeURLSync(value.trim());
+        const originUrl = await sanitizeURL(value.trim());
         const { origin } = new URL(originUrl);
         const encUrl = encodeURIComponent(url);
         if (isString(text) && tmpl.includes('%text%')) {
