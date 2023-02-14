@@ -5,7 +5,7 @@
 /* shared */
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getStorage, setStorage } from './browser.js';
-import { sanitizeURLSync } from '../lib/url/url-sanitizer.min.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 
 /**
  * create pref
@@ -91,7 +91,7 @@ export const setHtmlInputValue = async (data = {}) => {
         elm.value = isString(value) ? value : '';
         break;
       case 'url': {
-        const url = sanitizeURLSync(value);
+        const url = await sanitizeURL(value);
         elm.value = url || '';
         break;
       }
