@@ -3,9 +3,9 @@
  */
 
 /* shared */
-import { isObjectNotEmpty, isString, throwErr } from './common.js';
-import { getStorage, setStorage } from './browser.js';
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
+import { getStorage, setStorage } from './browser.js';
+import { isObjectNotEmpty, isString, throwErr } from './common.js';
 
 /**
  * create pref

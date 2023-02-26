@@ -3,9 +3,9 @@
  */
 
 /* shared */
-import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
-import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import snsData from './sns.js';
+import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
+import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, OPTIONS_OPEN,
   SHARE_LINK, SHARE_PAGE, SHARE_SNS,

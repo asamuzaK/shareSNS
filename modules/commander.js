@@ -3,11 +3,11 @@
  */
 
 /* api */
-import { getType, throwErr } from './common.js';
-import { createFile, isDir, isFile, readFile, removeDir } from './file-util.js';
-import { program as commander } from 'commander';
 import path from 'node:path';
 import process from 'node:process';
+import { program as commander } from 'commander';
+import { getType, throwErr } from './common.js';
+import { createFile, isDir, isFile, readFile, removeDir } from './file-util.js';
 
 /* constants */
 const CHAR = 'utf8';

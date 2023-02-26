@@ -3,13 +3,13 @@
  */
 
 /* shared */
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
+import snsData from './sns.js';
 import {
   createTab, executeScriptToTab, getActiveTabId, getAllStorage, getStorage,
   queryTabs, sendMessage, updateTab
 } from './browser.js';
-import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
-import snsData from './sns.js';
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
   CONTEXT_INFO, CONTEXT_INFO_GET, JS_CANONICAL, JS_CONTEXT_INFO, OPTIONS_OPEN,
   PREFER_CANONICAL, SHARE_LINK, SHARE_PAGE, SHARE_SNS, SHARE_TAB

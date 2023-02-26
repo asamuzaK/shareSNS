@@ -1,18 +1,19 @@
 /**
  * popup-main.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
+import sinon from 'sinon';
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
-import sinon from 'sinon';
+
+/* test */
 import {
   CONTEXT_INFO, OPTIONS_OPEN, SHARE_LINK, SHARE_PAGE, SHARE_SNS,
   SNS_ITEM, SNS_ITEMS, SNS_ITEM_TMPL, SNS_NOT_SELECTED
 } from '../src/mjs/constant.js';
-
-/* test */
 import * as mjs from '../src/mjs/popup-main.js';
 
 describe('popup-main', () => {

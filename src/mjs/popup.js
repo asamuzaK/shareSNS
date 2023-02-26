@@ -3,8 +3,8 @@
  */
 
 /* shared */
-import { throwErr } from './common.js';
 import { getStorage } from './browser.js';
+import { throwErr } from './common.js';
 import { localizeHtml } from './localize.js';
 import {
   addListenerToMenu, createHtml, handleMsg, handleStoredData, prepareTab,
