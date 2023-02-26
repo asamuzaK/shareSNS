@@ -4,7 +4,7 @@
 
 /* api */
 import { getType, throwErr } from './common.js';
-import { createFile, isFile, readFile } from './file-util.js';
+import { createFile, isDir, isFile, readFile, removeDir } from './file-util.js';
 import { program as commander } from 'commander';
 import path from 'node:path';
 import process from 'node:process';
@@ -21,7 +21,7 @@ const PATH_MODULE = './node_modules';
  *
  * @param {Array} lib - library
  * @param {boolean} info - console info
- * @returns {string} - package.json file path
+ * @returns {Promise.<string>} - package.json file path
  */
 export const saveLibraryPackage = async (lib, info) => {
   if (!Array.isArray(lib)) {
@@ -89,7 +89,7 @@ export const saveLibraryPackage = async (lib, info) => {
  * extract libraries
  *
  * @param {object} cmdOpts - command options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const extractLibraries = async (cmdOpts = {}) => {
   const { dir, info } = cmdOpts;
@@ -165,10 +165,26 @@ export const extractLibraries = async (cmdOpts = {}) => {
  * include libraries
  *
  * @param {object} cmdOpts - command options
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const includeLibraries = cmdOpts =>
   extractLibraries(cmdOpts).catch(throwErr);
+
+/**
+ * clean directory
+ *
+ * @param {object} cmdOpts - command options
+ * @returns {void}
+ */
+export const cleanDirectory = (cmdOpts = {}) => {
+  const { dir, info } = cmdOpts;
+  if (isDir(dir)) {
+    removeDir(dir);
+    if (info) {
+      console.info(`Removed: ${path.resolve(dir)}`);
+    }
+  }
+};
 
 /**
  * parse command
@@ -177,10 +193,15 @@ export const includeLibraries = cmdOpts =>
  * @returns {void}
  */
 export const parseCommand = args => {
-  const reg = /^(?:(?:--)?help|-[h|v]|--version|i(?:nclude)|u(?:pdate)?)$/;
+  const reg = /^(?:(?:--)?help|-[h|v]|--version|c(?:lean)?|i(?:nclude))$/;
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(process.env.npm_package_version, '-v, --version');
+    commander.command('clean').alias('c')
+      .description('clean directory')
+      .option('-d, --dir <name>', 'specify directory')
+      .option('-i, --info', 'console info')
+      .action(cleanDirectory);
     commander.command('include').alias('i')
       .description('include library packages')
       .option('-d, --dir <name>', 'specify library directory')

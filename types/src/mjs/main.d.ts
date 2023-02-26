@@ -1,0 +1,16 @@
+export const userOpts: Map<any, any>;
+export function setUserOpts(opt?: object): Promise<object>;
+export const sns: Map<any, any>;
+export function setSnsItems(): Promise<object>;
+export function setUserEnabledSns(id?: string, obj?: object): Promise<object>;
+export function getSnsItemFromId(id: string): Promise<object>;
+export function createSnsUrl(info: object, url: string, text?: string): Promise<string>;
+export function getContextInfo(tabId?: number): Promise<object>;
+export function sendContextInfo(): Promise<any> | null;
+export function extractClickedData(info?: object, tab?: object): Promise<any[]>;
+export function removeMenu(): Promise<any>;
+export function createMenuItem(id: string, title: string, data?: object): Promise<any> | null;
+export function createMenu(): Promise<any[]>;
+export function handleMsg(msg: object): Promise<any[]>;
+export function handleStorage(data: object, area?: string, changed?: boolean): Promise<any[]>;
+export function startup(): Promise<any>;

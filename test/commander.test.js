@@ -1,14 +1,14 @@
 /* api */
-import { assert } from 'chai';
-import { describe, it } from 'mocha';
-import { promises as fsPromise } from 'node:fs';
+import fs, { promises as fsPromise } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { assert } from 'chai';
+import { describe, it } from 'mocha';
 import sinon from 'sinon';
 
 /* test */
 import {
-  commander, extractLibraries, includeLibraries, parseCommand,
+  cleanDirectory, commander, extractLibraries, includeLibraries, parseCommand,
   saveLibraryPackage
 } from '../modules/commander.js';
 
@@ -390,6 +390,43 @@ describe('include libraries', () => {
     assert.strictEqual(traceCallCount, i + 1, 'trace');
     assert.strictEqual(writeCallCount, j, 'write');
     assert.isUndefined(res, 'result');
+  });
+});
+
+describe('clean directory', () => {
+  it('should not call funtion', () => {
+    const stubRm = sinon.stub(fs, 'rmSync');
+    const dir = path.resolve('foo');
+    cleanDirectory({ dir });
+    const { called: rmCalled } = stubRm;
+    stubRm.restore();
+    assert.isFalse(rmCalled, 'not called');
+  });
+
+  it('should call funtion', () => {
+    const stubRm = sinon.stub(fs, 'rmSync');
+    const stubInfo = sinon.stub(console, 'info');
+    const dir = path.resolve('test', 'file');
+    cleanDirectory({ dir });
+    const { calledOnce: rmCalled } = stubRm;
+    const { called: infoCalled } = stubInfo;
+    stubRm.restore();
+    stubInfo.restore();
+    assert.isTrue(rmCalled, 'called');
+    assert.isFalse(infoCalled, 'not called');
+  });
+
+  it('should call funtion', () => {
+    const stubRm = sinon.stub(fs, 'rmSync');
+    const stubInfo = sinon.stub(console, 'info');
+    const dir = path.resolve('test', 'file');
+    cleanDirectory({ dir, info: true });
+    const { calledOnce: rmCalled } = stubRm;
+    const { calledOnce: infoCalled } = stubInfo;
+    stubRm.restore();
+    stubInfo.restore();
+    assert.isTrue(rmCalled, 'called');
+    assert.isTrue(infoCalled, 'not called');
   });
 });
 

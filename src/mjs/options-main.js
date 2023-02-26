@@ -11,7 +11,7 @@ import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
  * create pref
  *
  * @param {object} elm - element
- * @returns {object} - pref data
+ * @returns {Promise.<object>} - pref data
  */
 export const createPref = async (elm = {}) => {
   const { checked, dataset, id, value } = elm;
@@ -55,14 +55,14 @@ export const storePref = async evt => {
  * handle input change
  *
  * @param {!object} evt - Event
- * @returns {Function} - storePref()
+ * @returns {Promise} - storePref()
  */
 export const handleInputChange = evt => storePref(evt).catch(throwErr);
 
 /**
  * add event listener to input elements
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const addInputChangeListener = async () => {
   const nodes = document.querySelectorAll('input');
@@ -75,7 +75,7 @@ export const addInputChangeListener = async () => {
  * set html input value
  *
  * @param {object} data - storage data
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const setHtmlInputValue = async (data = {}) => {
   const { checked, id, value } = data;
