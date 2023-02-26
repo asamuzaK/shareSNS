@@ -27,7 +27,7 @@ export const tabInfo = {
  * set tab info
  *
  * @param {object} tab - tabs.Tab
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const setTabInfo = async tab => {
   tabInfo.tab = isObjectNotEmpty(tab) ? tab : null;
@@ -39,7 +39,7 @@ export const sns = new Map();
 /**
  * set sns items
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const setSnsItems = async () => {
   const items = Object.entries(snsData);
@@ -61,7 +61,7 @@ export const contextInfo = {
 /**
  * init context info
  *
- * @returns {object} - context info
+ * @returns {Promise.<object>} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -76,7 +76,7 @@ export const initContextInfo = async () => {
  * create share data
  *
  * @param {object} evt - Event
- * @returns {?Function} - sendMessage()
+ * @returns {Promise} - sendMessage()
  */
 export const createShareData = async evt => {
   let func;
@@ -109,7 +109,7 @@ export const createShareData = async evt => {
 /**
  * create html from template
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const createHtml = async () => {
   const container = document.getElementById(SNS_ITEMS);
@@ -148,7 +148,7 @@ export const createHtml = async () => {
 /**
  * handle open options on click
  *
- * @returns {Function} - runtime.openOptionsPage()
+ * @returns {Promise} - runtime.openOptionsPage()
  */
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
@@ -156,14 +156,14 @@ export const openOptionsOnClick = () => runtime.openOptionsPage();
  * handle menu on click
  *
  * @param {!object} evt - Event
- * @returns {Function} - createShareData()
+ * @returns {Promise} - createShareData()
  */
 export const menuOnClick = evt => createShareData(evt).catch(throwErr);
 
 /**
  * add listener to menu
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll('button');
@@ -181,7 +181,7 @@ export const addListenerToMenu = async () => {
  * update menu
  *
  * @param {object} data - context data;
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const updateMenu = async data => {
   await initContextInfo();
@@ -269,7 +269,7 @@ export const handleMsg = async msg => {
 /**
  * toggle warning message
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const toggleWarning = async () => {
   const elm = document.getElementById(SNS_NOT_SELECTED);
@@ -291,7 +291,7 @@ export const toggleWarning = async () => {
  *
  * @param {string} id - item ID
  * @param {object} obj - value object
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const toggleSnsItem = async (id, obj = {}) => {
   if (!isString(id)) {

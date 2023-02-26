@@ -28,7 +28,7 @@ export const userOpts = new Map();
  * set user options
  *
  * @param {object} opt - user option
- * @returns {object} - userOpts
+ * @returns {Promise.<object>} - userOpts
  */
 export const setUserOpts = async (opt = {}) => {
   let opts;
@@ -51,7 +51,7 @@ export const sns = new Map();
 /**
  * set sns items
  *
- * @returns {object} - sns
+ * @returns {Promise.<object>} - sns
  */
 export const setSnsItems = async () => {
   const items = Object.entries(snsData);
@@ -65,9 +65,9 @@ export const setSnsItems = async () => {
 /**
  * set user enabled sns items
  *
- * @param {string} id - item ID
- * @param {object} obj - value object
- * @returns {object} - sns
+ * @param {string} [id] - item ID
+ * @param {object} [obj] - value object
+ * @returns {Promise.<object>} - sns
  */
 export const setUserEnabledSns = async (id, obj = {}) => {
   const items = [];
@@ -113,7 +113,7 @@ export const setUserEnabledSns = async (id, obj = {}) => {
  * get sns item from menu item ID
  *
  * @param {string} id - menu item ID
- * @returns {object} - sns item
+ * @returns {Promise.<object>} - sns item
  */
 export const getSnsItemFromId = async id => {
   if (!isString(id)) {
@@ -136,7 +136,7 @@ export const getSnsItemFromId = async id => {
  * @param {object} info - sns item url info
  * @param {string} url - url
  * @param {string} text - text
- * @returns {string} - sns url
+ * @returns {Promise.<string>} - sns url
  */
 export const createSnsUrl = async (info, url, text = '') => {
   if (!isString(url)) {
@@ -169,8 +169,8 @@ export const createSnsUrl = async (info, url, text = '') => {
 /**
  * get context info
  *
- * @param {number} tabId - tab ID
- * @returns {object} - context info
+ * @param {number} [tabId] - tab ID
+ * @returns {Promise.<object>} - context info
  */
 export const getContextInfo = async tabId => {
   let info;
@@ -199,7 +199,7 @@ export const getContextInfo = async tabId => {
 /**
  * send context info
  *
- * @returns {?Function} - sendMessage();
+ * @returns {?Promise} - sendMessage();
  */
 export const sendContextInfo = async () => {
   const contextInfo = await getContextInfo();
@@ -338,7 +338,7 @@ export const extractClickedData = async (info = {}, tab = {}) => {
 /**
  * remove context menu
  *
- * @returns {Function} - menus.removeAll()
+ * @returns {Promise} - menus.removeAll()
  */
 export const removeMenu = async () => menus.removeAll();
 
@@ -348,7 +348,7 @@ export const removeMenu = async () => menus.removeAll();
  * @param {string} id - menu item ID
  * @param {string} title - menu item title
  * @param {object} data - context data
- * @returns {?Function} - menus.create()
+ * @returns {?Promise} - menus.create()
  */
 export const createMenuItem = async (id, title, data = {}) => {
   if (!isString(id)) {
@@ -509,7 +509,7 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
 /**
  * startup
  *
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const startup = async () => {
   await setSnsItems();
