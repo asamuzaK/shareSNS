@@ -193,7 +193,7 @@ export const cleanDirectory = (cmdOpts = {}) => {
  * @returns {void}
  */
 export const parseCommand = args => {
-  const reg = /^(?:(?:--)?help|-[h|v]|--version|c(?:lean)?|i(?:nclude))$/;
+  const reg = /^(?:(?:--)?help|-[h|v]|--version|c(?:lean)?|i(?:nclude)?)$/;
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(process.env.npm_package_version, '-v, --version');
