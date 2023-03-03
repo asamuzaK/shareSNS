@@ -193,16 +193,16 @@ export const cleanDirectory = (cmdOpts = {}) => {
  * @returns {void}
  */
 export const parseCommand = args => {
-  const reg = /^(?:(?:--)?help|-[h|v]|--version|c(?:lean)?|i(?:nclude)?)$/;
+  const reg = /^(?:(?:--)?help|-[h|v]|--version|clean|include)$/;
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(process.env.npm_package_version, '-v, --version');
-    commander.command('clean').alias('c')
+    commander.command('clean')
       .description('clean directory')
       .option('-d, --dir <name>', 'specify directory')
       .option('-i, --info', 'console info')
       .action(cleanDirectory);
-    commander.command('include').alias('i')
+    commander.command('include')
       .description('include library packages')
       .option('-d, --dir <name>', 'specify library directory')
       .option('-i, --info', 'console info')
