@@ -11,6 +11,6 @@ export function extractClickedData(info?: object, tab?: object): Promise<any[]>;
 export function removeMenu(): Promise<any>;
 export function createMenuItem(id: string, title: string, data?: object): Promise<any> | null;
 export function createMenu(): Promise<any[]>;
-export function handleMsg(msg: object): Promise<any[]>;
-export function handleStorage(data: object, area?: string, changed?: boolean): Promise<any[]>;
+export function handleMsg(msg?: object): Promise<any[]>;
+export function handleStorage(data?: object, area?: string, changed?: boolean): Promise<any[]>;
 export function startup(): Promise<any>;

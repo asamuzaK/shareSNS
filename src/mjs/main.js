@@ -27,7 +27,7 @@ export const userOpts = new Map();
 /**
  * set user options
  *
- * @param {object} opt - user option
+ * @param {object} [opt] - user option
  * @returns {Promise.<object>} - userOpts
  */
 export const setUserOpts = async (opt = {}) => {
@@ -217,8 +217,8 @@ export const sendContextInfo = async () => {
 /**
  * extract clicked data
  *
- * @param {object} info - clicked menu info
- * @param {object} tab - tabs.Tab
+ * @param {object} [info] - clicked menu info
+ * @param {object} [tab] - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
  */
 export const extractClickedData = async (info = {}, tab = {}) => {
@@ -347,7 +347,7 @@ export const removeMenu = async () => menus.removeAll();
  *
  * @param {string} id - menu item ID
  * @param {string} title - menu item title
- * @param {object} data - context data
+ * @param {object} [data] - context data
  * @returns {?Promise} - menus.create()
  */
 export const createMenuItem = async (id, title, data = {}) => {
@@ -438,7 +438,7 @@ export const createMenu = async () => {
 /**
  * handle runtime message
  *
- * @param {object} msg - message
+ * @param {object} [msg] - message
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async msg => {
@@ -469,9 +469,9 @@ export const handleMsg = async msg => {
 /**
  * handle storage
  *
- * @param {object} data - stored data
- * @param {string} area - storage area
- * @param {boolean} changed - storage changed
+ * @param {object} [data] - stored data
+ * @param {string} [area] - storage area
+ * @param {boolean} [changed] - storage changed
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleStorage = async (data, area = 'local', changed = false) => {

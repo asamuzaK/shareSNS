@@ -14,7 +14,7 @@ const { i18n } = browser;
 /**
  * localize attribute value
  *
- * @param {object} elm - element
+ * @param {object} [elm] - element
  * @returns {Promise.<void>} - void
  */
 export const localizeAttr = async elm => {

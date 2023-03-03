@@ -74,7 +74,7 @@ export const addInputChangeListener = async () => {
 /**
  * set html input value
  *
- * @param {object} data - storage data
+ * @param {object} [data] - storage data
  * @returns {Promise.<void>} - void
  */
 export const setHtmlInputValue = async (data = {}) => {
