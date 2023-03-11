@@ -4,6 +4,15 @@ EN | [JA](./README.ja.md)
 [![CodeQL](https://github.com/asamuzaK/shareSNS/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/shareSNS/actions?query=workflow%3ACodeQL)
 [![Mozilla Add-on](https://img.shields.io/amo/v/shareSNS@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/share-with-sns/)
 
+# NOTE
+
+Development of this extension has ended.
+Please use other extensions.
+
+Thank you.
+
+***
+
 # Share with SNS
 
 Web extension for Firefox.
