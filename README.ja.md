@@ -4,6 +4,15 @@
 [![CodeQL](https://github.com/asamuzaK/shareSNS/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/shareSNS/actions?query=workflow%3ACodeQL)
 [![Mozilla Add-on](https://img.shields.io/amo/v/shareSNS@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/share-with-sns/)
 
+# お知らせ
+
+この拡張機能の開発は終了しました。
+今後はほかの拡張機能をご利用ください。
+
+これまでご利用いただきありがとうございました。
+
+***
+
 # SNSで共有
 
 Firefox用の拡張機能。
